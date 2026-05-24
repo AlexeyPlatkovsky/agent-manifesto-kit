@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/aleksei.platkovskii/.skill_kit/**)",
+      "Read(//Users/aleksei.platkovskii/**)"
+    ]
+  }
+}

@@ -45,6 +45,18 @@ Evaluate:
 - traceability for non-trivial routed handoffs
 - substantive coverage against the artifact's declared job
 
+### Content Quality Checks
+
+For every skill or agent that references an external tool, CLI, MCP, or third-party service:
+- Does the artifact explain what the tool is and link to it?
+- Does the artifact have a Prerequisites section covering install and verify steps?
+
+For every skill name:
+- Does the name describe the capability (what it does), not the role (who does it) or a vague action? Flag names like "designer" or "analyst" that describe a persona rather than a function.
+
+For every skill or agent in a kit or set:
+- Does any rule, table, or convention in this artifact duplicate content already owned by another artifact in the same set? Flag the overlap and identify the canonical owner.
+
 ## Output Contract
 
 Emit:

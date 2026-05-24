@@ -22,7 +22,7 @@ Document the `.ai/` AI-agnostic layout that the `provider-adapter` agent ([T-013
 ## Content requirements
 
 - **Folder structure:** `.ai/skills/<name>/SKILL.md`, `.ai/agents/<name>/AGENT.md`, etc.
-- **Frontmatter mapping:** which `.claude/`-source fields are kept verbatim, which are renamed, which are dropped. The `.ai/` form should be the most neutral, vendor-free expression of the asset.
+- **Frontmatter mapping:** which `.skill_kit/`-source fields are kept verbatim, which are renamed, which are dropped. The `.ai/` form should be the most neutral, vendor-free expression of the asset.
 - **Body adjustments:** strip Claude-specific tooling references; replace with generic phrasing (e.g., "use your file-reading tool" rather than "use the Read tool").
 - **Before/after example** using one v0.1 skill.
 - **Unsupported features:** features the adapter must flag (e.g., agent-specific tools that don't generalize).

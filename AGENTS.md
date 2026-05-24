@@ -8,11 +8,11 @@ Use it for every AI tool working in this repository. Tool-specific files are ada
 
 ## Project Boundaries
 
-- Treat `.claude/` as product output shipped to consumers.
+- Treat `.skill_kit/` as product output shipped to consumers.
 - Treat `.ai/` as workshop tooling for building this kit.
 - Treat `.manifesto/` as the vendored Agent Manifesto authority layer.
 - Treat `.docs/` and `.ai/docs/project_specification.md` as planning and project authority.
-- Do not create, edit, or delete `.claude/` deliverable assets unless the user explicitly requests product asset work.
+- Do not create, edit, or delete `.skill_kit/` deliverable assets unless the user explicitly requests product asset work.
 - Do not create pipelines, templates, CLI installers, or extra provider targets unless the roadmap or user explicitly changes scope.
 
 ## Authority Order
@@ -25,6 +25,14 @@ Use it for every AI tool working in this repository. Tool-specific files are ada
 6. On-demand `.ai/` capabilities.
 
 If authorities conflict, stop and surface the conflict before changing files.
+
+## Question vs Action
+
+Before doing anything, determine whether the user is asking or directing.
+
+- If the message contains a question — uses "should", "is it", "what is", "could", "would", ends with "?", or asks for an opinion — respond with analysis and options only. Do not create, edit, or delete files.
+- File changes may begin only after the user confirms with action language: "do it", "implement", "go ahead", "make the changes", "yes", or equivalent.
+- This rule takes precedence over the routing gate and trivial classification.
 
 ## Routing Gate
 
@@ -61,7 +69,7 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 
 ## Work Standards
 
-- Preserve the `.claude/` product and `.ai/` workshop distinction.
+- Preserve the `.skill_kit/` product and `.ai/` workshop distinction.
 - Keep capabilities atomic and project-local.
 - Keep routing out of skills.
 - Keep conventions factual and shared; do not turn them into procedures.

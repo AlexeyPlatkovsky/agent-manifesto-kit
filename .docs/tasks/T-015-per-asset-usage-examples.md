@@ -13,11 +13,11 @@ Ensure every shipped asset (3 skills, 2 agents) contains a minimal, copy-pasteab
 
 Edits to each of the five v0.1 assets:
 
-- `.claude/skills/task-explorer/SKILL.md`
-- `.claude/skills/docs-sync/SKILL.md`
-- `.claude/skills/test-review/SKILL.md`
-- `.claude/agents/code-reviewer/AGENT.md`
-- `.claude/agents/provider-adapter/AGENT.md`
+- `.skill_kit/skills/task-explorer/SKILL.md`
+- `.skill_kit/skills/docs-sync/SKILL.md`
+- `.skill_kit/skills/test-review/SKILL.md`
+- `.skill_kit/agents/code-reviewer/AGENT.md`
+- `.skill_kit/agents/provider-adapter/AGENT.md`
 
 If the example sections already exist from their original authoring tasks, this task is a quality pass: ensure each example is concrete, minimal, and actually executable in spirit.
 

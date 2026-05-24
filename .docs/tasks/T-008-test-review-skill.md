@@ -11,7 +11,7 @@ Author the `test-review` skill: reviews tests for correctness, maintainability, 
 
 ## Deliverables
 
-- `.claude/skills/test-review/SKILL.md`
+- `.skill_kit/skills/test-review/SKILL.md`
 
 ## Behavior outline
 

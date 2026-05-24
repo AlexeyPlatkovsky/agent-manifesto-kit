@@ -19,7 +19,7 @@ Each entry must include:
 
 - `name` (matches the agent folder)
 - `type`: `"agent"`
-- `path`: `".claude/agents/<name>/AGENT.md"`
+- `path`: `".skill_kit/agents/<name>/AGENT.md"`
 - `description` (one sentence, matches the agent's frontmatter description)
 - `status`: `"experimental"`
 - `tags`: descriptive, consistent across agents (e.g., `["review", "quality"]` for `code-reviewer`; `["adapter", "portability"]` for `provider-adapter`)

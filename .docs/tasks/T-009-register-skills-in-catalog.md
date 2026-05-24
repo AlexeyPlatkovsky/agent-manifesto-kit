@@ -19,7 +19,7 @@ Each entry must include:
 
 - `name` (matches the skill folder)
 - `type`: `"skill"`
-- `path`: `".claude/skills/<name>/SKILL.md"`
+- `path`: `".skill_kit/skills/<name>/SKILL.md"`
 - `description` (one sentence, matches the skill's frontmatter description)
 - `status`: `"experimental"` (per v0.1 stability stance)
 - `tags`: descriptive tags consistent across skills (e.g., `["planning", "implementation"]` for `task-explorer`)

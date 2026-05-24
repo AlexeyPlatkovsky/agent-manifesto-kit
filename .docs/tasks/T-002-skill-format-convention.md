@@ -11,7 +11,7 @@ Author the authoritative specification for what a valid `SKILL.md` looks like in
 
 ## Deliverables
 
-- `.claude/conventions/skill-format.md`
+- `.skill_kit/conventions/skill-format.md`
 
 ## Content requirements
 
@@ -20,7 +20,7 @@ The convention document must specify:
 - **Frontmatter:** required fields (`name`, `description`, `triggers`, `status`) and optional fields, with allowed values and examples.
 - **Body structure:** required sections (Purpose, When to use, When NOT to use, Inputs/Outputs, Steps, Example) with brief guidance on what each contains.
 - **Boundary rules:** what skills must NOT contain (routing/orchestration, calls to other skills, agent delegation logic, framework protocol restatements).
-- **File naming and folder placement:** one folder per skill at `.claude/skills/<kebab-name>/SKILL.md`.
+- **File naming and folder placement:** one folder per skill at `.skill_kit/skills/<kebab-name>/SKILL.md`.
 - **Minimal example:** a small but complete sample skill demonstrating the format.
 
 ## Acceptance criteria

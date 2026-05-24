@@ -108,7 +108,7 @@ The repository uses a two-folder model that distinguishes deliverable assets fro
 
 ```text
 agent-manifesto-kit/
-  .claude/                  # source-of-truth for the kit's deliverable assets (ships to consumers)
+  .skill_kit/                  # source-of-truth for the kit's deliverable assets (ships to consumers)
     skills/<name>/SKILL.md
     agents/<name>/AGENT.md
     conventions/<name>.md
@@ -126,7 +126,7 @@ agent-manifesto-kit/
 
 Key distinction:
 
-- `.claude/` is the **product** — every file under it is something a consumer installs.
+- `.skill_kit/` is the **product** — every file under it is something a consumer installs.
 - `.ai/` is the **workshop** — files here help contributors build the kit and are excluded from `catalog.json`.
 
 Pipelines and templates folders are intentionally absent in v0.1 (see Initial MVP and Roadmap).
@@ -264,7 +264,7 @@ Confirmed v0.1 scope:
    Performs focused review of implementation quality, risks, and missed requirements.
 
 5. `provider-adapter` agent  
-   Translates source assets in `.claude/` to other provider formats (`.codex/`, `.ai/`). Ships in v0.1 so the kit honors "default Claude style + adapter outward" from day one.
+   Translates source assets in `.skill_kit/` to other provider formats (`.codex/`, `.ai/`). Ships in v0.1 so the kit honors "default Claude style + adapter outward" from day one.
 
 6. `skill-format` convention  
    Defines the standard structure for reusable skills.
@@ -316,7 +316,7 @@ CLI should be added only after the repository has a stable catalog and several p
 
 Initial installation is copy-based. CLI is out of scope for v0.1.
 
-Source-of-truth assets are authored in Claude-native format under `.claude/`. Consumers reach those assets via one of three paths:
+Source-of-truth assets are authored in Claude-native format under `.skill_kit/`. Consumers reach those assets via one of three paths:
 
 ### Claude direct path
 
@@ -324,7 +324,7 @@ The simplest case. The consumer is on Claude Code.
 
 1. Browse the catalog or README.
 2. Pick a capability.
-3. Copy the asset folder from the kit's `.claude/<type>/<name>/` into the consumer project's own `.claude/<type>/<name>/`.
+3. Copy the asset folder from the kit's `.skill_kit/<type>/<name>/` into the consumer project's own `.skill_kit/<type>/<name>/`.
 4. Adapt minimal project-specific wording.
 5. Register it in their root contract (`CLAUDE.md`).
 
@@ -361,7 +361,7 @@ Pipelines (and `.ai/pipelines/`) are deferred to v0.3.
 
 The kit follows a single-source, many-targets model:
 
-- **Source:** `.claude/` is the authoritative format. Every asset is authored once, in Claude-native form.
+- **Source:** `.skill_kit/` is the authoritative format. Every asset is authored once, in Claude-native form.
 - **Targets:** the `provider-adapter` agent translates source assets to other provider layouts.
 
 v0.1 adapter targets:
@@ -407,7 +407,7 @@ The project includes a machine-readable catalog. The v0.1 schema:
     {
       "name": "task-explorer",
       "type": "skill",
-      "path": ".claude/skills/task-explorer/SKILL.md",
+      "path": ".skill_kit/skills/task-explorer/SKILL.md",
       "description": "Investigates a task before implementation and produces a grounded implementation plan.",
       "status": "experimental",
       "tags": ["planning", "implementation", "analysis"],
@@ -421,7 +421,7 @@ Schema notes:
 
 - `stability` (top-level) tracks the kit-wide stance — `experimental` while at 0.x.
 - `status` (per-capability) may diverge from kit-wide stability as individual assets mature.
-- `path` is always rooted at the repo root and points into `.claude/`.
+- `path` is always rooted at the repo root and points into `.skill_kit/`.
 - `targets` lists which provider outputs the `provider-adapter` agent currently supports for that capability.
 - Items under `.ai/` are never indexed in `catalog.json` — they are project-internal tooling, not deliverables.
 
@@ -501,8 +501,8 @@ Deliverables:
 - `README.md`
 - `idea.md` (this file)
 - `catalog.json` (schema + initial empty `capabilities[]`)
-- `.claude/conventions/skill-format.md`
-- `.claude/conventions/agent-format.md`
+- `.skill_kit/conventions/skill-format.md`
+- `.skill_kit/conventions/agent-format.md`
 
 Subsequent v0.1 epics deliver the skills, agents, and adoption walkthrough:
 
@@ -528,15 +528,15 @@ The following decisions were confirmed via brainstorming and supersede the origi
 
 1. **Planning doc layout (`.docs/`):** Hybrid — top-level `architecture.md`, `roadmap.md`, `epics.md`, plus per-task files under `.docs/tasks/T-NNN-<slug>.md`.
 
-2. **Kit repo internal structure:** Two-folder model. `.claude/` is the source-of-truth for deliverable assets; `.ai/` is project-internal AI tooling and is never shipped.
+2. **Kit repo internal structure:** Two-folder model. `.skill_kit/` is the source-of-truth for deliverable assets; `.ai/` is project-internal AI tooling and is never shipped.
 
 3. **v0.1 MVP capability scope:** Skills + agents, no pipelines. Three skills (`task-explorer`, `docs-sync`, `test-review`) + two agents (`code-reviewer`, `provider-adapter`) + two conventions (`skill-format`, `agent-format`) + `catalog.json`.
 
-4. **Source-of-truth format:** Claude-native, stored in `.claude/`. The adapter translates outward to other provider formats.
+4. **Source-of-truth format:** Claude-native, stored in `.skill_kit/`. The adapter translates outward to other provider formats.
 
 5. **Adapter implementation type:** Agent — `provider-adapter`. Translation requires judgment (rewording, deciding what to flag), not just mechanical rename, so it justifies an agent rather than a skill.
 
-6. **Adapter inclusion in MVP:** Ships in v0.1, so the kit honors "default Claude style" from day one — Claude users use `.claude/` directly; others run the adapter.
+6. **Adapter inclusion in MVP:** Ships in v0.1, so the kit honors "default Claude style" from day one — Claude users use `.skill_kit/` directly; others run the adapter.
 
 7. **Adapter target providers in v0.1:** Codex (`.codex/`) + AI-agnostic (`.ai/`). Claude is the source, not a target. Cursor and other providers are deferred.
 

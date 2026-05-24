@@ -47,7 +47,7 @@ Tasks: [T-005](tasks/T-005-readme-adoption-guide.md)
 
 ## Epic 2 — Skills
 
-**Outcome:** three high-value, atomic skills are authored under `.claude/skills/` and registered in `catalog.json`.
+**Outcome:** three high-value, atomic skills are authored under `.skill_kit/skills/` and registered in `catalog.json`.
 
 ### Feature 2.1 — `task-explorer` skill
 

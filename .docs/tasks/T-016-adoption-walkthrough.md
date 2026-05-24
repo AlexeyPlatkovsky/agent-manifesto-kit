@@ -22,8 +22,8 @@ Recommend the separate-doc option to keep README tight.
 For each of the three consumer paths, document:
 
 1. **Claude direct path:**
-   - Source: `.claude/skills/task-explorer/` and `.claude/agents/code-reviewer/` in the kit
-   - Action: copy folders into consumer's `.claude/skills/` and `.claude/agents/`
+   - Source: `.skill_kit/skills/task-explorer/` and `.skill_kit/agents/code-reviewer/` in the kit
+   - Action: copy folders into consumer's `.skill_kit/skills/` and `.skill_kit/agents/`
    - Verification: a trigger that should fire the skill / invoke the agent in the consumer project.
 
 2. **Codex via adapter path:**

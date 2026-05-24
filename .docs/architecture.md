@@ -12,7 +12,7 @@ This document is descriptive of v0.1. Breaking changes are allowed while the pro
 
 ```text
 agent-manifesto-kit/
-  .claude/                  # source-of-truth for the kit's deliverable reusable assets
+  .skill_kit/                  # source-of-truth for the kit's deliverable reusable assets
     skills/<name>/SKILL.md
     agents/<name>/AGENT.md
     conventions/<name>.md
@@ -32,7 +32,7 @@ agent-manifesto-kit/
 
 ### Why two AI-asset folders
 
-- `.claude/` is the **product**. Every file under it is something a consumer will install into their own project.
+- `.skill_kit/` is the **product**. Every file under it is something a consumer will install into their own project.
 - `.ai/` is the **workshop**. Files here help contributors build and maintain the kit and are deliberately excluded from `catalog.json`.
 
 This split prevents project-internal tooling from leaking into consumer installs and keeps the deliverable surface auditable.
@@ -43,21 +43,21 @@ This split prevents project-internal tooling from leaking into consumer installs
 
 The kit ships four capability types. Each has a strict boundary; violations are caught during review.
 
-### Skills (`.claude/skills/<name>/SKILL.md`)
+### Skills (`.skill_kit/skills/<name>/SKILL.md`)
 
 - Single execution responsibility.
 - No routing, no orchestration, no delegation to other skills.
 - May reference conventions; must not duplicate framework protocols.
 - Required frontmatter: `name`, `description`, `triggers`, `status`.
 
-### Agents (`.claude/agents/<name>/AGENT.md`)
+### Agents (`.skill_kit/agents/<name>/AGENT.md`)
 
 - Specialized role with isolated context.
 - Used only when context isolation or specialized judgment is materially valuable.
 - Must not be the default execution unit for ordinary tasks.
 - Required frontmatter: `name`, `description`, `when_to_use`, `when_not_to_use`, `status`.
 
-### Conventions (`.claude/conventions/<name>.md`)
+### Conventions (`.skill_kit/conventions/<name>.md`)
 
 - Define formatting, naming, or structure rules for other assets.
 - No execution semantics.
@@ -66,7 +66,7 @@ The kit ships four capability types. Each has a strict boundary; violations are 
 ### Catalog (`catalog.json`)
 
 - Machine-readable index of deliverable capabilities.
-- One entry per skill/agent/convention shipped under `.claude/`.
+- One entry per skill/agent/convention shipped under `.skill_kit/`.
 - Not a capability type itself; included here because it's part of the architecture.
 
 ### Pipelines (deferred to v0.2+)
@@ -77,7 +77,7 @@ Pipelines are intentionally absent from v0.1. They are listed in idea.md as a fu
 
 ## Source-of-truth format
 
-All deliverable assets are authored in Claude-native format under `.claude/`. This is the canonical form. Consumer projects on Claude Code copy assets directly; other providers receive translated copies produced by the `provider-adapter` agent.
+All deliverable assets are authored in Claude-native format under `.skill_kit/`. This is the canonical form. Consumer projects on Claude Code copy assets directly; other providers receive translated copies produced by the `provider-adapter` agent.
 
 Rationale: a single authored format avoids drift between provider variants. The adapter is asymmetric on purpose — one source, many targets.
 
@@ -86,9 +86,9 @@ Rationale: a single authored format avoids drift between provider variants. The 
 ## Adapter flow
 
 ```text
-.claude/skills/task-explorer/SKILL.md           (source-of-truth)
+.skill_kit/skills/task-explorer/SKILL.md           (source-of-truth)
         │
-        ├──►  copy as-is                    →   consumer project: .claude/skills/task-explorer/SKILL.md
+        ├──►  copy as-is                    →   consumer project: .skill_kit/skills/task-explorer/SKILL.md
         │
         ├──►  provider-adapter (target=codex) →  consumer project: .codex/skills/task-explorer/skill.md
         │
@@ -97,7 +97,7 @@ Rationale: a single authored format avoids drift between provider variants. The 
 
 ### Adapter responsibilities
 
-- Read a source asset from `.claude/`.
+- Read a source asset from `.skill_kit/`.
 - Apply target-provider layout (folder names, file names, casing).
 - Rewrite frontmatter to target dialect.
 - Reword instructions where source assumes Claude-specific tooling or vocabulary.
@@ -125,7 +125,7 @@ Adding a new provider in a later release means adding one more target spec and e
     {
       "name": "task-explorer",
       "type": "skill",
-      "path": ".claude/skills/task-explorer/SKILL.md",
+      "path": ".skill_kit/skills/task-explorer/SKILL.md",
       "description": "Investigates a task before implementation and produces a grounded implementation plan.",
       "status": "experimental",
       "tags": ["planning", "implementation", "analysis"],
@@ -136,7 +136,7 @@ Adding a new provider in a later release means adding one more target spec and e
 ```
 
 Field notes:
-- `path` is always rooted at the kit repo root and points into `.claude/`.
+- `path` is always rooted at the kit repo root and points into `.skill_kit/`.
 - `status` is per-capability and may diverge from the repo-level `stability` field.
 - `targets` lists which provider outputs the adapter currently supports for this capability. For pure conventions (no executable semantics), targets may be `["claude"]` only.
 - Items under `.ai/` are never indexed in `catalog.json`.
@@ -148,7 +148,7 @@ Field notes:
 Copy-based. CLI is out of scope for the MVP.
 
 1. Consumer browses `catalog.json` (or README) to pick a capability.
-2. **Claude consumer:** copies the asset folder directly from `.claude/<type>/<name>/` into their own project's `.claude/<type>/<name>/`.
+2. **Claude consumer:** copies the asset folder directly from `.skill_kit/<type>/<name>/` into their own project's `.skill_kit/<type>/<name>/`.
 3. **Non-Claude consumer:** runs the `provider-adapter` agent against the source path with their target (`codex` or `ai`); receives the translated asset to drop into their project.
 4. Consumer registers the asset in their root contract or tool-equivalent (e.g., `CLAUDE.md`).
 5. Consumer adapts project-specific wording. No edits to core skill/agent semantics expected.
