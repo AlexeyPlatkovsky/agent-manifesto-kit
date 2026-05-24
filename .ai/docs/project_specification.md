@@ -117,4 +117,10 @@ No external research findings were added during initial profile creation.
 - Exact release and publishing workflow is not yet defined.
 - Exact manual smoke-test environment for v0.1 adoption validation is not yet defined.
 - Future validation automation, if any, remains out of scope for v0.1.
-- Root project instruction entrypoints may need cleanup later; current repository evidence includes `CLAUDE.md`, while this profile is AI-agnostic first.
+
+## Current Instruction Entrypoints
+
+- `AGENTS.md` is the canonical root operational contract for this AI-agnostic project.
+- `CLAUDE.md` is a Claude Code adapter that imports and defers to `AGENTS.md`.
+- Project-internal instruction capabilities live under `.ai/`.
+- Consumer-facing deliverable assets still live under `.claude/` and are not indexed from `.ai/`.
