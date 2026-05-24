@@ -7,7 +7,7 @@ description: Designs and executes time-boxed exploratory testing charters using 
 
 ## When to use
 
-The user wants to investigate quality without scripted cases — for a new feature, a recent fix, or a risk area. Not for scripted regression (`qa-writing-test-cases`).
+The user wants to investigate quality without scripted cases — for a new feature, a recent fix, or a risk area. Not for scripted regression test authoring.
 
 ## Inputs required
 
@@ -40,7 +40,7 @@ Environment:
    - **History tour**: recently changed code paths
 3. Execute the session. Take running notes in three streams:
    - **Test notes**: what was tried
-   - **Bugs**: issues found (file later via `qa-reporting-bugs`)
+   - **Bugs**: issues found (file later via the project's bug-reporting workflow)
    - **Issues / questions**: unclear behavior, missing info, blockers
 4. Stop at the time-box. Do not extend silently.
 
@@ -70,7 +70,7 @@ Next charter suggestion:
 
 ## Output contract
 
-The completed session report. Bugs are filed via the bug-reporting skill, not inline.
+The completed session report. Bugs are filed via the project's bug-reporting workflow, not inline.
 
 ## Stopping conditions
 

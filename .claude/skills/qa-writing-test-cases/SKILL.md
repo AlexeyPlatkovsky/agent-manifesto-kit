@@ -7,7 +7,7 @@ description: Writes structured manual test cases (preconditions, steps, expected
 
 ## When to use
 
-The user needs human-executable test cases for a specific feature or story. Not for automated tests (`qa-writing-playwright-tests`, `qa-writing-selenium-tests`) or exploratory charters (`qa-exploratory-testing`).
+The user needs human-executable test cases for a specific feature or story. Not for automated test code or exploratory charters.
 
 ## Inputs required
 
@@ -32,7 +32,7 @@ If acceptance criteria are missing or ambiguous, stop and ask before generating 
    - long-running or concurrent flows — include when the AC mentions concurrency, timeouts, sessions, or async processing
 3. For each case, fill the template below.
 4. Cover boundary values explicitly: empty, max length, min/max numeric, special characters, whitespace, unicode.
-6. Mark each case with a priority: P0 (smoke), P1 (must pass for release), P2 (regression), P3 (nice to have).
+5. Mark each case with a priority: P0 (smoke), P1 (must pass for release), P2 (regression), P3 (nice to have).
 
 ## Test case template
 

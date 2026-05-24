@@ -12,8 +12,8 @@ The user wants unit tests in a Python project. Not for end-to-end or browser tes
 ## Inputs required
 
 - Path of the module under test
-- Test framework (pytest by default; if `unittest` is the project convention, match it)
-- Mocking approach (`unittest.mock`, `pytest-mock`, or framework-specific clients)
+- Test framework: pytest (if the project uses `unittest` instead, this skill does not apply)
+- Mocking approach: `pytest-mock` preferred; fall back to `unittest.mock` only if `pytest-mock` is absent
 
 Inspect existing tests under `tests/` to match layout and conventions.
 
@@ -26,7 +26,7 @@ Inspect existing tests under `tests/` to match layout and conventions.
 5. Use fixtures for shared setup; scope them as narrowly as possible (`function` by default).
 6. Mock external I/O via `monkeypatch` or `mocker`. Do not call real networks, databases, or filesystems beyond `tmp_path`.
 7. Assert exceptions with `pytest.raises(<ExceptionType>, match="...")`.
-8. Run `pytest -q` (or the project's test command). All new tests must pass.
+8. Run `pytest -q` (or the project's test command). If any new test fails, stop and report failures; do not mark the skill complete until all new tests pass.
 
 ## Quality checks
 

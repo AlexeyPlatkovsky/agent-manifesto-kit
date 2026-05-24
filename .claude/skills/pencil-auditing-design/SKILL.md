@@ -7,7 +7,7 @@ description: Audits a Pencil.dev .pen design for inconsistencies in tokens, comp
 
 ## When to use
 
-The user wants a quality review of an existing `.pen` design — finding inconsistent styles, off-token values, broken components, or naming issues. Not for opening (`pencil-opening-design`) or exporting (`pencil-exporting-assets`).
+The user wants a quality review of an existing `.pen` design — finding inconsistent styles, off-token values, broken components, or naming issues. Not for opening or exporting designs.
 
 ## Tool constraint
 
@@ -15,8 +15,8 @@ Operate on `.pen` files only through `pencil` MCP tools.
 
 ## Preconditions
 
-- Document is open. If `pencil:get_editor_state` returns no active document, run `pencil-opening-design` first, then return here.
-- Variables and guidelines have been fetched.
+- Document is open. If `pencil:get_editor_state` returns no active document, stop and report: a document must be opened before audit.
+- Before step 1, call `pencil:get_variables` and `pencil:get_guidelines`; stop and report if either fails.
 
 ## Audit checklist
 

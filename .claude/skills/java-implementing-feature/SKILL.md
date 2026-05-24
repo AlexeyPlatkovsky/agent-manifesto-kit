@@ -7,7 +7,7 @@ description: Implements a new Java feature or class following idiomatic Java pra
 
 ## When to use
 
-The user asks to add new functional code to a Java project. Not for refactoring (use `java-refactoring-code`) or writing tests only (use `java-writing-unit-tests`).
+The user asks to add new functional code to a Java project. Not for refactoring or test-only changes.
 
 ## Inputs required
 

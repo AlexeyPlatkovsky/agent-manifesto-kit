@@ -11,7 +11,7 @@ The user asks to restructure existing Python code while preserving behavior. Not
 
 ## Preconditions
 
-- Tests exist for the affected code paths. If not, ask whether to add tests first or proceed with explicit risk acknowledgement.
+- Tests exist for the affected code paths. If not, STOP and request explicit user consent to either add tests first or proceed with a recorded risk acknowledgement.
 - Lint and type checks pass before starting.
 
 ## Procedure

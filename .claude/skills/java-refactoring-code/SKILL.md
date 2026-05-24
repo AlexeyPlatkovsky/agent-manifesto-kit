@@ -7,12 +7,12 @@ description: Refactors existing Java code to improve clarity, reduce duplication
 
 ## When to use
 
-The user asks to change the structure of existing Java code while preserving behavior. Not for adding new features (use `java-implementing-feature`) or fixing bugs.
+The user asks to change the structure of existing Java code while preserving behavior. Not for adding new features or fixing bugs.
 
 ## Preconditions
 
 Refactoring without tests is unsafe. Before changing code:
-- Confirm tests exist covering the affected methods. If none, ask the user whether to add tests first or to proceed with manual verification only.
+- Confirm tests exist covering the affected methods. If none, STOP and request explicit user consent to either add tests first or proceed with a recorded risk acknowledgement.
 - Confirm the build is green on the current branch.
 
 ## Procedure

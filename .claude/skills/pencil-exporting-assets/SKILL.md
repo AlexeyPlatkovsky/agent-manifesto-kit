@@ -7,7 +7,7 @@ description: Exports nodes, frames, or screenshots from an open Pencil.dev .pen 
 
 ## When to use
 
-The user wants visual assets out of a `.pen` design (PNG, SVG, screenshots of specific frames or components). Not for inspecting structure (`pencil-opening-design`) or generating code (`design-converting-to-code`).
+The user wants visual assets out of a `.pen` design (PNG, SVG, screenshots of specific frames or components). Not for inspecting structure or generating code from a design.
 
 ## Tool constraint
 

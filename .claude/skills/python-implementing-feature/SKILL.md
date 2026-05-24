@@ -7,7 +7,7 @@ description: Implements a new Python feature, function, class, or module followi
 
 ## When to use
 
-The user asks to add new Python code. Not for refactoring (`python-refactoring-code`) or test-only changes (`python-writing-unit-tests`).
+The user asks to add new Python code. Not for refactoring or test-only changes.
 
 ## Inputs required
 
@@ -54,4 +54,4 @@ Report:
 Stop and ask if:
 - A new dependency is required
 - The change requires a database migration
-- Async/sync boundary must change
+- The change introduces or removes `async`/`await` on an existing public API

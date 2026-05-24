@@ -7,7 +7,7 @@ description: Opens a .pen design file in Pencil.dev and produces a structured su
 
 ## When to use
 
-The user wants to inspect or load an existing `.pen` file. Not for creating new designs (`design-creating-web-layout`, `design-creating-mobile-layout`) or generating code from a design (`design-converting-to-code`).
+The user wants to inspect or load an existing `.pen` file. Not for creating new designs or generating code from a design.
 
 ## Tool constraint
 

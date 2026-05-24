@@ -20,14 +20,10 @@ If the user has not actually reproduced the issue themselves, mark the report as
 
 ## Procedure
 
-1. Reproduce or have the user confirm reproduction at least twice.
+1. Confirm reproduction at least twice. If not reproducible, stop and follow the Stopping conditions below.
 2. Strip the steps to the minimum sequence that triggers the bug.
 3. Capture evidence: screenshot, video, console log, network trace, request/response, server log lines with timestamps.
-4. Classify severity and priority using the project's existing scale; default to:
-   - **S1 Blocker**: data loss, security, prod outage, no workaround
-   - **S2 Critical**: core flow broken, workaround painful
-   - **S3 Major**: feature broken, workaround exists
-   - **S4 Minor**: cosmetic, edge case, low impact
+4. Classify severity and priority using the project's existing scale. If the project has no defined scale, stop and ask the user to confirm one before filing.
 
 ## Bug report template
 

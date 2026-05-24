@@ -27,7 +27,7 @@ Inspect existing tests under `src/test/java` to match conventions before writing
 5. Mock collaborators with `@Mock` and inject via `@InjectMocks` or constructor; never mock the class under test.
 6. Avoid `PowerMock`, static mocking, and reflection unless the project already uses them.
 7. Use `@ParameterizedTest` for table-driven cases instead of duplicate test methods.
-8. Run the test command (`mvn test`, `./gradlew test`) and confirm all new tests pass.
+8. Run the project test command (`mvn test` or `./gradlew test`). If any new test fails, stop and report failures; do not mark the skill complete until all new tests pass.
 
 ## Quality checks
 
