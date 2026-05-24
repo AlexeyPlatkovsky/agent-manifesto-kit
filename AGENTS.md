@@ -39,7 +39,7 @@ Before doing anything, determine whether the user is asking or directing.
 Before creating, editing, or deleting files, classify the task out loud.
 
 - If the task is trivial and low risk, proceed directly and state that classification.
-- If the task is non-trivial, medium risk, high risk, or system-level, load `.ai/routing/kit-manager.md` and emit its routing artifact before implementation.
+- If the task is non-trivial, medium risk, high risk, or system-level, load `.ai/kit-manager.md` and emit its routing artifact before implementation.
 - If unsure, treat the task as non-trivial.
 - If the user says "go ahead", "do it", "implement it", "fix it", or equivalent after discussion, run this gate again.
 
@@ -51,19 +51,22 @@ Non-trivial routed work must include:
 
 ## Capability Registry
 
-- Manager: `.ai/routing/kit-manager.md`
+- Manager: `.ai/kit-manager.md`
 - Skill: `.ai/skills/brainstorm/SKILL.md`
 - Skill: `.ai/skills/documentation-maintenance/SKILL.md`
 - Skill: `.ai/skills/validation-report/SKILL.md`
 - Skill: `.ai/skills/task-complete/SKILL.md`
-- Agent: `.ai/agents/instruction-evaluator/AGENT.md`
-- Agent: `.ai/agents/artifact-acceptance-tester/AGENT.md`
+- Agent: `.ai/agents/instruction-evaluator.md`
+- Agent: `.ai/agents/artifact-acceptance-tester.md`
+- Agent: `.ai/agents/artifact-enricher.md`
 
 Load only the capability needed for the current gate or task.
 
 ## Required Reviews
 
 Use `instruction-evaluator` before accepting new or materially changed instruction artifacts.
+
+Use `artifact-enricher` when a new or existing skill or agent is under-specified. Run after `instruction-evaluator` confirms structural compliance.
 
 Use `artifact-acceptance-tester` after creating or materially changing skills, agents, manager routing, validation gates, or output contracts.
 
