@@ -35,7 +35,9 @@ Stop if required context cannot be read.
 
 ## Test Design
 
-Run in two phases. Design all tests before judging any result.
+Run in three phases. Design all tests before judging any result.
+
+**Phase zero — rule inventory.** Before designing tests, list every testable rule in the target artifact: must/shall statements, gates, stop conditions, triggers, output-contract fields, and acceptance criteria. Assign each rule an id (e.g., `R1`, `R2`) and record the section it comes from. Source rule text from the artifact directly. Do not paraphrase rules to fit anticipated tests.
 
 **Phase one — design.** For each target artifact, write all nine tests:
 - three happy-path tests
@@ -47,7 +49,7 @@ Each test must define:
 - scenario type
 - input prompt or situation
 - expected behavior
-- authority citation for the expected behavior
+- authority citation for the expected behavior, referencing one or more rule ids from the inventory
 
 Do not read your own expected behavior back into the artifact while designing.
 
@@ -65,7 +67,7 @@ Mark `Blocked` when required context is missing or expected behavior cannot be e
 
 An artifact passes only when all nine tests pass.
 
-If all nine tests pass, state why the planned scenarios are sufficient for this acceptance pass and name any residual risk. A 9/9 verdict without this statement is `Blocked`.
+If all nine tests pass, state why the planned scenarios are sufficient for this acceptance pass and name any residual risk. Address every rule id left uncovered by the test plan, or mark them as residual risk. A 9/9 verdict without this statement is `Blocked`.
 
 If any test fails or is blocked, the artifact is not accepted. Report the smallest concrete correction needed before retesting.
 
@@ -84,9 +86,16 @@ One of:
 - Needs revision
 - Blocked
 
+### Rule Inventory
+
+List every testable rule found in phase zero:
+
+| Artifact | Rule ID | Rule Text or Source | Section |
+| --- | --- | --- | --- |
+
 ### Test Plan
 
-List all planned tests before judging results:
+List all planned tests before judging results. `Probe / Authority` must reference one or more rule ids from the inventory.
 
 | Artifact | Test ID | Scenario Type | Probe / Authority | Input | Expected |
 | --- | --- | --- | --- | --- | --- |
@@ -108,6 +117,8 @@ For each artifact, state:
 - happy-path tests passed out of 3
 - skip-or-block-path tests passed out of 3
 - misuse-path tests passed out of 3
+- rules covered by at least one test, out of total in the inventory
+- uncovered rule ids, or `None`
 - acceptance status
 
 ### Smallest Safe Fix
