@@ -34,6 +34,18 @@ Before doing anything, determine whether the user is asking or directing.
 - File changes may begin only after the user confirms with action language: "do it", "implement", "go ahead", "make the changes", "yes", or equivalent.
 - This rule takes precedence over the routing gate and trivial classification.
 
+## Ambiguity Resolution
+
+When acting on a user-approved task, apply `.ai/conventions/ambiguity-resolution.md`.
+
+- Implement unambiguous fixes without pausing when one solution is clearly best.
+- Defer ambiguous decisions when two or more materially valid solutions exist.
+- Do not stop mid-task to discuss ambiguous cases unless the ambiguity blocks all safe progress.
+- Continue applying unrelated unambiguous fixes first.
+- After safe progress is complete, present deferred ambiguous cases together.
+- For each deferred case, state the options, recommendation, and trade-off.
+- Wait for user approval before implementing deferred ambiguous fixes.
+
 ## Routing Gate
 
 Before creating, editing, or deleting files, classify the task out loud.
@@ -56,6 +68,7 @@ Non-trivial routed work must include:
 - Skill: `.ai/skills/documentation-maintenance/SKILL.md`
 - Skill: `.ai/skills/validation-report/SKILL.md`
 - Skill: `.ai/skills/task-complete/SKILL.md`
+- Convention: `.ai/conventions/ambiguity-resolution.md`
 - Agent: `.ai/agents/instruction-evaluator.md`
 - Agent: `.ai/agents/artifact-acceptance-tester.md`
 - Agent: `.ai/agents/artifact-enricher.md`

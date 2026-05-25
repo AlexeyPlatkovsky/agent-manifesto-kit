@@ -62,7 +62,11 @@ Do not recursively acceptance-test this agent's own test report. If this agent w
 
 ## Test Design
 
-For each target artifact, run exactly 9 scenario tests:
+Run in two phases. Design all tests before judging any result.
+
+### Phase One: Design
+
+For each target artifact, write exactly 9 scenario tests:
 - 3 happy-path tests
 - 3 skip-or-block-path tests
 - 3 misuse-path tests
@@ -73,15 +77,26 @@ Skip-or-block-path tests verify that the artifact skips, blocks, asks, or report
 
 Misuse-path tests verify that the artifact rejects near-match work that belongs to another artifact or layer.
 
-Each test must define:
+Each planned test must define:
 - test id
 - scenario type
 - input prompt or situation
 - expected behavior
-- observed behavior from applying the artifact instructions
-- result: Pass, Fail, or Blocked
+- authority citation for the expected behavior
+
+Do not assign results during test design.
+
+Do not read your own expected behavior back into the artifact while designing.
+
+Each misuse test must name the specific instruction line, boundary, or omission in the artifact that the test probes. If no meaningful line, boundary, or gap can be cited, keep the test in the plan with a design-blocked reason and do not replace it with an easier one.
 
 Use compact scenarios. Do not create broad end-to-end simulations when a narrower probe can test the same behavior.
+
+### Phase Two: Judgment
+
+For each planned test, record:
+- observed behavior from applying the artifact instructions
+- result: Pass, Fail, or Blocked
 
 ## Evaluation Rules
 
@@ -93,14 +108,17 @@ Mark a test `Fail` when:
 - the artifact can accept raw tool output where a capability output artifact is required
 - the artifact can take responsibility that belongs to another layer
 - the artifact's output is too vague for the next routed gate to verify
+- available authority establishes expected behavior but the artifact is silent or ambiguous
 
-Mark a test `Blocked` when required context is missing or the expected behavior cannot be determined from available authority.
+Mark a test `Blocked` when required context is missing or expected behavior cannot be established from available authority.
 
 Do not give credit for behavior that depends only on general model judgment. The behavior must be supported by the artifact instructions or by an authority the artifact explicitly references.
 
 ## Acceptance Rule
 
 An artifact passes acceptance only when all 9 tests pass.
+
+If all 9 tests pass, state why the planned scenarios are sufficient for this acceptance pass and name any residual risk. A 9/9 verdict without this statement is `Blocked`.
 
 If any test fails or is blocked, the artifact is not accepted. Report the smallest concrete correction needed before retesting.
 
@@ -119,14 +137,23 @@ One of:
 - Needs revision
 - Blocked
 
+### Test Plan
+
+List all planned tests before judging results:
+
+| Artifact | Test ID | Scenario Type | Probe / Authority | Input | Expected |
+| --- | --- | --- | --- | --- | --- |
+
 ### Test Matrix
 
-| Artifact | Test ID | Scenario Type | Expected | Observed | Result |
-| --- | --- | --- | --- | --- | --- |
+| Artifact | Test ID | Scenario Type | Probe / Authority | Expected | Observed | Result |
+| --- | --- | --- | --- | --- | --- | --- |
 
 ### Findings
 
 List only failed or blocked tests, grouped by artifact.
+
+For each failed or blocked misuse test, cite the specific instruction line, boundary, or gap the test probed.
 
 ### Coverage Summary
 
@@ -139,4 +166,3 @@ For each artifact, state:
 ### Smallest Safe Fix
 
 State the minimum instruction change needed before acceptance, or `None` when all tests pass.
-

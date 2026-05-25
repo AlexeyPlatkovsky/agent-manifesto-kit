@@ -35,7 +35,9 @@ Stop if required context cannot be read.
 
 ## Test Design
 
-For each target artifact, run exactly nine scenario tests:
+Run in two phases. Design all tests before judging any result.
+
+**Phase one — design.** For each target artifact, write all nine tests:
 - three happy-path tests
 - three skip-or-block-path tests
 - three misuse-path tests
@@ -45,14 +47,25 @@ Each test must define:
 - scenario type
 - input prompt or situation
 - expected behavior
-- observed behavior from applying the artifact instructions
-- result: Pass, Fail, or Blocked
+- authority citation for the expected behavior
 
-Mark `Pass` only when the artifact instructions clearly require the expected behavior.
+Do not read your own expected behavior back into the artifact while designing.
+
+Misuse tests must each name the specific instruction line, boundary, or omission in the artifact that the test probes. If no meaningful line, boundary, or gap can be cited, keep the test in the plan with a design-blocked reason and do not replace it with an easier one.
+
+**Phase two — judgment.** For each test, record observed behavior strictly from what the artifact instructions require, then assign a result: Pass, Fail, or Blocked.
+
+Mark `Pass` only when the artifact text clearly requires the expected behavior.
+
+Mark `Fail` when the authority citation establishes expected behavior but the artifact is silent, ambiguous, or would likely produce the wrong behavior.
+
+Mark `Blocked` when required context is missing or expected behavior cannot be established from available authority.
 
 ## Acceptance Rule
 
 An artifact passes only when all nine tests pass.
+
+If all nine tests pass, state why the planned scenarios are sufficient for this acceptance pass and name any residual risk. A 9/9 verdict without this statement is `Blocked`.
 
 If any test fails or is blocked, the artifact is not accepted. Report the smallest concrete correction needed before retesting.
 
@@ -71,14 +84,23 @@ One of:
 - Needs revision
 - Blocked
 
+### Test Plan
+
+List all planned tests before judging results:
+
+| Artifact | Test ID | Scenario Type | Probe / Authority | Input | Expected |
+| --- | --- | --- | --- | --- | --- |
+
 ### Test Matrix
 
-| Artifact | Test ID | Scenario Type | Expected | Observed | Result |
-| --- | --- | --- | --- | --- | --- |
+| Artifact | Test ID | Scenario Type | Probe / Authority | Expected | Observed | Result |
+| --- | --- | --- | --- | --- | --- | --- |
 
 ### Findings
 
 List only failed or blocked tests, grouped by artifact.
+
+For each failed or blocked misuse test, cite the specific instruction line, boundary, or gap the test probed.
 
 ### Coverage Summary
 
