@@ -33,15 +33,15 @@ Exact AI tools currently in use or required immediately:
 - Codex
 - Claude
 
-Claude-native `.skill_kit/` assets are the source-of-truth product format for v0.1. Codex and AI-agnostic targets are supported through adapter outputs rather than separate hand-authored source assets.
+Claude-native `.collection/` assets are the source-of-truth product format for v0.1. Codex and AI-agnostic targets are supported through adapter outputs rather than separate hand-authored source assets.
 
 ## Known Capability Triggers
 
 Known triggers include:
 
-- authoring or revising a reusable skill under `.skill_kit/skills/`
-- authoring or revising a reusable agent under `.skill_kit/agents/`
-- defining or revising shared conventions under `.skill_kit/conventions/`
+- authoring or revising a reusable skill under `.collection/skills/`
+- authoring or revising a reusable agent under `.collection/agents/`
+- defining or revising shared conventions under `.collection/conventions/`
 - updating `catalog.json` entries for deliverable capabilities
 - adapting Claude-native source assets to Codex or AI-agnostic target formats
 - checking that a skill does not contain routing or orchestration logic
@@ -60,8 +60,8 @@ Known triggers include:
 - Convention: reusable formatting, naming, or structure guidance.
 - Catalog: the machine-readable `catalog.json` index of deliverable capabilities.
 - Provider adapter: the agent that translates source assets to target provider formats.
-- Source-of-truth format: Claude-native assets under `.skill_kit/`.
-- Product folder: `.skill_kit/`, containing assets shipped to consumers.
+- Source-of-truth format: Claude-native assets under `.collection/`.
+- Product folder: `.collection/`, containing assets shipped to consumers.
 - Workshop folder: `.ai/`, containing project-internal AI tooling and docs.
 - Consumer project: a project that installs or copies assets from this kit.
 
@@ -78,14 +78,14 @@ Known triggers include:
 
 ## Quality Expectations
 
-- Preserve the distinction between `.skill_kit/` as product and `.ai/` as workshop.
+- Preserve the distinction between `.collection/` as product and `.ai/` as workshop.
 - Keep reusable assets modular, atomic, and selectively loaded.
 - Avoid duplicating Agent Manifesto rules inside kit assets when a framework source already owns the concern.
 - Keep skills execution-focused and free of routing or orchestration.
 - Keep agents specialized and justified by isolation, specialized review, or adapter responsibility.
 - Keep conventions focused on shared structure or formatting; do not give them execution semantics.
 - Keep v0.1 scope tight: no pipelines, templates, CLI installer, or provider targets beyond Codex and AI-agnostic unless the roadmap changes.
-- Keep `catalog.json` aligned with deliverable assets under `.skill_kit/` only.
+- Keep `catalog.json` aligned with deliverable assets under `.collection/` only.
 - Use task acceptance criteria as the local definition of completion for planned work.
 - Treat manual smoke validation as required evidence for adoption workflows in v0.1.
 
@@ -123,4 +123,4 @@ No external research findings were added during initial profile creation.
 - `AGENTS.md` is the canonical root operational contract for this AI-agnostic project.
 - `CLAUDE.md` is a Claude Code adapter that imports and defers to `AGENTS.md`.
 - Project-internal instruction capabilities live under `.ai/`.
-- Consumer-facing deliverable assets still live under `.skill_kit/` and are not indexed from `.ai/`.
+- Consumer-facing deliverable assets still live under `.collection/` and are not indexed from `.ai/`.

@@ -45,6 +45,11 @@ Evaluate:
 - traceability for non-trivial routed handoffs
 - substantive coverage against the artifact's declared job
 
+### Authority Separation Checks
+
+For every agent:
+- Does the artifact instruct another agent to be invoked? If yes, flag it as Blocking — only a manager routing artifact may sequence agent calls. Skill-to-skill invocations are tool composition and are allowed.
+
 ### Content Quality Checks
 
 For every skill or agent that references an external tool, CLI, MCP, or third-party service:
@@ -56,6 +61,14 @@ For every skill name:
 
 For every skill or agent in a kit or set:
 - Does any rule, table, or convention in this artifact duplicate content already owned by another artifact in the same set? Flag the overlap and identify the canonical owner.
+
+### Concision Checks
+
+For every instruction artifact:
+- If it exceeds the 150-line guideline, decide whether the extra length is justified by clarity, correctness, safety, or necessary output contracts.
+- Suggest concrete trimming only when content is duplicated, overly explanatory, project-specific, better owned by another artifact, or too detailed for the artifact layer.
+- Do not recommend removing required prerequisites, stop triggers, safety constraints, output contracts, verification steps, or error handling unless they can be merged without weakening behavior.
+- When trimming is possible, use the `Area` value `Concision` and include the smallest safe trim in `Suggested fix`.
 
 ## Output Contract
 

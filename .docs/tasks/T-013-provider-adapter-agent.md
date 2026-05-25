@@ -7,16 +7,16 @@
 
 ## Goal
 
-Author the `provider-adapter` agent: translates source assets in `.skill_kit/` to other provider formats (`.codex/`, `.ai/`) per the target specs from [T-011](T-011-codex-target-format.md) and [T-012](T-012-ai-agnostic-target-format.md).
+Author the `provider-adapter` agent: translates source assets in `.collection/` to other provider formats (`.codex/`, `.ai/`) per the target specs from [T-011](T-011-codex-target-format.md) and [T-012](T-012-ai-agnostic-target-format.md).
 
 ## Deliverables
 
-- `.skill_kit/agents/provider-adapter/AGENT.md`
+- `.collection/agents/provider-adapter/AGENT.md`
 
 ## Behavior outline
 
 Inputs:
-- A source asset path under `.skill_kit/` (skill or agent).
+- A source asset path under `.collection/` (skill or agent).
 - A target identifier: `codex` or `ai`.
 - A destination path (consumer project folder) — or, when run inside the kit repo, a dry-run mode that prints the output.
 
@@ -32,14 +32,14 @@ Steps:
 
 - Conforms to [agent-format.md](T-003-agent-format-convention.md).
 - `when_to_use` covers non-Claude consumers adopting kit assets.
-- `when_not_to_use` covers: source asset already exists in `.skill_kit/` and consumer is on Claude (no translation needed); pipelines (deferred to v0.2+); arbitrary file rewriting outside the adapter contract.
+- `when_not_to_use` covers: source asset already exists in `.collection/` and consumer is on Claude (no translation needed); pipelines (deferred to v0.2+); arbitrary file rewriting outside the adapter contract.
 - The agent enforces the "flag, don't drop" rule on unsupported features.
 - Includes a concrete usage example for each v0.1 target (`codex`, `ai`).
 - Justifies agent-vs-skill in the body: translation requires judgment (rewording, deciding what to flag), benefits from context isolation, output is structured.
 
 ## Notes
 
-- The adapter is asymmetric: source is always `.skill_kit/`, never the other way around. This is intentional — see [architecture.md § Adapter flow](../architecture.md).
+- The adapter is asymmetric: source is always `.collection/`, never the other way around. This is intentional — see [architecture.md § Adapter flow](../architecture.md).
 - The agent is the contract for v0.1's "default Claude style + adapter outward" model. Quality here is critical; if the adapter is unreliable, the whole multi-provider story breaks.
 
 [T-011]: T-011-codex-target-format.md

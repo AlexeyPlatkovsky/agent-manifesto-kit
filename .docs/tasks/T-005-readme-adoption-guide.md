@@ -17,9 +17,9 @@ Replace the placeholder README with the real entry point for the project: what t
 
 - **Project description** (one short paragraph).
 - **Relationship to Agent Manifesto:** point at the framework repo; clarify the kit is a companion, not a replacement.
-- **Repository layout:** mini version of [architecture.md § Top-level repository layout](../architecture.md), with the two-folder distinction (`.skill_kit/` ships, `.ai/` does not) called out explicitly.
+- **Repository layout:** mini version of [architecture.md § Top-level repository layout](../architecture.md), with the two-folder distinction (`.collection/` ships, `.ai/` does not) called out explicitly.
 - **How to adopt a capability:**
-  - Claude direct path (copy `.skill_kit/<type>/<name>/` into the consumer project).
+  - Claude direct path (copy `.collection/<type>/<name>/` into the consumer project).
   - Codex via adapter.
   - AI-agnostic via adapter.
 - **How to read `catalog.json`** with a tiny example entry.

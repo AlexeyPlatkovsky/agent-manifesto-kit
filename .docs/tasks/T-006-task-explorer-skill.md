@@ -11,7 +11,7 @@ Author the `task-explorer` skill: investigates a task before implementation and 
 
 ## Deliverables
 
-- `.skill_kit/skills/task-explorer/SKILL.md`
+- `.collection/skills/task-explorer/SKILL.md`
 
 ## Behavior outline (to encode in the skill)
 

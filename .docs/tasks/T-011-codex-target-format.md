@@ -12,7 +12,7 @@ Document the `.codex/` layout, file naming, and frontmatter conventions that [T-
 ## Deliverables
 
 - A target format specification document. Location options (decide at task start):
-  - `.skill_kit/conventions/target-codex.md` — treats target specs as kit conventions
+  - `.collection/conventions/target-codex.md` — treats target specs as kit conventions
   - `.docs/targets/codex.md` — treats target specs as planning artifacts
 
 Pick one and be consistent with [T-012](T-012-ai-agnostic-target-format.md).
@@ -20,9 +20,9 @@ Pick one and be consistent with [T-012](T-012-ai-agnostic-target-format.md).
 ## Content requirements
 
 - **Folder structure** Codex expects (e.g., `.codex/skills/<name>/`, file name casing).
-- **Frontmatter mapping:** which fields in the `.skill_kit/` source map to which Codex fields; what to do with fields that have no Codex equivalent.
+- **Frontmatter mapping:** which fields in the `.collection/` source map to which Codex fields; what to do with fields that have no Codex equivalent.
 - **Body adjustments:** terminology to swap (e.g., "subagent" → Codex equivalent), tooling references to rewrite, sections to drop if not applicable.
-- **Concrete before/after example:** show a snippet of `.skill_kit/skills/<name>/SKILL.md` and its Codex output side by side.
+- **Concrete before/after example:** show a snippet of `.collection/skills/<name>/SKILL.md` and its Codex output side by side.
 - **Unsupported features:** explicit list of source features the adapter must flag rather than silently drop.
 
 ## Acceptance criteria
