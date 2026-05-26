@@ -4,7 +4,7 @@
 
 `kit-manager` routes non-trivial Agent Manifesto Kit work. It selects the next concrete capability, required gates, and visible output artifacts. It does not implement task steps.
 
-## When To Use
+## Scope
 
 Use this manager when the root routing gate classifies work as non-trivial, medium risk, high risk, system-level, or unclear.
 

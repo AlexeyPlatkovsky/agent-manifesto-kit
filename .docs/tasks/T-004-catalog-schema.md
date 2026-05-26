@@ -22,7 +22,7 @@ Define and commit the v0.1 catalog schema, matching the structure documented in 
 
 - `catalog.json` is valid JSON.
 - Schema matches [architecture.md § Catalog schema](../architecture.md) field-for-field.
-- Schema rules state: items under `.ai/` are never indexed; `path` is always rooted at the repo root and points into `.collection/`.
+- Schema rules state: items under `.ai/` are never indexed; `path` is always rooted at the repo root and points into `collection/`.
 - A consumer reading only `catalog.json` + `README.md` can understand how to discover and locate capabilities.
 
 ## Notes

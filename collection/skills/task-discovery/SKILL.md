@@ -3,20 +3,10 @@ name: task-discovery
 description: Gathers task context and identifies constraints before implementation begins. Use during discovery workflow steps to systematically understand the scope before acting.
 ---
 
-# Task Discovery
+## Scope
 
-## Purpose
-
-Systematically gather task context and identify constraints before implementation begins. Prevent scope surprises and ensure the implementation plan is grounded in actual code state.
-
-## When To Use
-
-Use before non-trivial implementation work to establish a clear understanding of the existing landscape.
-
-## When Not To Use
-
-- For trivial, single-file changes where the scope is obvious.
-- After implementation has already started — this is a pre-implementation skill.
+- Systematically gather task context and identify constraints before non-trivial implementation work begins. Prevent scope surprises and ensure the implementation plan is grounded in actual code state.
+- Examine relevant files and dependencies, existing code patterns and conventions, architecture, contracts, module boundaries, and risk areas.
 
 ## Prerequisites
 
@@ -24,7 +14,7 @@ Before discovery, confirm:
 - The user request describes a task, feature, bug, refactor, or implementation goal to investigate.
 - The relevant repository context can be read.
 - Discovery can proceed without modifying files.
-- The expected output is context, constraints, risks, and open questions, not implementation.
+- Discovery can produce context, constraints, risks, and open questions.
 
 If the task target is unclear, ask the smallest clarifying question before reading broadly.
 
@@ -34,17 +24,9 @@ If the task target is unclear, ask the smallest clarifying question before readi
 - Do not infer contracts, ownership, or intended behavior from names alone; label unsupported conclusions as assumptions.
 - Do not expand discovery into implementation planning beyond identifying context, constraints, risks, and open questions.
 
-## Scope
-
-Examine:
-- Relevant files, components, and their dependencies
-- Existing code patterns and established conventions
-- Architecture, contracts, module boundaries, and potential risk areas
-
 ## Stop Conditions
 
-- If the task scope or relevant entry points cannot be identified from the provided context, stop and ask the user to clarify the scope before reading further.
-- Stop and report discovery as blocked when the task goal or likely entry points cannot be identified.
+- Stop and report discovery as blocked when the task goal, scope, or likely entry points cannot be identified from provided context.
 - Stop and report blocked when required files, dependencies, or project documentation cannot be read.
 - Stop and ask for clarification when multiple plausible scopes exist and choosing one would materially change the findings.
 - Stop when continuing would require making product, architecture, or implementation decisions instead of discovering context.
@@ -76,7 +58,7 @@ Then include:
 
 | Field | Content |
 | --- | --- |
-| Status | `completed`, `partial`, or `blocked` |
+| Status | `completed`, `skipped`, or `blocked` |
 | Task Scope | Task, feature, bug, refactor, or area investigated |
 | Sources Read | Files, docs, tests, commands, or evidence inspected |
 | Context | Relevant code segments, dependency information, and patterns observed |
@@ -84,4 +66,4 @@ Then include:
 | Assumptions | Inferences used, or `none` |
 | Open Questions / Blockers | Clarifications or unreadable context, or `none` |
 
-Use `partial` or `blocked` when important context cannot be inspected.
+Use `blocked` when important context cannot be inspected. Record partial findings under `Context` and remaining gaps under `Open Questions / Blockers`.

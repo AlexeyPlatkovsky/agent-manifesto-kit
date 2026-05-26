@@ -8,11 +8,11 @@ Use it for every AI tool working in this repository. Tool-specific files are ada
 
 ## Project Boundaries
 
-- Treat `.collection/` as product output shipped to consumers.
+- Treat `collection/` as product output shipped to consumers.
 - Treat `.ai/` as workshop tooling for building this kit.
 - Treat `.manifesto/` as the vendored Agent Manifesto authority layer.
 - Treat `.docs/` and `.ai/docs/project_specification.md` as planning and project authority.
-- Do not create, edit, or delete `.collection/` deliverable assets unless the user explicitly requests product asset work.
+- Do not create, edit, or delete `collection/` deliverable assets unless the user explicitly requests product asset work.
 - Do not create pipelines, templates, CLI installers, or extra provider targets unless the roadmap or user explicitly changes scope.
 
 ## Authority Order
@@ -85,7 +85,7 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 
 ## Work Standards
 
-- Preserve the `.collection/` product and `.ai/` workshop distinction.
+- Preserve the `collection/` product and `.ai/` workshop distinction.
 - Keep capabilities atomic and project-local.
 - Keep routing out of skills.
 - Keep conventions factual and shared; do not turn them into procedures.

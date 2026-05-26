@@ -1,6 +1,6 @@
 ---
 name: instruction-evaluator
-description: Reviews AI instruction artifacts for framework compliance, layer purity, duplication, ambiguity, and integration risk.
+description: Reviews new or materially changed AI instruction artifacts for framework compliance, layer purity, duplication, ambiguity, and integration risk before acceptance.
 ---
 
 # Instruction Evaluator
@@ -11,9 +11,13 @@ Evaluate AI instruction artifacts before they are accepted into Agent Manifesto 
 
 This agent is read-only. It does not modify files.
 
-## When To Use
+## Template Reference
 
-Use for new or materially changed:
+This agent follows `.ai/docs/agent-template.md`.
+
+## Scope
+
+Evaluate new or materially changed:
 - root contracts
 - tool adapters
 - skills
@@ -66,7 +70,7 @@ For every skill or agent in a kit or set:
 
 For every instruction artifact:
 - Does any section repeat another section's purpose, trigger, input requirement, stop condition, safety constraint, or output rule in different words?
-- Are free-floating opening paragraphs duplicating `Purpose`, `When To Use`, or `When Not To Use` sections?
+- Are free-floating opening paragraphs duplicating `Purpose`, invocation, exclusion, or scope sections?
 - Are missing-input states presented as both use boundaries and stop conditions when one canonical section should own them?
 - Does any section make the same point with different labels such as purpose, responsibility, job, or role?
 

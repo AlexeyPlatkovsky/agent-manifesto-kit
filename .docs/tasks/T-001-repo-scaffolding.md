@@ -11,9 +11,9 @@ Create the canonical folder structure described in [architecture.md](../architec
 
 ## Deliverables
 
-- `.collection/skills/` (empty, with `.gitkeep`)
-- `.collection/agents/` (empty, with `.gitkeep`)
-- `.collection/conventions/` (empty, with `.gitkeep`)
+- `collection/skills/` (empty, with `.gitkeep`)
+- `collection/agents/` (empty, with `.gitkeep`)
+- `collection/conventions/` (empty, with `.gitkeep`)
 - `.ai/` (already exists; ensure `.gitkeep` if empty)
 - `.docs/tasks/` (this folder; created by this task suite)
 - `.gitignore` (sensible defaults for the repo type)
@@ -24,7 +24,7 @@ Create the canonical folder structure described in [architecture.md](../architec
 
 - All folders above exist and are tracked by git.
 - `git status` is clean after committing the scaffolding.
-- No deliverable asset files exist yet under `.collection/skills`, `.collection/agents`, or `.collection/conventions` — only `.gitkeep`s.
+- No deliverable asset files exist yet under `collection/skills`, `collection/agents`, or `collection/conventions` — only `.gitkeep`s.
 - README.md exists as a minimal placeholder with the project name and a one-line description (full adoption guide lands in T-005).
 
 ## Notes

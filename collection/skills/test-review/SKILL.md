@@ -3,20 +3,10 @@ name: test-review
 description: Reviews and strengthens tests during the TDD green or refactor phase. Use after initial tests pass to ensure comprehensive coverage before handoff.
 ---
 
-# Test Review
+## Scope
 
-## Purpose
-
-Review tests after the initial implementation passes. Identify coverage, maintainability, flakiness, and convention issues before the task is closed.
-
-## When To Use
-
-Use after baseline tests pass or validation evidence is available to evaluate test quality.
-
-## When Not To Use
-
-- Before a baseline test contract or validation result exists.
-- For production code changes — this skill reviews tests, not implementations.
+- Review tests after the initial implementation passes. Identify coverage, maintainability, flakiness, and convention issues before the task is closed.
+- Use after baseline tests pass or validation evidence is available to evaluate test quality.
 
 ## Prerequisites
 
@@ -35,27 +25,24 @@ If the scope is unclear, ask the smallest clarifying question before reviewing.
 - Do not change production code or test expectations.
 - Do not invent coverage claims that are not supported by inspected tests, code, or validation output.
 
-## Responsibilities
+## Stop Conditions
 
-1. Confirm all tests written by `test-writer` now pass (green phase is confirmed).
+Stop and report the review as blocked when a prerequisite remains unavailable after minimal clarification, or when the requested action violates Safety Constraints.
+
+## Procedure
+
+1. Confirm scoped tests have current passing validation evidence when available.
 2. Identify edge cases and regression scenarios not covered during initial test creation.
 3. Recommend missing test cases for edge scenarios, error paths, and boundary conditions.
 4. Identify readability and maintainability improvements while preserving existing behavior.
 5. Evaluate overall test coverage and identify any remaining gaps.
 
-Stop and report the test review as blocked when:
-- The tests in scope cannot be located or read.
-- The code under test cannot be inspected.
-- The initial test result is unavailable and reviewing would make findings speculative.
-- A requested action would require editing tests, changing implementation, or making product decisions.
-
 Evaluate tests on:
 - correctness: the test verifies the behavior it claims to protect
 - maintainability: setup, naming, assertions, and fixtures are clear and localized
+- simplicity and duplication risk: repeated setup, helpers, or cases are flagged only when they obscure behavior, increase maintenance risk, or create behavior-drift risk
 - flakiness risk: timing, ordering, external services, randomness, filesystem, network, or environment coupling
 - convention alignment: file placement, naming, structure, and project test patterns
-
-This skill reviews tests as artifacts. Use a broader code-review capability when implementation quality, production behavior, or cross-cutting design risk is the primary concern.
 
 ## Verification
 
@@ -75,7 +62,7 @@ Then include:
 
 | Field | Content |
 | --- | --- |
-| Status | `completed`, `partial`, or `blocked` |
+| Status | `completed`, `skipped`, or `blocked` |
 | Scope | Test files, diff, branch, or artifact set reviewed |
 | Sources Read | Tests, code under test, docs, conventions, or validation evidence inspected |
 | Initial Test Status | Passing, failing, unavailable, or not applicable |

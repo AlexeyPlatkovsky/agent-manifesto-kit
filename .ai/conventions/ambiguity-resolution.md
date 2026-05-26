@@ -14,7 +14,7 @@ A fix is unambiguous when one option is clearly favored by:
 - compatibility
 - minimal scope
 
-A decision is ambiguous when two or more valid options differ materially in:
+A decision is ambiguous when two or more options valid under the active authorities differ materially in:
 - naming
 - ownership
 - public contract
@@ -26,7 +26,7 @@ A decision is ambiguous when two or more valid options differ materially in:
 
 An ambiguous case is blocking when no safe unrelated progress can continue without resolving it.
 
-A deferred ambiguous case should include:
+A deferred ambiguous case must include:
 - the decision to make
 - viable options
 - recommendation

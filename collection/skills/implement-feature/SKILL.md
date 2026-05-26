@@ -3,13 +3,9 @@ name: implement-feature
 description: Executes additive work by introducing new behavior. Use when new functionality is being added to an existing codebase.
 ---
 
-# Implement Feature
+## Scope
 
-## When To Use
-
-Use when new behavior is being introduced to the project.
-
-Do not use when the task is read-only review or behavior-preserving restructuring — use `review-code` or `refactor-code` instead.
+- Introduce new behavior into the project.
 
 ## Prerequisites
 
@@ -17,9 +13,9 @@ Before editing, confirm:
 - The user requested or approved adding new behavior.
 - The desired behavior, affected workflow, and success criteria are clear enough to implement.
 - Relevant code, tests, configuration, conventions, and project documentation can be read.
-- The change can be made without overwriting unrelated user work.
+- Unrelated user work has been identified so it can be preserved.
 
-If any item is false, stop and report what is missing.
+If approval, scope, or required context is missing, report the blocker before editing.
 
 ## Safety Constraints
 
@@ -28,7 +24,16 @@ If any item is false, stop and report what is missing.
 - Do not invent product rules, defaults, permissions, or user-facing behavior not supported by the request or repository evidence.
 - Do not overwrite unrelated user changes.
 
-## Mandatory Behavior
+## Stop Conditions
+
+Stop and report the implementation as blocked when:
+- The requested behavior or success criteria cannot be stated concretely.
+- Required implementation context cannot be read.
+- The change requires a breaking public API change, schema migration, destructive data operation, new dependency, security/auth change, generated artifact rewrite, or broad architectural change not explicitly approved.
+- Existing architecture or project conventions conflict with the requested approach.
+- Required verification cannot be run or cannot provide meaningful evidence.
+
+## Procedure
 
 ### 1. Frame The Change
 
@@ -56,13 +61,6 @@ If a needed abstraction is missing, stop and surface the gap instead of bypassin
 
 When multiple implementation approaches are plausible and differ materially in blast radius, public contract, persistence model, or long-term ownership, stop and surface the options instead of choosing silently.
 
-Stop and report the implementation as blocked when:
-- The requested behavior or success criteria cannot be stated concretely.
-- Required implementation context cannot be read.
-- The change requires a breaking public API change, schema migration, destructive data operation, new dependency, security/auth change, generated artifact rewrite, or broad architectural change not explicitly approved.
-- Existing architecture or project conventions conflict with the requested approach.
-- Required verification cannot be run or cannot provide meaningful evidence.
-
 ### 4. Add Or Adjust Tests
 
 Add or update tests proportional to the risk level of the change.
@@ -72,6 +70,8 @@ Add or update tests proportional to the risk level of the change.
 Run the verification checks appropriate to what changed: type checks, linting, unit tests, and integration tests as required.
 
 If any required check fails, fix the underlying cause and re-run the full required set.
+
+## Verification
 
 Before reporting completion, verify:
 - The diff is limited to the requested feature and necessary supporting changes.
@@ -96,4 +96,4 @@ Then include:
 | Skipped Checks | Checks not run with reasons, or `none` |
 | Blockers | Remaining blockers, or `none` |
 
-`Status` may be `completed` only when the requested behavior is implemented and required verification has passed or skipped checks are justified.
+`Status` may be `completed` only when the requested behavior is implemented, required verification has passed, and any non-required skipped checks are justified.

@@ -1,6 +1,6 @@
 ---
 name: artifact-acceptance-tester
-description: Runs scenario-based acceptance tests against new or materially changed instruction artifacts before acceptance.
+description: Runs scenario-based acceptance tests against new or materially changed skills, agents, routing artifacts, validation gates, or output contracts before acceptance.
 ---
 
 # Artifact Acceptance Tester
@@ -11,9 +11,13 @@ Acceptance-test new or materially changed instruction artifacts with isolated co
 
 This agent is read-only. It does not modify files.
 
-## When To Use
+## Template Reference
 
-Use after creating or materially changing:
+This agent follows `.ai/docs/agent-template.md`.
+
+## Scope
+
+Acceptance-test created or materially changed:
 - skills
 - agents
 - routing artifacts

@@ -3,20 +3,9 @@ name: test-writer
 description: Writes tests before production code changes (TDD red phase). Use when establishing the test contract for a new feature or bug fix.
 ---
 
-# Test Writer
+## Scope
 
-## Purpose
-
-Implement the TDD red phase by writing failing tests that express the desired behavior before any production code is changed.
-
-## When To Use
-
-Use before any production code changes when following a test-driven development workflow.
-
-## When Not To Use
-
-- After production code has already been changed — tests written after the fact are not the TDD red phase.
-- For refactoring tasks where the goal is behavior preservation, not behavior definition.
+- Implement the TDD red phase by writing failing tests that express the desired behavior before any production code is changed.
 
 ## Prerequisites
 
@@ -39,7 +28,6 @@ If any item is false, stop and report what is missing.
 
 ## Stop Conditions
 
-- If the test runner fails to execute at all (broken configuration, missing environment), stop and report the blocker. The red phase cannot be confirmed without a working test runner.
 - Stop and report test writing as blocked when the expected behavior cannot be stated as observable assertions.
 - Stop and report blocked when required test context, fixtures, commands, or code under test cannot be read.
 - Stop and report blocked when the test runner cannot execute because of configuration, dependency, environment, or credential issues.
@@ -48,11 +36,11 @@ If any item is false, stop and report what is missing.
 
 ## Procedure
 
-1. Review the discovery plan and requirements.
+1. Review available requirements, acceptance criteria, bug reproduction, or discovery notes.
 2. Identify expected behaviors and edge cases to cover.
 3. Create test cases that express the desired behavior.
 4. Run tests to confirm they fail initially (red phase confirmed).
-5. Validate that any passing tests indicate incomplete test coverage, not complete implementation.
+5. Investigate any passing new tests and classify them as already-covered behavior or incomplete red-phase evidence.
 6. Document failing tests as the implementation contract.
 
 When multiple test scopes or assertion styles are plausible, choose the one that matches existing project test patterns and the smallest observable behavior contract. If multiple scopes are equally plausible and would test different behavior, stop and ask for clarification.
@@ -75,7 +63,7 @@ Then include:
 
 | Field | Content |
 | --- | --- |
-| Status | `red-confirmed`, `partial`, or `blocked` |
+| Status | `completed`, `skipped`, or `blocked` |
 | Scope | Feature, bug, behavior, or contract covered |
 | Test Files | Created or modified test files, or `none` |
 | Sources Read | Requirements, code, tests, docs, or commands inspected |
@@ -85,4 +73,6 @@ Then include:
 | Coverage Gaps | Known missing cases, or `none` |
 | Blockers | Missing context, unavailable runner, or non-red-phase state, or `none` |
 
-Use `red-confirmed` only when newly written tests fail for the intended unmet behavior, not setup or syntax errors.
+Use `completed` only when newly written tests fail for the intended unmet behavior, not setup or syntax errors.
+
+Use `blocked` when approved test cases cannot be red-confirmed; list red-confirmed cases in `Red Phase Evidence` and blocked cases in `Coverage Gaps` and `Blockers`.

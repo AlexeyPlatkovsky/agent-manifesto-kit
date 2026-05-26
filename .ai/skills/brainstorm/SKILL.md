@@ -1,6 +1,6 @@
 ---
 name: brainstorm
-description: Resolves high-impact design or setup decisions one question at a time before execution.
+description: Resolves high-impact design or setup decisions one question at a time when multiple valid paths exist and user choice is required before safe execution.
 ---
 
 # Brainstorm
@@ -9,17 +9,15 @@ description: Resolves high-impact design or setup decisions one question at a ti
 
 Use this skill to resolve open decisions that materially affect routing, structure, validation, reusable documentation, or capability design.
 
-## When To Use
+## Template Reference
 
-- A setup or design choice has multiple valid paths.
-- Clarification requires evaluating trade-offs.
-- The user must choose before implementation can proceed safely.
+This skill follows `.ai/docs/skill-template.md`.
 
-## When Not To Use
+## Scope
 
-- The question is purely factual.
-- A decision summary has already been confirmed.
-- Execution has already started and no new high-impact decision appeared.
+- Handle setup or design choices with multiple valid paths.
+- Handle clarification that requires evaluating trade-offs.
+- Stop when the question is purely factual, the decision summary is already confirmed, or execution has already started and no new high-impact decision appeared.
 
 ## Rules
 

@@ -11,7 +11,7 @@ Author the authoritative specification for what a valid `AGENT.md` looks like, s
 
 ## Deliverables
 
-- `.collection/conventions/agent-format.md`
+- `collection/conventions/agent-format.md`
 
 ## Content requirements
 
@@ -23,7 +23,7 @@ The convention document must specify:
   - Agents must be specialized; they are not a default execution unit for ordinary tasks.
   - Agents must not duplicate a skill's role; if the work fits a skill, it should be a skill.
   - Cross-reference [skill-format.md](T-002-skill-format-convention.md) for the line between the two.
-- **File naming and folder placement:** one folder per agent at `.collection/agents/<kebab-name>/AGENT.md`.
+- **File naming and folder placement:** one folder per agent at `collection/agents/<kebab-name>/AGENT.md`.
 - **Minimal example.**
 
 ## Acceptance criteria

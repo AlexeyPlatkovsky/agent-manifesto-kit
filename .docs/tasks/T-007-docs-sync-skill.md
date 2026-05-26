@@ -11,7 +11,7 @@ Author the `docs-sync` skill: keeps project documentation synchronized with impl
 
 ## Deliverables
 
-- `.collection/skills/docs-sync/SKILL.md`
+- `collection/skills/docs-sync/SKILL.md`
 
 ## Behavior outline
 

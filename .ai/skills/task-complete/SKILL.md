@@ -1,6 +1,6 @@
 ---
 name: task-complete
-description: Produces the required closure table for non-trivial routed work.
+description: Produces the required closure table after non-trivial routed work completes validation, review, and documentation gates.
 ---
 
 # Task Complete
@@ -9,15 +9,16 @@ description: Produces the required closure table for non-trivial routed work.
 
 Close non-trivial routed work by reporting what actually happened and confirming required visible artifacts exist.
 
-## When To Use
+## Template Reference
 
-Use as the final step for non-trivial routed work after validation, review, and documentation maintenance gates are complete or explicitly skipped.
+This skill follows `.ai/docs/skill-template.md`.
 
-## When Not To Use
+## Scope
 
-- Trivial direct work.
-- Work that did not go through routed execution.
-- When a required planned output artifact is missing.
+- Use as the final step for non-trivial routed work after validation, review, and documentation maintenance gates are complete or explicitly skipped.
+- Skip trivial direct work.
+- Skip work that did not go through routed execution.
+- Report closure as blocked when a required planned output artifact is missing.
 
 ## Procedure
 

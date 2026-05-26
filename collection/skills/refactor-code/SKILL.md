@@ -3,13 +3,9 @@ name: refactor-code
 description: Behavior-preserving restructuring of existing code. Use when reshaping code without changing user-facing behavior.
 ---
 
-# Refactor Code
+## Scope
 
-## When To Use
-
-Use when the goal is to reshape existing code without changing user-facing behavior.
-
-Do not use when behavior is being added, removed, or intentionally changed — use `implement-feature` instead.
+- Reshape existing code without changing user-facing behavior.
 
 ## Prerequisites
 
@@ -25,11 +21,21 @@ If any item is false, stop and report what is missing.
 ## Safety Constraints
 
 - Do not bundle unrelated cleanup, feature work, formatting churn, dependency changes, or test rewrites into the refactor.
-- Do not change public API, persisted data shape, permissions, defaults, or user-visible behavior unless explicitly approved.
+- Do not change public API, persisted data shape, permissions, defaults, or user-visible behavior; if required, stop and treat the task as non-refactor work.
 - Do not adjust tests to hide a behavior change.
 - Do not overwrite unrelated user changes.
 
-## Mandatory Behavior
+## Stop Conditions
+
+Stop and report the refactor as blocked when:
+- Behavior preservation cannot be stated concretely.
+- Required context or public API boundaries cannot be inspected.
+- The baseline verification fails before editing.
+- The refactor would require a behavior change, breaking public API change, schema migration, generated artifact rewrite, new dependency, broad architecture change, or test expectation change.
+- Existing architecture or project conventions conflict with the requested refactor.
+- Required verification cannot be run or cannot provide meaningful evidence.
+
+## Procedure
 
 ### 1. Frame The Refactor
 
@@ -55,30 +61,22 @@ If the baseline fails, stop and surface the failure instead of refactoring again
 
 ### 4. Refactor Under Project Boundaries
 
-Follow project coding conventions. Preserve the public API of the touched abstraction unless the user has approved a breaking change.
+Follow project coding conventions. Preserve the public API of the touched abstraction.
 
-Do not change behavior incidentally during a refactor.
-
-Do not bundle unrelated cleanup into the same refactor.
+Do not change behavior incidentally during a refactor. Do not bundle unrelated cleanup into the same refactor.
 
 When multiple refactor approaches are plausible and differ materially in blast radius, public contract, ownership, or long-term maintainability, stop and surface the options instead of choosing silently.
-
-Stop and report the refactor as blocked when:
-- Behavior preservation cannot be stated concretely.
-- Required context or public API boundaries cannot be inspected.
-- The baseline verification fails before editing.
-- The refactor would require a behavior change, breaking public API change, schema migration, generated artifact rewrite, new dependency, broad architecture change, or test expectation change not explicitly approved.
-- Existing architecture or project conventions conflict with the requested refactor.
-- Required verification cannot be run or cannot provide meaningful evidence.
 
 ### 5. Verify Preservation
 
 After editing, re-run the same targeted tests from the baseline. Run the full test suite when shared or framework-level behavior is touched.
 
-If a previously passing targeted test now fails or had to be modified, stop and surface the behavior change.
+If a previously passing targeted test now fails, or if a test expectation had to change, stop and surface the behavior change. Test code may be restructured only to preserve existing expectations.
+
+## Verification
 
 Before reporting completion, verify:
-- The diff is limited to behavior-preserving restructuring and necessary supporting test updates.
+- The diff is limited to behavior-preserving restructuring and test-code restructuring that preserves existing expectations.
 - Baseline and final verification cover the same preserved behavior.
 - No public API, persisted data shape, default, permission, or user-facing output changed unintentionally.
 - Any failed or skipped verification is reported with enough context for follow-up.
@@ -103,4 +101,4 @@ Then include:
 | Skipped Checks | Checks not run with reasons, or `none` |
 | Blockers | Remaining blockers, or `none` |
 
-`Status` may be `completed` only when the refactor is applied and preservation verification has passed or skipped checks are justified.
+`Status` may be `completed` only when the refactor is applied and the smallest meaningful available baseline and final checks provide preservation evidence. Report unavailable or inapplicable checks under `Skipped Checks`; use `blocked` when no meaningful preservation evidence is available.

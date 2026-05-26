@@ -1,6 +1,6 @@
 ---
 name: artifact-enricher
-description: Researches domain best practices and strengthens under-specified skills and agents into robust, project-agnostic instruction artifacts.
+description: Researches domain best practices and strengthens under-specified skills or agents when they lack operational depth, safety controls, output contracts, or current tool guidance.
 ---
 
 # Artifact Enricher
@@ -11,9 +11,13 @@ Strengthen under-specified skills and agents by researching domain best practice
 
 This agent is read-only. It does not modify files.
 
-## When To Use
+## Template Reference
 
-Use when a skill or agent is identified as too general — it covers the procedure but is missing operational depth.
+This agent follows `.ai/docs/agent-template.md`.
+
+## Scope
+
+Use when a skill or agent is identified as too general: it covers the procedure but is missing operational depth.
 
 Typical signals:
 - Workflow lists steps but has no stop conditions or halt triggers
@@ -25,7 +29,7 @@ Typical signals:
 - Tool, API, CLI, MCP, or service usage is generic, stale, or not checked against available schemas or current official documentation
 - The artifact is tied to a specific project but should become reusable kit content
 
-## When Not To Use
+## Boundaries
 
 Do not use this agent to:
 - Modify files directly

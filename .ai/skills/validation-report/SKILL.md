@@ -1,6 +1,6 @@
 ---
 name: validation-report
-description: Summarizes verification performed for non-trivial routed work so downstream gates can audit the result.
+description: Summarizes verification evidence after implementation or artifact edits for non-trivial routed work so downstream gates can audit the result.
 ---
 
 # Validation Report
@@ -9,15 +9,16 @@ description: Summarizes verification performed for non-trivial routed work so do
 
 Convert verification evidence into a visible validation artifact for non-trivial routed work.
 
-## When To Use
+## Template Reference
 
-Use after implementation or artifact edits when a downstream review, documentation, or completion gate needs to know what was verified.
+This skill follows `.ai/docs/skill-template.md`.
 
-## When Not To Use
+## Scope
 
-- Trivial direct work.
-- Raw command output with no routed handoff.
-- Review-only tasks where no validation gate was planned.
+- Use after implementation or artifact edits when a downstream review, documentation, or completion gate needs to know what was verified.
+- Skip trivial direct work.
+- Skip raw command output with no routed handoff.
+- Skip review-only tasks where no validation gate was planned.
 
 ## Inputs
 

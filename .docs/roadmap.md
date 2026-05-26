@@ -14,7 +14,7 @@ A 1.0 release is gated by the exit criteria at the bottom of this document.
 
 ### Deliverables
 
-- Repository scaffolding: `.collection/`, `.ai/`, `.docs/`, `README.md`, `catalog.json`
+- Repository scaffolding: `collection/`, `.ai/`, `.docs/`, `README.md`, `catalog.json`
 - Conventions: `skill-format`, `agent-format`
 - Skills: `task-explorer`, `docs-sync`, `test-review`
 - Agents: `code-reviewer`, `provider-adapter`
@@ -49,7 +49,7 @@ Candidate work (subject to v0.1 learnings):
 - Author an `instruction-review` skill (referenced in idea.md)
 - Add `architecture-reviewer` or `security-reviewer` agent (whichever adoption surfaces demand for)
 - Tag individual assets as `stable` in `catalog.json` where they have proven durable
-- Add a `verify` helper (still no CLI — likely a skill that validates a `.collection/` or `.ai/` install layout)
+- Add a `verify` helper (still no CLI — likely a skill that validates a `collection/` or `.ai/` install layout)
 
 ---
 
@@ -83,7 +83,7 @@ Candidate work, in rough priority order:
 
 The kit may declare 1.0 stability only when **all** of the following hold:
 
-1. The `.collection/` asset format has not had a breaking change for at least one minor version.
+1. The `collection/` asset format has not had a breaking change for at least one minor version.
 2. The `catalog.json` schema has not had a breaking change for at least one minor version.
 3. At least one capability type other than skills (i.e., agents AND ideally pipelines) is shipping with a stable per-asset status for multiple assets.
 4. The `provider-adapter` agent has produced working outputs across at least two non-Claude providers for the full asset set.

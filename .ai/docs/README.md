@@ -1,14 +1,16 @@
 # .ai Docs Index
 
-This directory contains workshop reference docs for building Agent Manifesto Kit.
+This directory contains workshop reference docs and authoring templates for building Agent Manifesto Kit.
 
-Reference docs store facts. They do not define routing, execution procedure, or validation gates.
+Reference docs store facts. Authoring templates define file shape for project-internal artifacts. Neither docs nor templates define routing, execution procedure, or validation gates.
 
 ## Docs
 
 | Doc | Contains | Read When |
 | --- | --- | --- |
 | `project_specification.md` | Project role, recurring duties, authority sources, AI tool mode, quality expectations, vocabulary, and profile gaps | Starting any framework stage, routing non-trivial work, or resolving authority conflicts |
+| `skill-template.md` | Project-internal `.ai` skill file shape based on Claude skill guidance | Creating or materially revising a project-internal skill |
+| `agent-template.md` | Project-internal `.ai` agent file shape based on Claude subagent guidance | Creating or materially revising a project-internal agent |
 
 ## Other Authoritative Docs
 

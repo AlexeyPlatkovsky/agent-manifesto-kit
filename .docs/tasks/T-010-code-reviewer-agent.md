@@ -11,7 +11,7 @@ Author the `code-reviewer` agent: performs focused review of implementation qual
 
 ## Deliverables
 
-- `.collection/agents/code-reviewer/AGENT.md`
+- `collection/agents/code-reviewer/AGENT.md`
 
 ## Behavior outline
 

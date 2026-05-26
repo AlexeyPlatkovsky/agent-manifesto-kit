@@ -1,17 +1,12 @@
 ---
 name: task-validation
-description: Validates that the solution meets requirements and has no regressions. Use during the validate_solution workflow step.
+description: Validates that the solution meets requirements and has no regressions. Use after implementation and before task closure.
 ---
 
-# Task Validation
+## Scope
 
-## Purpose
-
-Confirm that the completed implementation satisfies original requirements and does not introduce regressions.
-
-## When To Use
-
-Use as the validation step after implementation is complete and before task closure.
+- Confirm that the completed implementation satisfies original requirements and does not introduce regressions.
+- Use as the validation step after implementation is complete and before task closure.
 
 ## Prerequisites
 
@@ -20,8 +15,6 @@ Before validating, confirm:
 - The completed implementation, changed files, diff, or artifact set can be inspected.
 - The expected validation checks are known from the routed plan, project conventions, package scripts, docs, or repository evidence.
 - The environment can run at least one meaningful automated or manual validation check.
-
-If required validation context is missing, report `blocked` and name the missing input.
 
 ## Safety Constraints
 
@@ -42,7 +35,7 @@ If required validation context is missing, report `blocked` and name the missing
 ## Procedure
 
 1. Verify the implementation matches the original requirements.
-2. Run tests and confirm they pass.
+2. Run the selected automated or manual validation checks and record pass, fail, skipped, or blocked status.
 3. Check for regressions in affected areas.
 4. Report validation result as **pass**, **fail**, or **blocked**, with any issues found.
 
@@ -68,11 +61,11 @@ Then include:
 | --- | --- |
 | Overall Result | `pass`, `fail`, or `blocked` |
 | Scope | Requirement, feature, fix, refactor, or artifact set validated |
-| Requirements Checked | Requirements or acceptance criteria checked, or `unknown` |
+| Requirements Checked | Requirements or acceptance criteria checked, marked not applicable, or blocked reason |
 | Validation Gates | Each gate with status `pass`, `fail`, `skipped`, or `blocked` |
 | Evidence | Commands, tests, inspections, or scenario checks performed |
 | Issues Found | Failures or regressions, or `none` |
 | Assumptions | Inferences used, or `none` |
 | Blockers | Missing context, environment issue, or unavailable check, or `none` |
 
-`Overall Result` may be `pass` only when all required validation gates passed or skipped gates are explicitly justified and non-blocking.
+`Overall Result` may be `pass` only when all required validation gates passed and any skipped gates are explicitly justified and non-blocking.
