@@ -2,7 +2,7 @@
 
 Use this template for project-internal skills under `collection/skills/<name>/SKILL.md`.
 
-Claude skill guidance treats a skill as a directory with a required `SKILL.md` file. The file starts with YAML frontmatter, then Markdown instructions. The `description` is the invocation signal: it should state what the skill does and the situations that make it relevant.
+AI skill guidance treats a skill as a directory with a required `SKILL.md` file. The file starts with YAML frontmatter, then Markdown instructions. The `description` is the invocation signal: it should state what the skill does and the situations that make it relevant.
 
 Do not add a separate invocation-use section unless a provider target explicitly requires it. Put invocation criteria in `description`. Put operational limits in `Scope`, `Boundaries`, `Stop Conditions`, or the procedure section.
 
@@ -17,7 +17,6 @@ description: <what this skill does and the situations where it should be used>
 ## Scope
 
 - <What this skill may handle>
-- <What is out of scope, or a condition that ends the skill's work early — only when not obvious>
 
 ## Procedure
 

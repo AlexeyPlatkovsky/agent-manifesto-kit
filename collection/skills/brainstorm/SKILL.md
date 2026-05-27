@@ -7,7 +7,6 @@ description: Resolves high-impact design or setup decisions one question at a ti
 
 - Resolve open decisions that materially affect routing, structure, validation, reusable documentation, or capability design.
 - Use when a setup or design choice has multiple valid paths, clarification requires evaluating trade-offs, or the user must choose before implementation can proceed safely.
-- Out of scope: purely factual questions with no meaningful choice; decisions already confirmed by a prior summary; execution already underway with no new high-impact decision.
 
 ## Safety Constraints
 

@@ -2,7 +2,7 @@
 
 Use this template for project agents under `collection/agents/<name>.md`.
 
-Claude Code subagents are Markdown files with YAML frontmatter. The `description` tells Claude when delegation is appropriate. The body is the subagent system prompt, so it should define the agent's role, required context, constraints, procedure, and output shape.
+AI subagents are Markdown files with YAML frontmatter. The `description` tells AI when delegation is appropriate. The body is the subagent system prompt, so it should define the agent's role, required context, constraints, procedure, and output shape.
 
 Do not add a separate invocation-use section unless a provider target explicitly requires it. Put delegation criteria in `description`. Put operational limits in `Scope`, `Boundaries`, `Stop Conditions`, or review procedure sections.
 

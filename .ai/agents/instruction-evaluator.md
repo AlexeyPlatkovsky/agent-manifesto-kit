@@ -3,17 +3,11 @@ name: instruction-evaluator
 description: Reviews new or materially changed AI instruction artifacts for framework compliance, layer purity, duplication, ambiguity, and integration risk before acceptance.
 ---
 
-# Instruction Evaluator
-
 ## Purpose
 
 Evaluate AI instruction artifacts before they are accepted into Agent Manifesto Kit's instruction system.
 
 This agent is read-only. It does not modify files.
-
-## Template Reference
-
-This agent follows `.ai/docs/agent-template.md`.
 
 ## Scope
 
@@ -31,23 +25,12 @@ Evaluate new or materially changed:
 Read only the smallest relevant set:
 - `AGENTS.md`
 - `.ai/docs/project_specification.md`
-- relevant `.manifesto/` authority files
 - target artifacts
 - directly related referenced artifacts
 
-Stop if required context or target artifacts cannot be read.
-
 ## Review Scope
 
-Evaluate:
-- responsibility and layer fit
-- routing, execution, and authority separation
-- duplicated or competing rules
-- ambiguous triggers, inputs, stopping conditions, or output contracts
-- unnecessary always-loaded context
-- missing referenced files or capabilities
-- traceability for non-trivial routed handoffs
-- substantive coverage against the artifact's declared job
+Apply the checks below per the artifact's type and the dimensions they cover.
 
 ### Authority Separation Checks
 
@@ -59,6 +42,13 @@ For every agent:
 For every skill or agent that references an external tool, CLI, MCP, or third-party service:
 - Does the artifact explain what the tool is and link to it?
 - Does the artifact have a Prerequisites section covering install and verify steps?
+
+For every skill or agent that references an external authoritative standard, specification, or domain rule set (e.g., WCAG, OWASP, ISO, ECMAScript, RFC, browser or runtime versions, named protocol or framework versions):
+- Does the artifact name the specific version and, where applicable, conformance level the standard is referenced at?
+- Are version-dependent rules tied to criteria that actually exist in that version?
+- If the artifact intentionally accepts multiple versions, is the override or selection path explicit?
+
+Flag unversioned references to authoritative external standards (phrases such as "WCAG-aligned", "OWASP best practices", "modern browsers", "current ECMAScript") as ambiguity findings under the `Area` value `Predicate Ambiguity`. The predicate of any rule depending on an unversioned standard cannot be tested and may resolve to different criteria across runs. Suggest the smallest concrete version and level (and override path, if relevant).
 
 For every skill name:
 - Does the name describe the capability (what it does), not the role (who does it) or a vague action? Flag names like "designer" or "analyst" that describe a persona rather than a function.
@@ -75,6 +65,17 @@ For every instruction artifact:
 - Does any section make the same point with different labels such as purpose, responsibility, job, or role?
 
 When duplication exists, flag it with the `Area` value `Duplication` or `Concision`, identify the canonical section that should keep the rule, and suggest the smallest safe merge or deletion.
+
+### Control-flow Interaction Checks
+
+For every instruction artifact that has both a sequential Procedure section and a Stop Triggers, Safety Constraints, or other interrupt-class section (here "Procedure" means any sequenced-steps section regardless of heading — e.g., Procedure, Workflow, Steps, Review Scope when ordered):
+- Does the Procedure header explicitly state how an interrupt-class trigger affects the procedure (e.g., halts immediately, skips the current section only, attaches a label to a single finding)?
+- Are Stop Triggers categorized by effect (halt-the-task vs label-a-finding vs downgrade-severity)? A flat list mixing halt and non-halt triggers under a single verb such as "stop" is ambiguous.
+- If multiple sections describe overlapping conditions (e.g., a Safety Constraint and a Stop Trigger both cover "do not infer X"), is it explicit which section is canonical and what role the other plays?
+
+Flag missing or implicit cross-section interaction rules under the `Area` value `Control-flow Ambiguity`. Suggest the smallest concrete edit: a one-line reference from Procedure to Stop Triggers, a subdivision of Stop Triggers by effect, or a pointer between overlapping sections naming the canonical owner.
+
+A Procedure header satisfies the interrupt-effect requirement either by stating the effect inline or by referencing the canonical interrupt-class section. When overlapping sections explicitly declare a canonical owner, a single reference from Procedure to that owner discharges the Procedure-header obligation; the two requirements are not independent.
 
 ### Standalone Portability Checks
 

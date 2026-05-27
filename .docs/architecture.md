@@ -23,8 +23,6 @@ agent-manifesto-kit/
     idea.md
     architecture.md
     roadmap.md
-    epics.md
-    tasks/T-NNN-<slug>.md
   .manifesto/               # Agent Manifesto framework files (governance layer, vendored)
   catalog.json              # machine-readable index of deliverable capabilities
   README.md                 # adoption guide and entry point
