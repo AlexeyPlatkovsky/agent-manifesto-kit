@@ -22,3 +22,15 @@ This collection contains skills and agents derived in part from third-party open
 - **Source:** `impeccable` skill by Philipp Bakaus — https://github.com/pbakaus/impeccable (specifically the `audit` sub-command reference)
 - **License:** Apache License 2.0
 - **Nature of derivation:** Diagnostic checklist adapted from the `audit` sub-command, rewritten as a guide-only single-file skill. WCAG criterion references are independently verifiable; no upstream tool-invocation or script content is carried over.
+
+## schema-markup-generator
+
+- **Source:** `schema-markup-generator` skill by Aaron He Zhu — https://github.com/aaron-he-zhu/seo-geo-claude-skills/tree/main/build/schema-markup-generator
+- **License:** Apache License 2.0
+- **Nature of derivation:** Concept and rich-result type coverage adapted from the upstream skill. Upstream coupling to `memory/content/`, `memory/hot-cache.md`, `memory/open-loops.md`, the CORE-EEAT framework, the multi-platform `compatibility` field, the cross-skill "next step" routing, and the extended metadata frontmatter are not carried over. Procedure, safety constraints, and output contract are rewritten for this collection's single-file skill format.
+
+## meta-tags-optimizer
+
+- **Source:** `meta-tags-optimizer` skill by Aaron He Zhu — https://github.com/aaron-he-zhu/seo-geo-claude-skills/tree/main/build/meta-tags-optimizer
+- **License:** Apache License 2.0
+- **Nature of derivation:** Concept, length budgets, and tag-set coverage (title / meta description / Open Graph / Twitter Card / supporting tags) adapted from the upstream skill. Upstream coupling to `memory/content/`, `memory/hot-cache.md`, `memory/open-loops.md`, the CORE-EEAT alignment check, the cross-skill "next step" routing to `schema-markup-generator`, and the multi-language preset list are not carried over. Procedure, safety constraints, and output contract are rewritten for this collection's single-file skill format.

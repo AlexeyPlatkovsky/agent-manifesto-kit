@@ -21,11 +21,16 @@ Do not use it for trivial low-risk direct edits or purely factual answers.
 
 1. Classify complexity, risk, and whether the work crosses product, workshop, docs, or framework boundaries.
 2. Identify the smallest relevant authority sources to read.
-3. Select the immediate next capability or direct implementation step.
-4. Name validation and review gates.
-5. Add documentation maintenance after implementation when its trigger applies.
-6. Add `task-complete` as the final step.
-7. Stop if routing depends on missing policy, conflicting authority, or unapproved risky change.
+3. Check `.ai/pipelines/` for a pipeline whose "When to Apply" matches the request. When one matches, adopt its stage list as the routing plan rather than composing one from scratch.
+4. Select the immediate next capability or direct implementation step.
+5. Name validation and review gates.
+6. Add documentation maintenance after implementation when its trigger applies.
+7. Add `task-complete` as the final step.
+8. Stop if routing depends on missing policy, conflicting authority, or unapproved risky change.
+
+## Pipelines
+
+A pipeline under `.ai/pipelines/<name>.md` is a pre-baked routing plan for a recurring workflow. When a pipeline matches the current request, this manager adopts its stages verbatim and records the pipeline by name in the routing artifact. The manager remains responsible for the routing artifact itself; pipelines do not replace `kit-manager`. Pipelines do not embed implementation logic and do not emit their own output artifact.
 
 ## Output Contract
 
@@ -41,6 +46,7 @@ Include:
 | Risk | low / medium / high / system-level |
 | Boundaries | product / workshop / docs / framework |
 | Authorities to load | concrete files |
+| Pipeline adopted | pipeline name, or `none` |
 | Selected next step | capability or direct implementation step |
 | Validation gate | expected `Skill: validation-report - output below` artifact |
 | Review gate | agent and expected artifact, or `not required` |

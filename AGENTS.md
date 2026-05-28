@@ -68,12 +68,17 @@ Non-trivial routed work must include:
 - Skill: `.ai/skills/documentation-maintenance/SKILL.md`
 - Skill: `.ai/skills/validation-report/SKILL.md`
 - Skill: `.ai/skills/task-complete/SKILL.md`
+- Skill: `.ai/skills/skill-authoring/SKILL.md`
+- Pipeline: `.ai/pipelines/skill-authoring.md`
 - Convention: `.ai/conventions/ambiguity-resolution.md`
+- Convention: `.ai/conventions/capability-portability.md`
 - Agent: `.ai/agents/instruction-evaluator.md`
 - Agent: `.ai/agents/artifact-acceptance-tester.md`
 - Agent: `.ai/agents/artifact-enricher.md`
 
 Load only the capability needed for the current gate or task.
+
+Pipelines under `.ai/pipelines/` are pre-baked routing plans the manager adopts when their "When to Apply" matches the request. They sequence existing skills and agents; they do not implement step logic and do not replace `kit-manager`.
 
 ## Required Reviews
 
