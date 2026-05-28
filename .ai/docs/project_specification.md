@@ -33,15 +33,15 @@ Exact AI tools currently in use or required immediately:
 - Codex
 - Claude
 
-Claude-native `.claude/` assets are the source-of-truth product format for v0.1. Codex and AI-agnostic targets are supported through adapter outputs rather than separate hand-authored source assets.
+Claude-native `collection/` assets are the source-of-truth product format for v0.1. Codex and AI-agnostic targets are supported through adapter outputs rather than separate hand-authored source assets.
 
 ## Known Capability Triggers
 
 Known triggers include:
 
-- authoring or revising a reusable skill under `.claude/skills/`
-- authoring or revising a reusable agent under `.claude/agents/`
-- defining or revising shared conventions under `.claude/conventions/`
+- authoring or revising a reusable skill under `collection/skills/`
+- authoring or revising a reusable agent under `collection/agents/`
+- defining or revising shared conventions under `collection/conventions/`
 - updating `catalog.json` entries for deliverable capabilities
 - adapting Claude-native source assets to Codex or AI-agnostic target formats
 - checking that a skill does not contain routing or orchestration logic
@@ -60,8 +60,8 @@ Known triggers include:
 - Convention: reusable formatting, naming, or structure guidance.
 - Catalog: the machine-readable `catalog.json` index of deliverable capabilities.
 - Provider adapter: the agent that translates source assets to target provider formats.
-- Source-of-truth format: Claude-native assets under `.claude/`.
-- Product folder: `.claude/`, containing assets shipped to consumers.
+- Source-of-truth format: Claude-native assets under `collection/`.
+- Product folder: `collection/`, containing assets shipped to consumers.
 - Workshop folder: `.ai/`, containing project-internal AI tooling and docs.
 - Consumer project: a project that installs or copies assets from this kit.
 
@@ -78,14 +78,14 @@ Known triggers include:
 
 ## Quality Expectations
 
-- Preserve the distinction between `.claude/` as product and `.ai/` as workshop.
+- Preserve the distinction between `collection/` as product and `.ai/` as workshop.
 - Keep reusable assets modular, atomic, and selectively loaded.
 - Avoid duplicating Agent Manifesto rules inside kit assets when a framework source already owns the concern.
 - Keep skills execution-focused and free of routing or orchestration.
 - Keep agents specialized and justified by isolation, specialized review, or adapter responsibility.
 - Keep conventions focused on shared structure or formatting; do not give them execution semantics.
-- Keep v0.1 scope tight: no pipelines, templates, CLI installer, or provider targets beyond Codex and AI-agnostic unless the roadmap changes.
-- Keep `catalog.json` aligned with deliverable assets under `.claude/` only.
+- Keep v0.1 scope tight: no pipelines, product template capability, CLI installer, or provider targets beyond Codex and AI-agnostic unless the roadmap changes. Project-internal authoring templates under `.ai/docs/` are allowed when explicitly requested.
+- Keep `catalog.json` aligned with deliverable assets under `collection/` only.
 - Use task acceptance criteria as the local definition of completion for planned work.
 - Treat manual smoke validation as required evidence for adoption workflows in v0.1.
 
@@ -102,7 +102,8 @@ Known triggers include:
 
 External best-practice research is allowed broadly for capability and library practices when useful. Local repository documents remain authoritative unless the maintainer explicitly accepts external guidance into the project.
 
-No external research findings were added during initial profile creation.
+- Official Claude documentation treats skills as `SKILL.md` files with YAML frontmatter and Markdown instructions, with `description` serving as the discovery and invocation signal.
+- Official Claude documentation treats subagents as Markdown files with YAML frontmatter, with `name` and `description` required and the body serving as the system prompt.
 
 ## Rejected Or Irrelevant Assumptions
 
@@ -123,4 +124,4 @@ No external research findings were added during initial profile creation.
 - `AGENTS.md` is the canonical root operational contract for this AI-agnostic project.
 - `CLAUDE.md` is a Claude Code adapter that imports and defers to `AGENTS.md`.
 - Project-internal instruction capabilities live under `.ai/`.
-- Consumer-facing deliverable assets still live under `.claude/` and are not indexed from `.ai/`.
+- Consumer-facing deliverable assets still live under `collection/` and are not indexed from `.ai/`.

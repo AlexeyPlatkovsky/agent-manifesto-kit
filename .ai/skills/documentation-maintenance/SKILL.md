@@ -1,6 +1,6 @@
 ---
 name: documentation-maintenance
-description: Checks whether completed project changes require documentation updates and applies narrow updates when safe.
+description: Checks whether completed non-trivial project changes require documentation updates and applies narrow updates when behavior, interfaces, workflows, or structure changed.
 ---
 
 # Documentation Maintenance
@@ -9,15 +9,16 @@ description: Checks whether completed project changes require documentation upda
 
 Keep Agent Manifesto Kit documentation synchronized with completed changes.
 
-## When To Use
+## Template Reference
 
-Run after non-trivial work that changes project behavior, interfaces, commands, architecture, workflows, repository structure, domain facts, or known failure modes.
+This skill follows `.ai/docs/skill-template.md`.
 
-## When Not To Use
+## Scope
 
-- Pure discussion or inventory work.
-- Documentation-only work that already updated the affected docs.
-- Trivial edits with no developer-visible or user-visible effect.
+- Run after non-trivial work that changes project behavior, interfaces, commands, architecture, workflows, repository structure, domain facts, or known failure modes.
+- Skip pure discussion or inventory work.
+- Skip documentation-only work that already updated the affected docs.
+- Skip trivial edits with no developer-visible or user-visible effect.
 
 ## Inputs
 
