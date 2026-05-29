@@ -22,6 +22,8 @@ description: Authors the implementation-altitude spec for an epic — epic.md, p
 
 ## Procedure
 
+Halt the procedure and report on any Stop Condition below.
+
 1. Read the PRD or intent, related product docs, and the `sdd/README.md` index.
 2. Choose the epic's sequence number and name; create `<root>/sdd/NN_epic-name/`.
 3. Write `epic.md`: intent, feature list, status rollup, and a link to the source PRD. Features start `status: draft`.

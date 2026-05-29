@@ -31,8 +31,8 @@ test("scanCatalog finds all three capability types", () => {
 });
 
 test("pipeline description derives from ## Purpose (no frontmatter)", () => {
-  const p = scanCatalog().find((c) => c.type === "pipeline" && c.name === "spec-driven-feature");
-  assert.ok(p, "spec-driven-feature pipeline should be catalogued");
+  const p = scanCatalog().find((c) => c.type === "pipeline" && c.name === "spec-driven-development");
+  assert.ok(p, "spec-driven-development pipeline should be catalogued");
   assert.ok(p.description.length > 0, "description should be derived from ## Purpose");
 });
 
@@ -80,8 +80,8 @@ test("adopt copies an agent file for codex", () => {
 
 test("adopt places a pipeline under .ai for agnostic", () => {
   withTmp((dir) => {
-    assert.equal(adopt({ name: "spec-driven-feature", provider: "agnostic", projectRoot: dir }), 0);
-    assert.ok(existsSync(join(dir, ".ai/pipelines/spec-driven-feature.md")));
+    assert.equal(adopt({ name: "spec-driven-development", provider: "agnostic", projectRoot: dir }), 0);
+    assert.ok(existsSync(join(dir, ".ai/pipelines/spec-driven-development.md")));
   });
 });
 

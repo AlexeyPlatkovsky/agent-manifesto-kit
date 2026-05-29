@@ -26,6 +26,8 @@ No production code is written before a failing test exists for the behavior. If 
 
 ## Procedure
 
+Halt the procedure and report on any Stop Condition below.
+
 For each acceptance criterion the task covers:
 1. **Red:** write a failing test for the criterion (`test-writer`); run it and confirm it fails for the right reason.
 2. **Green:** write the minimal code to make it pass (`implement-feature`); run the test and confirm it passes.

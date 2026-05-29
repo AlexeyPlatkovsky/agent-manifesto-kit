@@ -2,7 +2,7 @@
 id: task-002
 title: Catalog scanner
 status: done
-parent: plan/agentkit-mvp/epic.md
+parent: sdd/archive/01_agentkit-mvp/epic.md
 ---
 
 ## Goal

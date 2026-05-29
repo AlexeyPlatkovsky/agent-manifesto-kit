@@ -2,7 +2,7 @@
 id: task-003
 title: list command
 status: done
-parent: plan/agentkit-mvp/features/list-command.md
+parent: sdd/archive/01_agentkit-mvp/01_list-command.md
 ---
 
 ## Goal

@@ -2,7 +2,7 @@
 id: task-004
 title: adopt command + providers
 status: done
-parent: plan/agentkit-mvp/features/adopt-command.md
+parent: sdd/archive/01_agentkit-mvp/02_adopt-command.md
 ---
 
 ## Goal

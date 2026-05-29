@@ -20,6 +20,8 @@ tools: Read, Grep, Glob
 
 ## Procedure
 
+Halt the procedure and report on any Stop Condition below.
+
 1. Inventory every EARS acceptance criterion across the epic's feature specs, with ids.
 2. Inventory every task under the epic's `tasks/`.
 3. Map criteria to tasks. Flag any criterion covered by no task (coverage gap).
