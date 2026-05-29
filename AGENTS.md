@@ -82,11 +82,15 @@ Pipelines under `.ai/pipelines/` are pre-baked routing plans the manager adopts 
 
 ## Required Reviews
 
-Use `instruction-evaluator` before accepting new or materially changed instruction artifacts.
+When a required review names an agent, spawn a dedicated subagent for that agent if subagent tooling is available. Pass the agent instruction file, target artifacts, and required context to the spawned subagent. Wait for the spawned subagent's visible output artifact before advancing. Record the spawned subagent id or handle, or the explicit fallback reason when subagent tooling is unavailable, in downstream validation and `task-complete`.
 
-Use `artifact-enricher` when a new or existing skill or agent is under-specified. Run after `instruction-evaluator` confirms structural compliance.
+If subagent tooling is unavailable, state that fallback explicitly before running the agent instructions in the parent context. Do not silently substitute an in-parent review for a spawned subagent.
 
-Use `artifact-acceptance-tester` after creating or materially changing skills, agents, manager routing, validation gates, or output contracts.
+Spawn `instruction-evaluator` before accepting new or materially changed instruction artifacts.
+
+Spawn `artifact-enricher` when a new or existing skill or agent is under-specified. Run after `instruction-evaluator` confirms structural compliance.
+
+Spawn `artifact-acceptance-tester` after creating or materially changing skills, agents, manager routing, validation gates, or output contracts.
 
 ## Work Standards
 

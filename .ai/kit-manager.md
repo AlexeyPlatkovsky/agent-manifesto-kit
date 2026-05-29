@@ -23,7 +23,7 @@ Do not use it for trivial low-risk direct edits or purely factual answers.
 2. Identify the smallest relevant authority sources to read.
 3. Check `.ai/pipelines/` for a pipeline whose "When to Apply" matches the request. When one matches, adopt its stage list as the routing plan rather than composing one from scratch.
 4. Select the immediate next capability or direct implementation step.
-5. Name validation and review gates.
+5. Name validation and review gates. For any selected step, review gate, or adopted pipeline stage that names an agent, require spawning a dedicated subagent when subagent tooling is available, explicit fallback disclosure when unavailable, and downstream evidence.
 6. Add documentation maintenance after implementation when its trigger applies.
 7. Add `task-complete` as the final step.
 8. Stop if routing depends on missing policy, conflicting authority, or unapproved risky change.
@@ -48,10 +48,11 @@ Include:
 | Authorities to load | concrete files |
 | Pipeline adopted | pipeline name, or `none` |
 | Selected next step | capability or direct implementation step |
+| Agent handoff evidence | spawned subagent id or handle when tooling is available, explicit fallback reason when unavailable, or `not applicable` |
 | Validation gate | expected `Skill: validation-report - output below` artifact |
-| Review gate | agent and expected artifact, or `not required` |
+| Review gate | spawned subagent id or handle when tooling is available, explicit fallback reason when unavailable, and expected artifact; or `not required` |
 | Documentation maintenance | required / not required |
 | Completion gate | expected `Skill: task-complete - output below` artifact |
 | Blockers | none, or concrete blocker |
 
-Do not advance across a routed handoff when the expected visible artifact is missing.
+Do not advance across a routed handoff when the expected visible artifact is missing. For agent handoffs, the expected evidence includes the spawned subagent id or handle when tooling is available, or the explicit fallback reason when unavailable, plus the visible output artifact.

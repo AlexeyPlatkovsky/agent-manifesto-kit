@@ -26,14 +26,14 @@ The pipeline is a routing artifact. It sequences existing skills and agents. It 
 | 1. Intake | direct — confirm name, location, mode, and source of intent | none |
 | 2. Authority load | direct — read authority sources listed below | none |
 | 3. Draft | `Skill: skill-authoring` | the new or revised `SKILL.md` file change |
-| 4. Structural review | `Agent: instruction-evaluator` | `Agent: instruction-evaluator - output below` |
-| 5. Enrichment (conditional) | `Agent: artifact-enricher` | `Agent: artifact-enricher - output below` — only when stage 4 surfaces under-specification |
-| 6. Acceptance test | `Agent: artifact-acceptance-tester` | `Agent: artifact-acceptance-tester - output below` |
+| 4. Structural review | spawn subagent: `Agent: instruction-evaluator` | spawned subagent id or explicit fallback reason + `Agent: instruction-evaluator - output below` |
+| 5. Enrichment (conditional) | spawn subagent: `Agent: artifact-enricher` | spawned subagent id or explicit fallback reason + `Agent: artifact-enricher - output below` — only when stage 4 surfaces under-specification |
+| 6. Acceptance test | spawn subagent: `Agent: artifact-acceptance-tester` | spawned subagent id or explicit fallback reason + `Agent: artifact-acceptance-tester - output below` |
 | 7. Validation | `Skill: validation-report` | `Skill: validation-report - output below` |
 | 8. Documentation maintenance | `Skill: documentation-maintenance` | `Skill: documentation-maintenance - output below` |
 | 9. Closure | `Skill: task-complete` | `Skill: task-complete - output below` |
 
-Do not advance past a stage whose expected visible artifact is missing.
+Do not advance past a stage whose expected visible artifact is missing. When subagent tooling is unavailable, the main agent may perform the agent stage only after stating the fallback explicitly in the transcript.
 
 ## Authority Sources Loaded at Stage 2
 
@@ -67,8 +67,8 @@ Stages 3 through 6 verify that the produced skill conforms:
 - Skill name describes a persona instead of a capability (e.g., "designer", "analyst") — return to stage 1.
 - Target location is ambiguous (`.ai/` vs `collection/`) — stop and ask the user.
 - Skill name conflicts with an existing skill at the target path — stop and ask whether to revise or rename.
-- `instruction-evaluator` verdict is `Needs revision` or `Reject / split required` — fix and re-run stage 4 before advancing.
-- `artifact-acceptance-tester` verdict is not `Accept` — fix and re-run stage 6 before advancing.
+- `instruction-evaluator` verdict is `Needs revision` or `Reject / split required` — fix and re-run stage 4 as a spawned subagent before advancing.
+- `artifact-acceptance-tester` verdict is not `Accept` — fix and re-run stage 6 as a spawned subagent before advancing.
 - Manifesto authority conflicts with the requested behavior — stop and surface the conflict per `AGENTS.md` authority order.
 
 ## Output Contract

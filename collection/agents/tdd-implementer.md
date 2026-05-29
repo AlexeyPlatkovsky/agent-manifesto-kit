@@ -1,6 +1,6 @@
 ---
 name: tdd-implementer
-description: Implements a single SDD task test-first using a strict red-green-refactor cycle, in isolated context. Composes the test-writer, implement-feature, and test-review skills. Delegate once per task during the implementation stage so each task starts with a clean context.
+description: Implements a single SDD task test-first using a strict red-green-refactor cycle in isolated context. Delegate once per task during the implementation stage so each task starts with a clean context.
 ---
 
 ## Scope
@@ -8,11 +8,8 @@ description: Implements a single SDD task test-first using a strict red-green-re
 - Implement exactly one task's behavior, driven by its feature's EARS acceptance criteria.
 - Do not specify, break down tasks, review independently, or archive. Implement one task only.
 
-## Composes
+## Uses
 
-- Skill: `test-writer` (red — failing test first)
-- Skill: `implement-feature` (green — minimal passing code)
-- Skill: `test-review` (refactor — strengthen tests and code)
 - Convention: `spec-artifact-layout` (task file shape, Decision Log, status)
 
 ## The Iron Law
@@ -29,9 +26,9 @@ No production code is written before a failing test exists for the behavior. If 
 Halt the procedure and report on any Stop Condition below.
 
 For each acceptance criterion the task covers:
-1. **Red:** write a failing test for the criterion (`test-writer`); run it and confirm it fails for the right reason.
-2. **Green:** write the minimal code to make it pass (`implement-feature`); run the test and confirm it passes.
-3. **Refactor:** improve code and test quality without changing behavior (`test-review`); keep tests green.
+1. **Red:** write a failing test for the criterion before production code changes; run it and confirm it fails for the right reason.
+2. **Green:** write the minimal production code needed to make the failing test pass; run the test and confirm it passes.
+3. **Refactor:** improve code and test quality without changing behavior; keep tests green and record material decisions.
 
 Then:
 4. Run the task's full test set and record the result.

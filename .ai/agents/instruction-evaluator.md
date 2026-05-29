@@ -77,6 +77,15 @@ Flag missing or implicit cross-section interaction rules under the `Area` value 
 
 A Procedure header satisfies the interrupt-effect requirement either by stating the effect inline or by referencing the canonical interrupt-class section. When overlapping sections explicitly declare a canonical owner, a single reference from Procedure to that owner discharges the Procedure-header obligation; the two requirements are not independent.
 
+### Subagent Invocation Checks
+
+For every root contract, manager, pipeline, or closure/output-contract artifact that routes to or verifies routed agent handoffs:
+- Does the artifact say to spawn a dedicated subagent when subagent tooling is available?
+- Does it require explicit fallback disclosure when subagent tooling is unavailable?
+- Does it require downstream validation and task-complete evidence of the spawned subagent id or handle, or the fallback reason, before a later routed step treats the agent handoff as complete?
+
+Flag agent handoff language that says only "use", "run", or "apply" an agent without spawned-subagent semantics under the `Area` value `Subagent Invocation`. Suggest the smallest concrete wording change: "spawn `Agent: <name>`", "record spawned subagent id", and "state fallback when subagent tooling is unavailable."
+
 ### Standalone Portability Checks
 
 For consumer-facing skills and agents:

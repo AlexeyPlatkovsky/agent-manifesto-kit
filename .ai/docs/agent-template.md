@@ -6,6 +6,8 @@ AI subagents are Markdown files with YAML frontmatter. The `description` tells A
 
 Do not add a separate invocation-use section unless a provider target explicitly requires it. Put delegation criteria in `description`. Put operational limits in `Scope`, `Boundaries`, `Stop Conditions`, or review procedure sections.
 
+When a manager, pipeline, or root contract routes to an agent and subagent tooling is available, it must say to spawn the agent as a dedicated subagent and record the spawned subagent id or handle. If subagent tooling is unavailable, it must require explicit fallback disclosure before the parent context applies the agent instructions directly. Downstream validation and closure artifacts must record the spawned subagent id or handle, or the explicit fallback reason when unavailable.
+
 ## File Shape
 
 ```markdown

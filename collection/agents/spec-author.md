@@ -9,10 +9,9 @@ description: Authors the implementation-altitude spec for an epic — epic.md, p
 - Translate product requirements into testable EARS acceptance criteria.
 - Do not write task files, implement code, approve the spec, or archive. Those belong to other stages.
 
-## Composes
+## Uses
 
 - Convention: `spec-artifact-layout` (placement, status, EARS format)
-- Skill: `business-analyst` (when requirements need analysis before they can be specified)
 
 ## Required Inputs and Context
 

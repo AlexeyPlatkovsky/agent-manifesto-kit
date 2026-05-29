@@ -4,7 +4,7 @@
 
 Pre-baked routing plan that takes work from product definition through to shipped, test-driven implementation: define the product, specify an epic, plan and break it into tasks, verify consistency, implement each task test-first, review, then archive. All artifacts are persisted as Markdown per the `spec-artifact-layout` convention.
 
-The pipeline is a routing artifact. The orchestrating (main) agent runs it, dispatching isolated sub-agents for autonomous stages and handling interactive stages itself. It sequences capabilities; it does not implement step logic, and the agents it dispatches never dispatch other agents.
+The pipeline is a routing artifact. The orchestrating (main) agent runs it, spawning isolated subagents for autonomous stages when subagent tooling is available and handling interactive stages itself. It sequences capabilities; it does not implement step logic, and the agents it dispatches never dispatch other agents.
 
 ## When to Apply
 
@@ -23,26 +23,26 @@ The pipeline is a routing artifact. The orchestrating (main) agent runs it, disp
 - The user is engaged only at interactive stages: **Intake**, **Product definition**, and the **Approval gate**.
 - After the spec is approved, the pipeline runs autonomously through consistency, implementation, verification, and archive.
 - It halts before completion only on a **Hard Stop Condition** below. Any other ambiguity is resolved, recorded in the task's `## Decision Log`, and execution continues.
-- Isolated stages run in fresh context (in Claude Code: a sub-agent) so each specialist starts uncontaminated.
+- Isolated stages run in fresh context by spawning a subagent when subagent tooling is available, so each specialist starts uncontaminated. If subagent tooling is unavailable, the main agent must state that fallback before applying the agent instructions itself.
 
 ## Required Capabilities
 
 - Convention: `spec-artifact-layout`
-- Agents: `spec-author`, `consistency-checker`, `tdd-implementer`, `code-reviewer`
-- Skills: `business-analyst`, `task-validation`, `documentation-maintenance`, `task-complete` (and, via `tdd-implementer`: `test-writer`, `implement-feature`, `test-review`)
+- Agents: `business-analyst`, `spec-author`, `consistency-checker`, `test-writer`, `implement-feature`, `test-review`, `code-reviewer`, `task-validation`
+- Skills: `documentation-maintenance`, `task-complete`
 
 ## Stages
 
 | Stage | Runs as | Required Visible Artifact |
 | --- | --- | --- |
 | 1. Intake | main agent (interactive) — confirm intent, `scope`, docs root | none |
-| 2. Product definition *(optional; skip if a current PRD exists)* | main agent + `Skill: business-analyst` (interactive) | `<root>/product/` doc changes |
-| 3. Specify epic | `Agent: spec-author` (isolated) | `Agent: spec-author - output below` + epic/plan/feature files |
+| 2. Product definition *(optional; skip if a current PRD exists)* | main agent + spawn `Agent: business-analyst` when isolated analysis is needed | spawned subagent id or explicit fallback reason when used + `<root>/product/` doc changes |
+| 3. Specify epic | spawn `Agent: spec-author` | spawned subagent id or explicit fallback reason + `Agent: spec-author - output below` + epic/plan/feature files |
 | 4. Approval gate | main agent (interactive) | recorded user approval; statuses move `draft` → `ready` |
 | 5. Tasks | main agent — split each feature into ordered task files per `spec-artifact-layout` | task file changes + epic index update |
-| 6. Consistency (before) | `Agent: consistency-checker` (isolated, read-only) | `Agent: consistency-checker - output below` |
-| 7. Implement *(per task, isolated)* | `Agent: tdd-implementer` | `Agent: tdd-implementer - output below` + code/tests per task |
-| 8. Verify (two passes) | `Agent: code-reviewer`, then `Skill: task-validation` | `Agent: code-reviewer - output below`, `Skill: task-validation - output below` |
+| 6. Consistency (before) | spawn `Agent: consistency-checker` (read-only) | spawned subagent id or explicit fallback reason + `Agent: consistency-checker - output below` |
+| 7. Implement *(per task, isolated phases)* | spawn `Agent: test-writer`, then spawn `Agent: implement-feature`, then spawn `Agent: test-review` | spawned subagent ids or explicit fallback reasons + `Agent: test-writer - output below`, `Agent: implement-feature - output below`, `Agent: test-review - output below` + code/tests per task |
+| 8. Verify (two passes) | spawn `Agent: code-reviewer`, then spawn `Agent: task-validation` | spawned subagent ids or explicit fallback reasons + `Agent: code-reviewer - output below`, `Agent: task-validation - output below` |
 | 9. Completeness (after) | main agent — every feature `done`, every EARS criterion has a passing test | completeness summary |
 | 10. Archive + product update | `Skill: documentation-maintenance` | product-doc updates; epic moved to `<root>/sdd/archive/` |
 | 11. Closure | `Skill: task-complete` | `Skill: task-complete - output below` |
@@ -57,7 +57,7 @@ Halt and ask the user only when:
 - `spec-author` or `business-analyst` reports `blocked` (a requirement cannot be made verifiable, or requirements conflict).
 - A spec or authority conflict is discovered after approval.
 - `consistency-checker` reports a gap whose closure requires an ambiguous decision or a change that conflicts with the approved spec. Non-ambiguous gaps are closed by returning to Stage 5 or 3 and continuing.
-- `tdd-implementer` or `task-validation` reports `blocked`, or `task-validation` reports `fail` with two or more materially valid fixes. A `fail` with one clear fix is auto-corrected and re-verified without halting.
+- `test-writer`, `implement-feature`, `test-review`, or `task-validation` reports `blocked`, or `task-validation` reports `fail` with two or more materially valid fixes. A `fail` with one clear fix is auto-corrected and re-verified without halting.
 - A required capability, file, or check cannot be read or run.
 - The next step requires a destructive or irreversible action (data loss, deleting files the pipeline did not create, history rewrite).
 

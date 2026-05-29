@@ -14,6 +14,8 @@ Before emitting closure, confirm:
 - The routed execution plan or manager artifact is available.
 - Every planned routed handoff can be identified.
 - Each required handoff has a visible output artifact label or transcript location.
+- Each planned agent handoff records the spawned subagent id or handle when subagent tooling was available.
+- If a planned agent handoff did not use a spawned subagent, the transcript records why subagent tooling was unavailable.
 - Required routed gates are complete, skipped with reasons, or blocked.
 
 ## Safety Constraints
@@ -28,6 +30,7 @@ Stop and report closure as blocked when:
 - The routed plan cannot be found.
 - A required planned step is missing from the transcript.
 - A required visible output artifact is missing.
+- A required spawned subagent id or explicit fallback reason is missing for a planned agent handoff.
 - A skipped or changed gate has no stated reason.
 - Closure would require inventing, reordering, or redesigning routed steps after execution.
 
@@ -37,8 +40,9 @@ When blocked, still emit the required header and exact three-column table. Add a
 
 1. Review the execution plan.
 2. Confirm every planned step has its expected visible output artifact.
-3. Include every executed, skipped, blocked, or changed step in the closure table.
-4. If a required artifact is missing, use the blocked closure behavior defined above.
+3. Confirm every planned agent handoff has spawned subagent evidence or an explicit fallback reason.
+4. Include every executed, skipped, blocked, or changed step in the closure table.
+5. If required evidence is missing, use the blocked closure behavior defined above.
 
 ## Verification
 
@@ -47,6 +51,7 @@ Before emitting the closure table, verify:
 - No planned routed step is omitted.
 - Comments identify skipped, blocked, changed, incomplete, or unusual steps.
 - Required visible output artifact labels are referenced for planned routed handoffs.
+- Spawned subagent ids or fallback reasons are referenced for planned agent handoffs.
 - The report describes actual execution, not the idealized plan.
 
 ## Output Contract
@@ -64,15 +69,18 @@ Every planned routed handoff must appear as a row, including steps that were blo
 
 For planned routed handoffs, `Comment` must reference the visible output artifact label or transcript location.
 
+For planned agent handoffs, `Comment` must also reference the spawned subagent id or state the explicit fallback reason.
+
 Skipped steps must always include a reason in `Comment`.
 
-If closure is blocked, use `Comment` to state `Blocked:` followed by the missing artifact, missing plan item, or unresolved closure blocker.
+If closure is blocked, use `Comment` to state `Blocked:` followed by the missing artifact, missing spawned subagent evidence, missing fallback reason, missing plan item, or unresolved closure blocker.
 
 Use `Comment` when:
 - a step was skipped — explain why
 - execution deviated from the plan — note the deviation
 - the user should notice something incomplete or unusual
-- for planned routed handoffs, reference the step's visible output artifact label (e.g., `"Skill: review-code - output above"`)
+- for planned routed handoffs, reference the step's visible output artifact label (e.g., `"Agent: code-reviewer - output above"`)
+- for planned agent handoffs, reference the spawned subagent id or fallback reason
 
 Leave `Comment` empty only for included non-handoff steps that executed as planned with no noteworthy output.
 
