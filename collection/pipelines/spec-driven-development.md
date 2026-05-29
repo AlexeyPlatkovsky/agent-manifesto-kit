@@ -1,0 +1,66 @@
+# Pipeline: Spec-Driven Development
+
+## Purpose
+
+Pre-baked routing plan that takes work from product definition through to shipped, test-driven implementation: define the product, specify an epic, plan and break it into tasks, verify consistency, implement each task test-first, review, then archive. All artifacts are persisted as Markdown per the `spec-artifact-layout` convention.
+
+The pipeline is a routing artifact. The orchestrating (main) agent runs it, dispatching isolated sub-agents for autonomous stages and handling interactive stages itself. It sequences capabilities; it does not implement step logic, and the agents it dispatches never dispatch other agents.
+
+## When to Apply
+
+- New functionality, or a change, that should be driven from a written spec.
+- Use `scope: spec-only` to produce specifications without implementation (read the project and define the product/epic, no code).
+- Skip for trivial edits that need no spec.
+
+## Inputs
+
+- Feature or change intent, or an existing product PRD.
+- `scope`: `full` (default) or `spec-only`.
+- Docs root (from consumer config, or the `spec-artifact-layout` default).
+
+## Engagement Model
+
+- The user is engaged only at interactive stages: **Intake**, **Product definition**, and the **Approval gate**.
+- After the spec is approved, the pipeline runs autonomously through consistency, implementation, verification, and archive.
+- It halts before completion only on a **Hard Stop Condition** below. Any other ambiguity is resolved, recorded in the task's `## Decision Log`, and execution continues.
+- Isolated stages run in fresh context (in Claude Code: a sub-agent) so each specialist starts uncontaminated.
+
+## Required Capabilities
+
+- Convention: `spec-artifact-layout`
+- Agents: `spec-author`, `consistency-checker`, `tdd-implementer`, `code-reviewer`
+- Skills: `business-analyst`, `task-validation`, `documentation-maintenance`, `task-complete` (and, via `tdd-implementer`: `test-writer`, `implement-feature`, `test-review`)
+
+## Stages
+
+| Stage | Runs as | Required Visible Artifact |
+| --- | --- | --- |
+| 1. Intake | main agent (interactive) — confirm intent, `scope`, docs root | none |
+| 2. Product definition *(optional; skip if a current PRD exists)* | main agent + `Skill: business-analyst` (interactive) | `<root>/product/` doc changes |
+| 3. Specify epic | `Agent: spec-author` (isolated) | `Agent: spec-author - output below` + epic/plan/feature files |
+| 4. Approval gate | main agent (interactive) | recorded user approval; statuses move `draft` → `ready` |
+| 5. Tasks | main agent — split each feature into ordered task files per `spec-artifact-layout` | task file changes + epic index update |
+| 6. Consistency (before) | `Agent: consistency-checker` (isolated, read-only) | `Agent: consistency-checker - output below` |
+| 7. Implement *(per task, isolated)* | `Agent: tdd-implementer` | `Agent: tdd-implementer - output below` + code/tests per task |
+| 8. Verify (two passes) | `Agent: code-reviewer`, then `Skill: task-validation` | `Agent: code-reviewer - output below`, `Skill: task-validation - output below` |
+| 9. Completeness (after) | main agent — every feature `done`, every EARS criterion has a passing test | completeness summary |
+| 10. Archive + product update | `Skill: documentation-maintenance` | product-doc updates; epic moved to `<root>/sdd/archive/` |
+| 11. Closure | `Skill: task-complete` | `Skill: task-complete - output below` |
+
+`scope: spec-only` ends after Stage 4 (Stage 5 optional), then jumps to Closure. Do not advance past a stage whose required visible artifact is missing.
+
+## Hard Stop Conditions
+
+Halt and ask the user only when:
+
+- Stage 3 produced the spec but the user has not approved it. The pipeline does not advance to implementation without recorded approval, even when no open questions remain. This is the single mandatory human checkpoint.
+- `spec-author` or `business-analyst` reports `blocked` (a requirement cannot be made verifiable, or requirements conflict).
+- A spec or authority conflict is discovered after approval.
+- `consistency-checker` reports a gap whose closure requires an ambiguous decision or a change that conflicts with the approved spec. Non-ambiguous gaps are closed by returning to Stage 5 or 3 and continuing.
+- `tdd-implementer` or `task-validation` reports `blocked`, or `task-validation` reports `fail` with two or more materially valid fixes. A `fail` with one clear fix is auto-corrected and re-verified without halting.
+- A required capability, file, or check cannot be read or run.
+- The next step requires a destructive or irreversible action (data loss, deleting files the pipeline did not create, history rewrite).
+
+## Output Contract
+
+The pipeline emits no artifact of its own. Each stage emits its listed artifact; `task-complete` records the full sequence at closure.

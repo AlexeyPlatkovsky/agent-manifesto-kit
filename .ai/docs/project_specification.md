@@ -2,7 +2,7 @@
 
 ## Project Purpose
 
-Agent Manifesto Kit is a curated, reusable library of Agent Manifesto-compatible AI instruction capabilities. It provides skills, agents, conventions, catalog metadata, and adoption guidance that developers and teams can copy or adapt into real projects with minimal changes.
+Agent Manifesto Kit is a curated, reusable library of Agent Manifesto-compatible AI instruction capabilities. It provides skills, agents, pipelines, conventions, catalog metadata, and adoption guidance that developers and teams can copy or adapt into real projects with minimal changes.
 
 The kit is a companion to Agent Manifesto. Agent Manifesto remains the framework and governance layer; this repository contains reusable project-level assets that conform to that framework.
 
@@ -58,6 +58,7 @@ Known triggers include:
 - Skill: an atomic execution capability with one responsibility.
 - Agent: a specialized role used when isolation or judgment is valuable.
 - Convention: reusable formatting, naming, or structure guidance.
+- Pipeline: a pre-baked routing plan that sequences existing skills and agents for a recurring workflow; it does not implement step logic.
 - Catalog: the machine-readable `catalog.json` index of deliverable capabilities.
 - Provider adapter: the agent that translates source assets to target provider formats.
 - Source-of-truth format: Claude-native assets under `collection/`.
@@ -84,7 +85,7 @@ Known triggers include:
 - Keep skills execution-focused and free of routing or orchestration.
 - Keep agents specialized and justified by isolation, specialized review, or adapter responsibility.
 - Keep conventions focused on shared structure or formatting; do not give them execution semantics.
-- Keep v0.1 scope tight: no pipelines, product template capability, CLI installer, or provider targets beyond Codex and AI-agnostic unless the roadmap changes. Project-internal authoring templates under `.ai/docs/` are allowed when explicitly requested.
+- v0.1 is complete. Product pipelines under `collection/pipelines/` and shared conventions under `collection/conventions/` are in scope as deliverable types. Product template capability, CLI installer, and provider targets beyond Codex and AI-agnostic remain out of scope unless the roadmap or user changes it. Project-internal authoring templates under `.ai/docs/` are allowed when explicitly requested.
 - Keep `catalog.json` aligned with deliverable assets under `collection/` only.
 - Use task acceptance criteria as the local definition of completion for planned work.
 - Treat manual smoke validation as required evidence for adoption workflows in v0.1.
@@ -109,7 +110,7 @@ External best-practice research is allowed broadly for capability and library pr
 
 - The kit should not replace Agent Manifesto.
 - The kit should not mix project-internal AI tooling into consumer-facing deliverable assets.
-- The v0.1 project should not introduce pipelines, templates, CLI installation, or extra provider targets beyond the documented roadmap.
+- Beyond the now-completed v0.1, the project should not introduce product templates, CLI installation, or extra provider targets beyond the documented roadmap unless the user or roadmap changes scope.
 - `catalog.json` should not index `.ai/` workshop files.
 
 ## Open Questions And Profile Gaps

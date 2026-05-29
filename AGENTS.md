@@ -13,7 +13,7 @@ Use it for every AI tool working in this repository. Tool-specific files are ada
 - Treat `.manifesto/` as the vendored Agent Manifesto authority layer.
 - Treat `.docs/` and `.ai/docs/project_specification.md` as planning and project authority.
 - Do not create, edit, or delete `collection/` deliverable assets unless the user explicitly requests product asset work.
-- Do not create pipelines, templates, CLI installers, or extra provider targets unless the roadmap or user explicitly changes scope.
+- Product pipelines under `collection/pipelines/` and shared conventions under `collection/conventions/` are in-scope deliverable types. Do not create product templates, CLI installers, or extra provider targets unless the roadmap or user explicitly changes scope.
 
 ## Authority Order
 
