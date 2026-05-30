@@ -1,7 +1,20 @@
 #!/usr/bin/env node
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { list } from "./commands/list.js";
 import { adopt } from "./commands/adopt.js";
+import { runLint } from "./commands/lint.js";
 import { isProvider } from "./providers.js";
+import { packageRoot } from "./catalog.js";
+
+function version(): string {
+  try {
+    const pkg = JSON.parse(readFileSync(join(packageRoot(), "package.json"), "utf8"));
+    return typeof pkg.version === "string" ? pkg.version : "unknown";
+  } catch {
+    return "unknown";
+  }
+}
 
 interface Parsed {
   positionals: string[];
@@ -16,12 +29,14 @@ function parseArgs(args: string[]): Parsed {
     if (arg.startsWith("--")) {
       const key = arg.slice(2);
       const next = args[i + 1];
-      if (next !== undefined && !next.startsWith("--")) {
+      if (next !== undefined && !next.startsWith("-")) {
         flags[key] = next;
         i++;
       } else {
         flags[key] = true;
       }
+    } else if (arg.length > 1 && arg.startsWith("-")) {
+      flags[arg.slice(1)] = true;
     } else {
       positionals.push(arg);
     }
@@ -34,19 +49,25 @@ function help(): void {
 
 Usage:
   agentkit list
+  agentkit lint [name]
   agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>]
 
 Options:
   --provider   target AI provider (default: claude)
   --dest       target project root (default: current directory)
-  --help       show this help`);
+  --version,-v print the installed version
+  --help,-h    show this help`);
 }
 
 function main(): number {
   const { positionals, flags } = parseArgs(process.argv.slice(2));
   const cmd = positionals[0];
 
-  if (flags.help) {
+  if (flags.version || flags.v) {
+    console.log(version());
+    return 0;
+  }
+  if (flags.help || flags.h) {
     help();
     return 0;
   }
@@ -61,6 +82,8 @@ function main(): number {
       return 0;
     case "list":
       return list();
+    case "lint":
+      return runLint(positionals[1]);
     case "adopt": {
       const name = positionals[1];
       if (!name) {
@@ -81,4 +104,9 @@ function main(): number {
   }
 }
 
-process.exit(main());
+try {
+  process.exit(main());
+} catch (err) {
+  console.error(`agentkit: ${err instanceof Error ? err.message : String(err)}`);
+  process.exit(1);
+}

@@ -20,3 +20,14 @@ When auditing a candidate capability for `collection/`, evaluate the two axes se
 - Does it require a specific domain? If yes, it is domain-bounded; this is acceptable when the kit accepts the domain, and is not grounds for rejection on portability.
 
 Do not reject a candidate on domain grounds alone. Do not accept a candidate that hard-codes project-specific state on the argument that its domain is broad.
+
+## Provider Neutrality
+
+Capabilities are authored once, provider-neutral, so they can be copied to any provider target with at most a deterministic transform. Classify every provider-touching token into one of four buckets:
+
+- **Breaking — must neutralize or remove.** Tokens that only one provider understands and that change behavior elsewhere: `CLAUDE.md`, Claude Code slash commands, named provider-only tools (e.g. "Task tool"), and provider-only discovery semantics (e.g. automatic skill loading). Author around these or delete them. The authoring gate flags them; do not rely on the runtime to fix them.
+- **Mechanical — deterministic swap.** Path tokens that differ only by provider root: `.claude/` ↔ `.codex/` ↔ `.ai/`. Allowed in source; the adopt transform swaps them per target.
+- **Neutral — keep.** Concepts both providers share: "agent", "subagent", "fresh/isolated context", generic Markdown, and `name`/`description` frontmatter. Keep "subagent" only with the "when subagent tooling is available, else state fallback" framing.
+- **Inert extras — tolerated.** Provider-specific metadata that other providers ignore harmlessly, e.g. the agent `tools:` frontmatter. May stay in source; the transform may strip it for a target that does not use it.
+
+The neutral floor is: a capability copied verbatim into `.ai/` runs almost perfectly on any AI. Residual provider differences are capability-model differences (how each provider discovers and invokes the artifact), closed by placement and registration, not by content.

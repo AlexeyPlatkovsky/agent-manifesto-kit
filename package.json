@@ -1,7 +1,7 @@
 {
-  "name": "agentkit",
-  "version": "0.1.0",
-  "description": "CLI to discover and adopt Agent Manifesto Kit capabilities",
+  "name": "agent-manifesto-kit",
+  "version": "0.0.0-development",
+  "description": "CLI to discover and adopt Agent Manifesto Kit capabilities (skills, agents, pipelines) into your project for Claude, Codex, or AI-agnostic targets.",
   "type": "module",
   "bin": {
     "agentkit": "dist/cli.js"
@@ -10,17 +10,40 @@
     "dist",
     "collection"
   ],
+  "keywords": [
+    "ai",
+    "agents",
+    "skills",
+    "claude",
+    "codex",
+    "spec-driven-development",
+    "cli",
+    "agent-manifesto"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/cli.js",
-    "test": "npm run build && node --test"
+    "test": "npm run build && node --test",
+    "prepublishOnly": "npm run build && npm test"
   },
   "engines": {
     "node": ">=20"
   },
   "license": "MIT",
+  "author": "Alexey Platkovsky",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexeyPlatkovsky/agent-manifesto-kit.git"
+  },
+  "homepage": "https://github.com/AlexeyPlatkovsky/agent-manifesto-kit#readme",
+  "bugs": {
+    "url": "https://github.com/AlexeyPlatkovsky/agent-manifesto-kit/issues"
+  },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/node": "^22.19.19",
+    "semantic-release": "^24.2.9",
     "typescript": "^5.6.0"
   }
 }

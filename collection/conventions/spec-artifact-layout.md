@@ -51,6 +51,19 @@ sdd/
 - `NN` / `NNN` are zero-padded sequence numbers fixing order; names are lowercase-hyphenated.
 - `epic.md` is the per-epic index (its feature + task rollup); `sdd/README.md` indexes epics only. Update an artifact and the nearest index — never load the whole tree to make one change.
 
+## Lite Changes
+
+A small, self-contained change skips the epic tree and is a single note:
+
+```
+sdd/
+  changes/
+    NNN_change-name.md     # intent + EARS acceptance criteria + ## Decision Log
+  archive/changes/         # completed lite notes
+```
+
+The note uses the same front matter, statuses, and EARS format as a feature spec. On completion it moves to `sdd/archive/changes/`. Use a lite change when the work is one self-contained unit that needs a stated acceptance criterion but no epic, plan, or multi-feature decomposition.
+
 ## Status
 
 Canonical machine-readable `status:` lives in each artifact's frontmatter. The matching emoji is shown in indexes and headings for human scanning.

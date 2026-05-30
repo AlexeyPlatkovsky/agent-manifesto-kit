@@ -5,7 +5,7 @@ description: Authors the implementation-altitude spec for an epic — epic.md, p
 
 ## Scope
 
-- Create or update `epic.md`, `plan.md`, and per-feature specs for one epic, per the `spec-artifact-layout` convention.
+- Create or update the implementation spec per the `spec-artifact-layout` convention: the full epic tree (`epic.md`, `plan.md`, per-feature specs), or a single lite-change note when running in `lite` mode.
 - Translate product requirements into testable EARS acceptance criteria.
 - Do not write task files, implement code, approve the spec, or archive. Those belong to other stages.
 
@@ -30,6 +30,8 @@ Halt the procedure and report on any Stop Condition below.
 5. Write each `NN_feature.md`: user stories plus acceptance criteria in EARS form, one criterion per testable behavior.
 6. Update `sdd/README.md` with the epic row.
 7. Leave all statuses `draft`; the spec is not self-approved.
+
+In `lite` mode, produce only the single lite-change note (intent + EARS) under `sdd/changes/` and skip the epic, plan, and feature steps.
 
 ## Stop Conditions
 

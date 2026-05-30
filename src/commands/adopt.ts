@@ -1,12 +1,23 @@
-import { cpSync, copyFileSync, existsSync, mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { findCapability } from "../catalog.js";
 import { destinationFor, wiringHint, type Provider } from "../providers.js";
+import { lint, transform } from "../portability.js";
 
 export interface AdoptOptions {
   name: string;
   provider: Provider;
   projectRoot: string;
+}
+
+function walkMd(dir: string): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkMd(p));
+    else if (entry.name.endsWith(".md")) out.push(p);
+  }
+  return out;
 }
 
 export function adopt(opts: AdoptOptions): number {
@@ -29,11 +40,17 @@ export function adopt(opts: AdoptOptions): number {
     return 1;
   }
 
+  // Non-fatal neutrality warning on the source.
+  for (const f of lint(readFileSync(match.sourcePath, "utf8"))) {
+    console.warn(`warning: ${match.name}:${f.line} contains "${f.token}" — review before relying on it for ${opts.provider}.`);
+  }
+
   mkdirSync(dirname(target), { recursive: true });
   if (match.isDir) {
     cpSync(match.sourceCopyPath, target, { recursive: true });
+    for (const md of walkMd(target)) writeFileSync(md, transform(readFileSync(md, "utf8"), opts.provider));
   } else {
-    copyFileSync(match.sourceCopyPath, target);
+    writeFileSync(target, transform(readFileSync(match.sourceCopyPath, "utf8"), opts.provider));
   }
 
   console.log(`Adopted ${match.type} "${match.name}" (${opts.provider}) -> ${target}`);

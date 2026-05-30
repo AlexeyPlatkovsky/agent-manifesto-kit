@@ -9,13 +9,14 @@ The pipeline is a routing artifact. The orchestrating (main) agent runs it, spaw
 ## When to Apply
 
 - New functionality, or a change, that should be driven from a written spec.
-- Use `scope: spec-only` to produce specifications without implementation (read the project and define the product/epic, no code).
-- Skip for trivial edits that need no spec.
+- Use `mode: lite` for a small, self-contained change that needs a stated acceptance criterion but no epic tree.
+- Use `mode: spec-only` to produce specifications without implementation (read the project and define the product/epic, no code).
+- Skip for trivial edits that need no spec — handle those via the routing gate, not this pipeline.
 
 ## Inputs
 
 - Feature or change intent, or an existing product PRD.
-- `scope`: `full` (default) or `spec-only`.
+- `mode`: `full` (default), `lite`, or `spec-only`.
 - Docs root (from consumer config, or the `spec-artifact-layout` default).
 
 ## Engagement Model
@@ -47,7 +48,13 @@ The pipeline is a routing artifact. The orchestrating (main) agent runs it, spaw
 | 10. Archive + product update | `Skill: documentation-maintenance` | product-doc updates; epic moved to `<root>/sdd/archive/` |
 | 11. Closure | `Skill: task-complete` | `Skill: task-complete - output below` |
 
-`scope: spec-only` ends after Stage 4 (Stage 5 optional), then jumps to Closure. Do not advance past a stage whose required visible artifact is missing.
+In Stage 7 a different agent writes the tests than writes the code, and `test-writer`'s test must be confirmed failing before `implement-feature` runs — the Iron Law (no production code before a failing test) and separation of duties, enforced by stage ordering rather than a single agent. Do not advance past a stage whose required visible artifact is missing. See **Mode Behavior** for which stages each mode runs.
+
+## Mode Behavior
+
+- **full** (default): all stages 1–11; produces the epic tree (`epic.md`, `plan.md`, per-feature specs, tasks).
+- **spec-only**: stages 1–4 (Stage 5 optional), then Closure. Specifications only, no implementation.
+- **lite**: for one self-contained small change. Stage 3 (`spec-author`) produces a single lite-change note per `spec-artifact-layout` (intent + EARS) instead of the epic tree; then approval gate → Stage 7 implement (the three-agent chain) → Stage 8 verify → Stage 10 archives the note → Closure. Skips product definition (2), task decomposition (5), and consistency (6); reduces completeness (9) to "every EARS criterion has a passing test." The approval gate still applies and may be a single confirmation of the note.
 
 ## Hard Stop Conditions
 

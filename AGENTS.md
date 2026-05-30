@@ -101,3 +101,4 @@ Spawn `artifact-acceptance-tester` after creating or materially changing skills,
 - Keep reference docs factual; do not place behavioral rules there.
 - Prefer small, reviewable changes tied to a task or authority source.
 - Never revert user changes unless the user explicitly asks.
+- Treat this repository as public. Never commit secrets, credentials, API keys, tokens, private keys, personal contact details, local machine paths, internal hostnames or IPs, or any client/confidential data in any file (including docs, configs, CI, examples, and `collection/` assets). Reference CI secrets only through the platform's secret store (e.g. `${{ secrets.* }}`), never inline. Before creating or editing any committed file, confirm it contains nothing that should not be visible to everyone.

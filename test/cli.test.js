@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -9,6 +9,16 @@ import { fileURLToPath } from "node:url";
 import { scanCatalog, findCapability } from "../dist/catalog.js";
 import { destinationFor, isProvider, wiringHint } from "../dist/providers.js";
 import { adopt } from "../dist/commands/adopt.js";
+import { transform, lint } from "../dist/portability.js";
+
+const AGENT_FIXTURE = `---
+name: x
+description: y
+tools: Read, Bash
+---
+
+Body refers to .claude/skills/foo and CLAUDE.md
+`;
 
 const CLI = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
 
@@ -115,4 +125,55 @@ test("CLI `adopt` with bad provider exits non-zero", () => {
       }),
     );
   });
+});
+
+test("transform leaves claude content unchanged", () => {
+  assert.equal(transform(AGENT_FIXTURE, "claude"), AGENT_FIXTURE);
+});
+
+test("transform for codex swaps path tokens and strips tools frontmatter", () => {
+  const out = transform(AGENT_FIXTURE, "codex");
+  assert.ok(out.includes(".codex/skills/foo"));
+  assert.ok(!out.includes(".claude/"));
+  assert.ok(!/^tools:/m.test(out), "tools key should be stripped for codex");
+  assert.ok(out.includes("name: x"), "neutral frontmatter keys are kept");
+});
+
+test("transform for agnostic swaps to .ai and keeps tools (inert)", () => {
+  const out = transform(AGENT_FIXTURE, "agnostic");
+  assert.ok(out.includes(".ai/skills/foo"));
+  assert.ok(/^tools:/m.test(out), "tools is inert for agnostic and kept");
+});
+
+test("transform strips frontmatter tools only, not body occurrences", () => {
+  const withBodyTools = `---\nname: x\ntools: Read\n---\n\nThe tools: list below is prose.\n`;
+  const out = transform(withBodyTools, "codex");
+  assert.ok(!/^tools: Read$/m.test(out));
+  assert.ok(out.includes("The tools: list below is prose."));
+});
+
+test("lint detects breaking tokens with line numbers", () => {
+  const findings = lint(AGENT_FIXTURE);
+  assert.ok(findings.some((f) => f.token === "CLAUDE.md"));
+  const claudeMd = findings.find((f) => f.token === "CLAUDE.md");
+  assert.equal(claudeMd.line, 7);
+});
+
+test("adopting an agent for codex strips the tools frontmatter on disk", () => {
+  withTmp((dir) => {
+    assert.equal(adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
+    const content = readFileSync(join(dir, ".codex/agents/code-reviewer.md"), "utf8");
+    assert.ok(!/^tools:/m.test(content), "adopted codex agent should have no tools frontmatter");
+  });
+});
+
+test("CLI `lint --all` runs and returns a status", () => {
+  // Exit code is 0 (clean) or 1 (findings); both are valid. Assert it runs and prints a summary.
+  let out;
+  try {
+    out = execFileSync("node", [CLI, "lint"], { encoding: "utf8" });
+  } catch (e) {
+    out = e.stdout ?? "";
+  }
+  assert.match(out, /finding|No breaking/);
 });

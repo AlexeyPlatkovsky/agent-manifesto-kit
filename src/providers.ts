@@ -3,7 +3,7 @@ import type { Capability, CapType } from "./catalog.js";
 
 export type Provider = "claude" | "codex" | "agnostic";
 
-const PROVIDER_ROOT: Record<Provider, string> = {
+export const PROVIDER_ROOT: Record<Provider, string> = {
   claude: ".claude",
   codex: ".codex",
   agnostic: ".ai",
