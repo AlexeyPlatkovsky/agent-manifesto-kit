@@ -34,6 +34,8 @@ Options for `adopt`:
 | Option | Default | Meaning |
 |---|---|---|
 | `--provider claude\|codex\|agnostic` | `claude` | target AI provider |
+| `--cli <cli>` | _(none)_ | run an AI CLI after adoption to adapt files to your project |
+| `--force` | _(off)_ | overwrite existing targets without prompting |
 | `--dest <dir>` | current directory | target project root |
 
 Global: `--version` / `-v`, `--help` / `-h`.
@@ -41,17 +43,53 @@ Global: `--version` / `-v`, `--help` / `-h`.
 ### Bundles
 
 A bundle is a cohesive set of capabilities meant to be adopted together (for example `sdd`,
-the Spec-Driven Development kit). Adopting a bundle copies the whole folder intact — so its
-internal cross-references keep resolving — and surfaces any **recommended companions** the
-bundle declares (optional capabilities from the general collection) as opt-in follow-ups.
-Companions are never installed automatically.
+the Spec-Driven Development kit). Adopting a bundle explodes it into type-specific directories
+(`.claude/skills/`, `.claude/agents/`, etc.) so each capability lands where the provider
+expects to find it. Recommended companions are surfaced as opt-in follow-ups and are never
+installed automatically.
 
 ```bash
-agentkit adopt sdd --provider claude        # the whole SDD bundle
-agentkit adopt brainstorm                    # a single skill from the general collection
+agentkit adopt sdd --provider claude        # adopt the whole SDD bundle
+agentkit adopt brainstorm                    # adopt a single skill from the collection
 ```
 
 Items that live inside a bundle are adopted as part of that bundle, not on their own.
+
+### AI-assisted adaptation with `--cli`
+
+After copying the files, `--cli` launches an AI CLI with a structured prompt that asks it to
+read your project's context (CLAUDE.md / AGENTS.md, README, spec files) and adapt each
+adopted file to your project's naming, paths, and conventions.
+
+```bash
+# Adopt the SDD bundle and let Claude adapt it to this project
+agentkit adopt sdd --provider claude --cli claude
+
+# Same, but force-overwrite files that already exist
+agentkit adopt sdd --provider claude --cli claude --force
+
+# Adopt a single skill for Codex and adapt with agy
+agentkit adopt brainstorm --provider codex --cli agy
+
+# Adopt without AI adaptation (deterministic copy only)
+agentkit adopt sdd --provider agnostic
+```
+
+Supported CLIs: `claude`, `codex`, `agy`, `aider`, `opencode`, `grok`, `kilo`, `qwen`.
+
+The AI step runs non-interactively — permission prompts are pre-approved where each CLI
+supports it (`--dangerously-skip-permissions` for claude and agy, `--yes-always` for aider).
+
+### Conflict resolution
+
+When a target already exists and `--force` is not set, `adopt` asks per file:
+
+```
+Target already exists: .claude/skills/brainstorm
+[r] replace  [s] skip  [A] replace all  [S] skip all: _
+```
+
+`A` and `S` apply the choice to all remaining conflicts in the same run.
 
 ### Provider model
 
