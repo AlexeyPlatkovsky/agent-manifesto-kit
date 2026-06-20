@@ -4,8 +4,7 @@ name: OpenCode Review
 # - On PR open: runs once (no re-run on pushes/synchronize).
 # - On a PR comment containing /oc or /opencode: runs on demand.
 on:
-  push:
-    branches-ignore: [main]
+  workflow_dispatch:
   pull_request:
     types: [opened]
   issue_comment:
@@ -23,10 +22,7 @@ jobs:
     # Gate every entry point to the owner. On a public repo this stops anyone
     # else from triggering OpenCode (and burning the API key) via a comment.
     if: >
-      (
-        github.event_name == 'push' &&
-        github.actor == 'AlexeyPlatkovsky'
-      ) ||
+      github.event_name == 'workflow_dispatch' ||
       (
         github.event_name == 'pull_request' &&
         github.event.pull_request.user.login == 'AlexeyPlatkovsky'
