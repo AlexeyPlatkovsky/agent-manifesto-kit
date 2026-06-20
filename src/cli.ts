@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { list } from "./commands/list.js";
-import { adopt } from "./commands/adopt.js";
+import { adopt, isSupportedCli, SUPPORTED_CLIS } from "./commands/adopt.js";
 import { runLint } from "./commands/lint.js";
 import { isProvider } from "./providers.js";
 import { packageRoot } from "./catalog.js";
@@ -50,19 +50,25 @@ function help(): void {
 Usage:
   agentkit list
   agentkit lint [name]
-  agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>]
+  agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>] [--force] [--cli <cli>]
 
   <name> is a capability (skill/agent/pipeline/convention) or a bundle.
-  Adopting a bundle copies it whole and surfaces its recommended companions.
+  Adopting a bundle explodes it into type-specific directories.
+
+  Pass --cli to run an AI assistant after adoption to adapt the files to your project.
+  Pass --force to overwrite existing targets without prompting.
 
 Options:
   --provider   target AI provider (default: claude)
+  --cli        AI CLI to run after adoption for project-specific adaptation
+               supported: ${SUPPORTED_CLIS.join("|")}
+  --force      overwrite existing targets without prompting
   --dest       target project root (default: current directory)
   --version,-v print the installed version
   --help,-h    show this help`);
 }
 
-function main(): number {
+async function main(): Promise<number> {
   const { positionals, flags } = parseArgs(process.argv.slice(2));
   const cmd = positionals[0];
 
@@ -98,8 +104,14 @@ function main(): number {
         console.error(`Invalid --provider "${provider}". Use claude|codex|agnostic.`);
         return 1;
       }
+      const cli = typeof flags.cli === "string" ? flags.cli : undefined;
+      if (cli !== undefined && !isSupportedCli(cli)) {
+        console.error(`Unknown --cli "${cli}". Supported: ${SUPPORTED_CLIS.join("|")}`);
+        return 1;
+      }
       const projectRoot = typeof flags.dest === "string" ? flags.dest : process.cwd();
-      return adopt({ name, provider, projectRoot });
+      const force = flags.force === true;
+      return adopt({ name, provider, projectRoot, force, cli });
     }
     default:
       console.error(`Unknown command "${cmd}". Run "agentkit --help".`);
@@ -107,9 +119,7 @@ function main(): number {
   }
 }
 
-try {
-  process.exit(main());
-} catch (err) {
+main().then(process.exit).catch((err) => {
   console.error(`agentkit: ${err instanceof Error ? err.message : String(err)}`);
   process.exit(1);
-}
+});

@@ -7,7 +7,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import { scanCatalog, scanBundles, findCapability, findBundle } from "../dist/catalog.js";
-import { destinationFor, bundleDestination, isProvider, wiringHint } from "../dist/providers.js";
+import { destinationFor, bundleExtrasDestination, isProvider, wiringHint } from "../dist/providers.js";
 import { adopt } from "../dist/commands/adopt.js";
 import { transform, lint } from "../dist/portability.js";
 
@@ -22,10 +22,10 @@ Body refers to .claude/skills/foo and CLAUDE.md
 
 const CLI = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
 
-function withTmp(fn) {
+async function withTmp(fn) {
   const dir = mkdtempSync(join(tmpdir(), "akt-test-"));
   try {
-    fn(dir);
+    await fn(dir);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -92,9 +92,9 @@ test("destinationFor maps provider root and type dir", () => {
   assert.equal(destinationFor(agent, "agnostic", "/p"), join("/p", ".ai/agents/code-reviewer.md"));
 });
 
-test("bundleDestination places a bundle under the provider root", () => {
-  assert.equal(bundleDestination("sdd", "claude", "/p"), join("/p", ".claude/bundles/sdd"));
-  assert.equal(bundleDestination("sdd", "agnostic", "/p"), join("/p", ".ai/bundles/sdd"));
+test("bundleExtrasDestination places extras under the provider root bundle name", () => {
+  assert.equal(bundleExtrasDestination("sdd", "claude", "/p"), join("/p", ".claude/sdd"));
+  assert.equal(bundleExtrasDestination("sdd", "agnostic", "/p"), join("/p", ".ai/sdd"));
 });
 
 test("wiringHint differs per provider", () => {
@@ -102,54 +102,55 @@ test("wiringHint differs per provider", () => {
   assert.notEqual(wiringHint("codex"), wiringHint("agnostic"));
 });
 
-test("adopt copies a skill folder for the default (claude) provider", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "brainstorm", provider: "claude", projectRoot: dir }), 0);
+test("adopt copies a skill folder for the default (claude) provider", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "brainstorm", provider: "claude", projectRoot: dir }), 0);
     assert.ok(existsSync(join(dir, ".claude/skills/brainstorm/SKILL.md")));
   });
 });
 
-test("adopt copies an agent file for codex", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
+test("adopt copies an agent file for codex", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
     assert.ok(existsSync(join(dir, ".codex/agents/code-reviewer.md")));
   });
 });
 
-test("adopt copies a whole bundle intact under the provider root", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "sdd", provider: "agnostic", projectRoot: dir }), 0);
-    assert.ok(existsSync(join(dir, ".ai/bundles/sdd/conventions/sdd-doc-set.md")));
-    assert.ok(existsSync(join(dir, ".ai/bundles/sdd/skills/sdd-doc-author/SKILL.md")));
-    assert.ok(existsSync(join(dir, ".ai/bundles/sdd/templates/docs/idea.md")));
+test("adopt explodes bundle items into type-specific directories", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "sdd", provider: "agnostic", projectRoot: dir }), 0);
+    assert.ok(existsSync(join(dir, ".ai/conventions/sdd-doc-set.md")));
+    assert.ok(existsSync(join(dir, ".ai/skills/sdd-doc-author/SKILL.md")));
+    assert.ok(existsSync(join(dir, ".ai/sdd/templates/docs/idea.md")));
   });
 });
 
-test("adopt refuses an item that belongs to a bundle and points at the bundle", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "sdd-doc-author", provider: "claude", projectRoot: dir }), 1);
+test("adopt refuses an item that belongs to a bundle and points at the bundle", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "sdd-doc-author", provider: "claude", projectRoot: dir }), 1);
     assert.ok(!existsSync(join(dir, ".claude")));
   });
 });
 
-test("adopt with unknown name returns 1 and writes nothing", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "nope", provider: "claude", projectRoot: dir }), 1);
+test("adopt with unknown name returns 1 and writes nothing", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "nope", provider: "claude", projectRoot: dir }), 1);
     assert.ok(!existsSync(join(dir, ".claude")));
   });
 });
 
-test("adopt refuses to overwrite an existing target", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "brainstorm", provider: "claude", projectRoot: dir }), 0);
-    assert.equal(adopt({ name: "brainstorm", provider: "claude", projectRoot: dir }), 1);
+test("adopt --force overwrites an existing target without prompting", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "brainstorm", provider: "claude", projectRoot: dir }), 0);
+    assert.equal(await adopt({ name: "brainstorm", provider: "claude", projectRoot: dir, force: true }), 0);
+    assert.ok(existsSync(join(dir, ".claude/skills/brainstorm/SKILL.md")));
   });
 });
 
-test("adopt refuses to overwrite an existing bundle target", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "sdd", provider: "claude", projectRoot: dir }), 0);
-    assert.equal(adopt({ name: "sdd", provider: "claude", projectRoot: dir }), 1);
+test("adopt --force overwrites existing bundle items without prompting", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "sdd", provider: "claude", projectRoot: dir }), 0);
+    assert.equal(await adopt({ name: "sdd", provider: "claude", projectRoot: dir, force: true }), 0);
   });
 });
 
@@ -165,6 +166,17 @@ test("CLI `adopt` with bad provider exits non-zero", () => {
   withTmp((dir) => {
     assert.throws(() =>
       execFileSync("node", [CLI, "adopt", "brainstorm", "--provider", "foo", "--dest", dir], {
+        encoding: "utf8",
+        stdio: "pipe",
+      }),
+    );
+  });
+});
+
+test("CLI `adopt` with bad --cli exits non-zero", () => {
+  withTmp((dir) => {
+    assert.throws(() =>
+      execFileSync("node", [CLI, "adopt", "brainstorm", "--cli", "notacli", "--dest", dir], {
         encoding: "utf8",
         stdio: "pipe",
       }),
@@ -204,16 +216,15 @@ test("lint detects breaking tokens with line numbers", () => {
   assert.equal(claudeMd.line, 7);
 });
 
-test("adopting an agent for codex strips the tools frontmatter on disk", () => {
-  withTmp((dir) => {
-    assert.equal(adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
+test("adopting an agent for codex strips the tools frontmatter on disk", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
     const content = readFileSync(join(dir, ".codex/agents/code-reviewer.md"), "utf8");
     assert.ok(!/^tools:/m.test(content), "adopted codex agent should have no tools frontmatter");
   });
 });
 
 test("CLI `lint` runs and returns a status", () => {
-  // Exit code is 0 (clean) or 1 (findings); both are valid. Assert it runs and prints a summary.
   let out;
   try {
     out = execFileSync("node", [CLI, "lint"], { encoding: "utf8" });
