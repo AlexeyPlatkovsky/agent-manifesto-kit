@@ -49,7 +49,6 @@ jobs:
           # On a pull_request event with no prompt, OpenCode defaults to reviewing the PR.
           # On an issue_comment, the comment body after the mention is the prompt.
         env:
-          # TODO: confirm the API-key secret your provider expects, then add it under
-          # Settings -> Secrets and variables -> Actions. The name below is a best guess
-          # for a DeepSeek-based model; change it to match your provider if different.
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          # API key for the OpenCode provider. Add it under
+          # Settings -> Secrets and variables -> Actions.
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
