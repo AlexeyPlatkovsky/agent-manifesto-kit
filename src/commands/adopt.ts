@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { findBundle, findCapability, type Bundle, type Capability } from "../catalog.js";
-import { bundleDestination, destinationFor, wiringHint, type Provider } from "../providers.js";
+import { bundleExtrasDestination, destinationFor, wiringHint, type Provider } from "../providers.js";
 import { lint, transform } from "../portability.js";
 
 export interface AdoptOptions {
@@ -33,25 +33,52 @@ function surfaceCompanions(recommendsPath: string): void {
   console.log("Adopt any you want with: agentkit adopt <name>");
 }
 
+const CAPABILITY_DIRS = new Set(["skills", "agents", "pipelines", "conventions"]);
+
 function adoptBundle(bundle: Bundle, opts: AdoptOptions): number {
-  const target = bundleDestination(bundle.name, opts.provider, opts.projectRoot);
-  if (existsSync(target)) {
-    console.error(`Target already exists: ${target}`);
-    console.error("Remove it or choose another --dest before adopting.");
-    return 1;
-  }
-
-  mkdirSync(dirname(target), { recursive: true });
-  cpSync(bundle.dir, target, { recursive: true });
-  for (const md of walkMd(target)) {
-    const content = readFileSync(md, "utf8");
-    for (const f of lint(content)) {
-      console.warn(`warning: ${relative(target, md)}:${f.line} contains "${f.token}" — review for ${opts.provider}.`);
+  // Pre-check all destinations to avoid a partial adoption on collision.
+  for (const item of bundle.items) {
+    const target = destinationFor(item, opts.provider, opts.projectRoot);
+    if (existsSync(target)) {
+      console.error(`Target already exists: ${target}`);
+      console.error("Remove it or choose another --dest before adopting.");
+      return 1;
     }
-    writeFileSync(md, transform(content, opts.provider));
   }
 
-  console.log(`Adopted bundle "${bundle.name}" (${opts.provider}) -> ${target}`);
+  // Adopt each capability item into its type-specific directory.
+  for (const item of bundle.items) {
+    const target = destinationFor(item, opts.provider, opts.projectRoot);
+    mkdirSync(dirname(target), { recursive: true });
+    if (item.isDir) {
+      cpSync(item.sourceCopyPath, target, { recursive: true });
+      for (const md of walkMd(target)) {
+        const content = readFileSync(md, "utf8");
+        for (const f of lint(content)) {
+          console.warn(`warning: ${relative(target, md)}:${f.line} contains "${f.token}" — review for ${opts.provider}.`);
+        }
+        writeFileSync(md, transform(content, opts.provider));
+      }
+    } else {
+      const content = readFileSync(item.sourceCopyPath, "utf8");
+      for (const f of lint(content)) {
+        console.warn(`warning: ${item.name}:${f.line} contains "${f.token}" — review for ${opts.provider}.`);
+      }
+      writeFileSync(target, transform(content, opts.provider));
+    }
+  }
+
+  // Copy extra content (templates, etc.) that is not a capability type directory.
+  const extrasBase = bundleExtrasDestination(bundle.name, opts.provider, opts.projectRoot);
+  for (const entry of readdirSync(bundle.dir, { withFileTypes: true })) {
+    if (!entry.isDirectory() || CAPABILITY_DIRS.has(entry.name)) continue;
+    const src = join(bundle.dir, entry.name);
+    const dest = join(extrasBase, entry.name);
+    mkdirSync(dirname(dest), { recursive: true });
+    cpSync(src, dest, { recursive: true });
+  }
+
+  console.log(`Adopted bundle "${bundle.name}" (${opts.provider}) -> ${opts.projectRoot}`);
   for (const item of bundle.items) console.log(`  + ${item.type} ${item.name}`);
   console.log(wiringHint(opts.provider));
   if (bundle.recommendsPath) surfaceCompanions(bundle.recommendsPath);

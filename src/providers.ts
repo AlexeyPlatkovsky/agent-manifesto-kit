@@ -26,12 +26,9 @@ export function destinationFor(cap: Capability, provider: Provider, projectRoot:
   return cap.isDir ? join(base, cap.name) : join(base, `${cap.name}.md`);
 }
 
-/**
- * Destination for a whole bundle. The bundle folder is copied intact under the provider
- * root so its bundle-relative references keep resolving without rewriting.
- */
-export function bundleDestination(name: string, provider: Provider, projectRoot: string): string {
-  return join(projectRoot, PROVIDER_ROOT[provider], "bundles", name);
+/** Destination for bundle extras (templates, etc.) that are not capability items. */
+export function bundleExtrasDestination(name: string, provider: Provider, projectRoot: string): string {
+  return join(projectRoot, PROVIDER_ROOT[provider], name);
 }
 
 export function wiringHint(provider: Provider): string {

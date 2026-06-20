@@ -7,7 +7,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import { scanCatalog, scanBundles, findCapability, findBundle } from "../dist/catalog.js";
-import { destinationFor, bundleDestination, isProvider, wiringHint } from "../dist/providers.js";
+import { destinationFor, bundleExtrasDestination, isProvider, wiringHint } from "../dist/providers.js";
 import { adopt } from "../dist/commands/adopt.js";
 import { transform, lint } from "../dist/portability.js";
 
@@ -92,9 +92,9 @@ test("destinationFor maps provider root and type dir", () => {
   assert.equal(destinationFor(agent, "agnostic", "/p"), join("/p", ".ai/agents/code-reviewer.md"));
 });
 
-test("bundleDestination places a bundle under the provider root", () => {
-  assert.equal(bundleDestination("sdd", "claude", "/p"), join("/p", ".claude/bundles/sdd"));
-  assert.equal(bundleDestination("sdd", "agnostic", "/p"), join("/p", ".ai/bundles/sdd"));
+test("bundleExtrasDestination places extras under the provider root bundle name", () => {
+  assert.equal(bundleExtrasDestination("sdd", "claude", "/p"), join("/p", ".claude/sdd"));
+  assert.equal(bundleExtrasDestination("sdd", "agnostic", "/p"), join("/p", ".ai/sdd"));
 });
 
 test("wiringHint differs per provider", () => {
@@ -116,12 +116,12 @@ test("adopt copies an agent file for codex", () => {
   });
 });
 
-test("adopt copies a whole bundle intact under the provider root", () => {
+test("adopt explodes bundle items into type-specific directories", () => {
   withTmp((dir) => {
     assert.equal(adopt({ name: "sdd", provider: "agnostic", projectRoot: dir }), 0);
-    assert.ok(existsSync(join(dir, ".ai/bundles/sdd/conventions/sdd-doc-set.md")));
-    assert.ok(existsSync(join(dir, ".ai/bundles/sdd/skills/sdd-doc-author/SKILL.md")));
-    assert.ok(existsSync(join(dir, ".ai/bundles/sdd/templates/docs/idea.md")));
+    assert.ok(existsSync(join(dir, ".ai/conventions/sdd-doc-set.md")));
+    assert.ok(existsSync(join(dir, ".ai/skills/sdd-doc-author/SKILL.md")));
+    assert.ok(existsSync(join(dir, ".ai/sdd/templates/docs/idea.md")));
   });
 });
 
@@ -146,7 +146,7 @@ test("adopt refuses to overwrite an existing target", () => {
   });
 });
 
-test("adopt refuses to overwrite an existing bundle target", () => {
+test("adopt refuses to overwrite an existing bundle item", () => {
   withTmp((dir) => {
     assert.equal(adopt({ name: "sdd", provider: "claude", projectRoot: dir }), 0);
     assert.equal(adopt({ name: "sdd", provider: "claude", projectRoot: dir }), 1);
