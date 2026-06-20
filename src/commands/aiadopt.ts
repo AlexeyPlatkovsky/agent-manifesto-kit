@@ -5,10 +5,10 @@ import { join } from "node:path";
 import { adopt } from "./adopt.js";
 import type { Provider } from "../providers.js";
 
-export type SupportedCli = "claude" | "codex" | "gemini" | "aider" | "opencode" | "grok" | "kilo" | "qwen";
+export type SupportedCli = "claude" | "codex" | "agy" | "aider" | "opencode" | "grok" | "kilo" | "qwen";
 
 export const SUPPORTED_CLIS: readonly SupportedCli[] = [
-  "claude", "codex", "gemini", "aider", "opencode", "grok", "kilo", "qwen",
+  "claude", "codex", "agy", "aider", "opencode", "grok", "kilo", "qwen",
 ];
 
 /**
@@ -36,7 +36,7 @@ const CLI_INVOCATIONS: Record<SupportedCli, CliInvocation> = {
   // Supports `exec -` for stdin; --skip-git-repo-check for non-git dirs.
   codex:    { kind: "stdin",  bin: "codex", args: ["exec", "--skip-git-repo-check", "-"] },
   // Requires -p <value>; use bash $() substitution to pass multi-line content safely.
-  gemini:   { kind: "bash", cmd: 'gemini -p "$(cat "$0")"' },
+  agy:      { kind: "bash", cmd: 'agy -p "$(cat "$0")"' },
   aider:    { kind: "bash", cmd: 'aider --message "$(cat "$0")" --yes-always' },
   opencode: { kind: "bash", cmd: 'opencode run "$(cat "$0")"' },
   grok:     { kind: "bash", cmd: 'grok -p "$(cat "$0")"' },
