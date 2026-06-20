@@ -1,5 +1,4 @@
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
-import { writeFileSync as writeFS, unlinkSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
@@ -68,6 +67,7 @@ const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", 
 function findBash(): string {
   if (process.platform !== "win32") return "bash";
   const candidates = [
+    `${process.env.LOCALAPPDATA}\\Programs\\Git\\bin\\bash.exe`,
     `${process.env.PROGRAMFILES}\\Git\\bin\\bash.exe`,
     `${process.env["PROGRAMFILES(X86)"]}\\Git\\bin\\bash.exe`,
     "C:\\Program Files\\Git\\bin\\bash.exe",
@@ -97,7 +97,7 @@ async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: st
     child.stdin!.end();
   } else {
     promptFile = join(tmpdir(), `akt-prompt-${Date.now()}.txt`);
-    writeFS(promptFile, prompt, "utf8");
+    writeFileSync(promptFile, prompt, "utf8");
     child = spawn(findBash(), ["-c", inv.cmd, promptFile], { stdio: "inherit", cwd });
   }
 
@@ -118,7 +118,7 @@ async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: st
     };
     child.on("error", (err) => {
       cleanup();
-      console.error(`Failed to launch ${cli}: ${err.message}`);
+      console.error(`Failed to launch ${cli}: ${err instanceof Error ? err.message : String(err)}`);
       resolve(1);
     });
     child.on("close", (code) => {
