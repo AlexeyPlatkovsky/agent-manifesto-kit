@@ -64,7 +64,7 @@ Adapt each file to this project:
 const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: string): Promise<number> {
-  console.log(`\nRunning ${cli} to adapt adopted files — this may take a minute…`);
+  console.log(`\nRunning ${cli} to adapt adopted files — this may take a several minutes…`);
 
   let promptFile: string | undefined;
   let child: ReturnType<typeof spawn>;
