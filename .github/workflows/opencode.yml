@@ -49,6 +49,5 @@ jobs:
           # On a pull_request event with no prompt, OpenCode defaults to reviewing the PR.
           # On an issue_comment, the comment body after the mention is the prompt.
         env:
-          # API key for the OpenCode provider. Add it under
-          # Settings -> Secrets and variables -> Actions.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
