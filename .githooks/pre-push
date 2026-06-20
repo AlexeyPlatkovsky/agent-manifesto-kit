@@ -1,0 +1,11 @@
+#!/bin/sh
+# Pre-push hook — bumps package.json version for branch-prefixed work.
+# Runs only on branches matching bugfix/*, feature/*, or release/*.
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+case "$BRANCH" in
+  bugfix/*|feature/*|release/*)
+    node .ai/scripts/bump-version.mjs
+    ;;
+esac

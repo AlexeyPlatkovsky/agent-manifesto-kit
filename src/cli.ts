@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { list } from "./commands/list.js";
 import { adopt } from "./commands/adopt.js";
+import { aiadopt, isSupportedCli, SUPPORTED_CLIS } from "./commands/aiadopt.js";
 import { runLint } from "./commands/lint.js";
 import { isProvider } from "./providers.js";
 import { packageRoot } from "./catalog.js";
@@ -51,12 +52,16 @@ Usage:
   agentkit list
   agentkit lint [name]
   agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>]
+  agentkit aiadopt <name> --cli <cli> [--provider claude|codex|agnostic] [--dest <dir>]
 
   <name> is a capability (skill/agent/pipeline/convention) or a bundle.
-  Adopting a bundle copies it whole and surfaces its recommended companions.
+  Adopting a bundle explodes it into type-specific directories.
+  aiadopt adopts and then runs an AI CLI to adapt the files to this project.
 
 Options:
   --provider   target AI provider (default: claude)
+  --cli        AI CLI to run after adoption (required for aiadopt)
+               supported: ${SUPPORTED_CLIS.join("|")}
   --dest       target project root (default: current directory)
   --version,-v print the installed version
   --help,-h    show this help`);
@@ -100,6 +105,29 @@ function main(): number {
       }
       const projectRoot = typeof flags.dest === "string" ? flags.dest : process.cwd();
       return adopt({ name, provider, projectRoot });
+    }
+    case "aiadopt": {
+      const name = positionals[1];
+      if (!name) {
+        console.error('aiadopt requires a <name>. Run "agentkit list" to see options.');
+        return 1;
+      }
+      const cli = typeof flags.cli === "string" ? flags.cli : "";
+      if (!cli) {
+        console.error(`aiadopt requires --cli. Supported: ${SUPPORTED_CLIS.join("|")}`);
+        return 1;
+      }
+      if (!isSupportedCli(cli)) {
+        console.error(`Unknown --cli "${cli}". Supported: ${SUPPORTED_CLIS.join("|")}`);
+        return 1;
+      }
+      const provider = typeof flags.provider === "string" ? flags.provider : "claude";
+      if (!isProvider(provider)) {
+        console.error(`Invalid --provider "${provider}". Use claude|codex|agnostic.`);
+        return 1;
+      }
+      const projectRoot = typeof flags.dest === "string" ? flags.dest : process.cwd();
+      return aiadopt({ name, provider, projectRoot, cli });
     }
     default:
       console.error(`Unknown command "${cmd}". Run "agentkit --help".`);

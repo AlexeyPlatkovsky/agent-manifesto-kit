@@ -35,7 +35,7 @@ function surfaceCompanions(recommendsPath: string): void {
 
 const CAPABILITY_DIRS = new Set(["skills", "agents", "pipelines", "conventions"]);
 
-function adoptBundle(bundle: Bundle, opts: AdoptOptions): number {
+function adoptBundle(bundle: Bundle, opts: AdoptOptions, onFile?: (path: string) => void): number {
   // Pre-check all destinations to avoid a partial adoption on collision.
   for (const item of bundle.items) {
     const target = destinationFor(item, opts.provider, opts.projectRoot);
@@ -58,6 +58,7 @@ function adoptBundle(bundle: Bundle, opts: AdoptOptions): number {
           console.warn(`warning: ${relative(target, md)}:${f.line} contains "${f.token}" — review for ${opts.provider}.`);
         }
         writeFileSync(md, transform(content, opts.provider));
+        onFile?.(md);
       }
     } else {
       const content = readFileSync(item.sourceCopyPath, "utf8");
@@ -65,6 +66,7 @@ function adoptBundle(bundle: Bundle, opts: AdoptOptions): number {
         console.warn(`warning: ${item.name}:${f.line} contains "${f.token}" — review for ${opts.provider}.`);
       }
       writeFileSync(target, transform(content, opts.provider));
+      onFile?.(target);
     }
   }
 
@@ -85,7 +87,7 @@ function adoptBundle(bundle: Bundle, opts: AdoptOptions): number {
   return 0;
 }
 
-function adoptSingle(match: Capability, opts: AdoptOptions): number {
+function adoptSingle(match: Capability, opts: AdoptOptions, onFile?: (path: string) => void): number {
   const target = destinationFor(match, opts.provider, opts.projectRoot);
   if (existsSync(target)) {
     console.error(`Target already exists: ${target}`);
@@ -101,9 +103,13 @@ function adoptSingle(match: Capability, opts: AdoptOptions): number {
   mkdirSync(dirname(target), { recursive: true });
   if (match.isDir) {
     cpSync(match.sourceCopyPath, target, { recursive: true });
-    for (const md of walkMd(target)) writeFileSync(md, transform(readFileSync(md, "utf8"), opts.provider));
+    for (const md of walkMd(target)) {
+      writeFileSync(md, transform(readFileSync(md, "utf8"), opts.provider));
+      onFile?.(md);
+    }
   } else {
     writeFileSync(target, transform(readFileSync(match.sourceCopyPath, "utf8"), opts.provider));
+    onFile?.(target);
   }
 
   console.log(`Adopted ${match.type} "${match.name}" (${opts.provider}) -> ${target}`);
@@ -111,10 +117,10 @@ function adoptSingle(match: Capability, opts: AdoptOptions): number {
   return 0;
 }
 
-export function adopt(opts: AdoptOptions): number {
+export function adopt(opts: AdoptOptions, onFile?: (path: string) => void): number {
   // A bundle name takes precedence: bundles are the primary adoptable unit.
   const bundle = findBundle(opts.name);
-  if (bundle) return adoptBundle(bundle, opts);
+  if (bundle) return adoptBundle(bundle, opts, onFile);
 
   const { match, ambiguous } = findCapability(opts.name);
 
@@ -132,5 +138,5 @@ export function adopt(opts: AdoptOptions): number {
     console.error(`Adopt the whole bundle instead: agentkit adopt ${match.bundle}`);
     return 1;
   }
-  return adoptSingle(match, opts);
+  return adoptSingle(match, opts, onFile);
 }
