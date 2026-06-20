@@ -22,8 +22,8 @@ item below is also copyable on its own, subject to the dependencies listed.
 | `sdd-bootstrap` | pipeline | `pipelines/sdd-bootstrap.md` | skills + `sdd-spec-reviewer` |
 | `sdd-adopt` | pipeline | `pipelines/sdd-adopt.md` | `sdd-gap-analyzer` + skills + reviewer |
 
-> Checked in so far: the convention, templates, and the three skills. The agents and
-> pipelines are planned in later phases of this bundle.
+> Checked in so far: the convention, templates, the three skills, and the two agents.
+> The pipelines are planned in the next phase of this bundle.
 
 ## The document set it produces
 
