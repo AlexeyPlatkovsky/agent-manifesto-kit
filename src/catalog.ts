@@ -44,9 +44,9 @@ function bundlesDir(): string {
 
 function parseFrontmatter(text: string): Record<string, string> {
   const out: Record<string, string> = {};
-  const match = /^---\n([\s\S]*?)\n---/.exec(text);
+  const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(text);
   if (!match) return out;
-  for (const line of match[1].split("\n")) {
+  for (const line of match[1].split(/\r?\n/)) {
     const idx = line.indexOf(":");
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
