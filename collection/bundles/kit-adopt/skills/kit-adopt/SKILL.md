@@ -39,7 +39,10 @@ Apply the Stop Conditions throughout; halt and report when any is met.
 5. Register the installed capabilities in the target's instruction entrypoint under its
    capability registry or equivalent list. If the entrypoint has no such section, add a
    clearly labeled one rather than inventing routing rules.
-6. Report what was installed, rewritten, and registered.
+6. If the installed source declares recommended companions (a `RECOMMENDS.md`), surface them
+   as optional follow-ups for the user to accept or decline. Do not auto-install them;
+   install only the ones the user selects, through this same skill.
+7. Report what was installed, rewritten, registered, and surfaced.
 
 ## Stop Conditions
 
@@ -64,5 +67,6 @@ Then include:
 | Dependencies | Dependencies pulled in, or `none` |
 | Rewrites | Path and placeholder substitutions applied |
 | Registry | Entrypoint edits made to register the capabilities |
+| Companions surfaced | Optional companions offered from the source's `RECOMMENDS.md`, or `none` |
 | Collisions | Existing target assets that blocked install, or `none` |
 | Blockers | Unresolved issues, or `none` |

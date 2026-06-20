@@ -35,9 +35,10 @@ implement step logic and does not emit its own output artifact.
 | 7. Features (Standard+) | `Skill: sdd-feature-author` (once per feature) | `Skill: sdd-feature-author - output below` |
 | 8. Index | `Skill: sdd-index-sync` | `Skill: sdd-index-sync - output below` |
 | 9. Review | `Agent: sdd-spec-reviewer` | `Agent: sdd-spec-reviewer - output below` |
+| 10. Suggest companions | direct — present this bundle's `RECOMMENDS.md` companions; install any the user adopts via the kit-adopt path | a note of companions offered and which were adopted |
 
-On the `Lean` tier, skip stages 4, 5, and 7. Do not advance past a stage whose expected
-visible artifact is missing.
+On the `Lean` tier, skip stages 4, 5, and 7. Stage 10 is opt-in and may be declined. Do not
+advance past a stage whose expected visible artifact is missing.
 
 ## Authority Sources
 

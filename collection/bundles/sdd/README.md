@@ -21,6 +21,7 @@ item below is also copyable on its own, subject to the dependencies listed.
 | `sdd-gap-analyzer` | agent | `agents/sdd-gap-analyzer.md` | `sdd-doc-set` |
 | `sdd-bootstrap` | pipeline | `pipelines/sdd-bootstrap.md` | skills + `sdd-spec-reviewer` |
 | `sdd-adopt` | pipeline | `pipelines/sdd-adopt.md` | `sdd-gap-analyzer` + skills + reviewer |
+| Recommended companions | manifest | `RECOMMENDS.md` | — (optional companions only) |
 
 > The SDD bundle is complete: convention, templates, three skills, two agents, and two
 > pipelines. The Part 2 `kit-adopt` installer (which copies and wires any bundle into a
@@ -32,6 +33,14 @@ This bundle produces and maintains a `docs/` specification tree (main docs, opti
 extension docs, ADRs, and per-feature folders). The structure, document ownership, tiers,
 ID scheme, and traceability spine are defined once in `conventions/sdd-doc-set.md` — that
 convention is the single source of truth. This README does not restate it.
+
+## Recommended companions
+
+`RECOMMENDS.md` lists optional capabilities from the general collection that complement the
+spec-to-build-to-verify loop (brainstorm, business-analyst, implement-feature, test-writer,
+code-reviewer, and so on). None are required — the bundle works on its own. `kit-adopt` and
+the SDD pipelines surface them as opt-in suggestions at install time and after the spec docs
+are created.
 
 ## How to copy
 

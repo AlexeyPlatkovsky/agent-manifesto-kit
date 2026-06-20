@@ -33,9 +33,11 @@ implement step logic and does not emit its own output artifact.
 | 5. Features | `Skill: sdd-feature-author` (once per extracted feature) | `Skill: sdd-feature-author - output below` |
 | 6. Index | `Skill: sdd-index-sync` | `Skill: sdd-index-sync - output below` |
 | 7. Review | `Agent: sdd-spec-reviewer` | `Agent: sdd-spec-reviewer - output below` |
+| 8. Suggest companions | direct — present this bundle's `RECOMMENDS.md` companions; install any the user adopts via the kit-adopt path | a note of companions offered and which were adopted |
 
-Author docs in the order the gap-analysis plan specifies (foundational docs first). Do not
-advance past a stage whose expected visible artifact is missing.
+Author docs in the order the gap-analysis plan specifies (foundational docs first). Stage 8
+is opt-in and may be declined. Do not advance past a stage whose expected visible artifact is
+missing.
 
 ## Authority Sources
 

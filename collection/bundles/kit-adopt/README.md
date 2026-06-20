@@ -13,6 +13,7 @@ capabilities (such as the SDD bundle) to any project.
 | --- | --- | --- | --- |
 | `kit-adopt` | skill | `skills/kit-adopt/` | `capability-portability` concept |
 | `kit-adopt` | pipeline | `pipelines/kit-adopt.md` | `kit-adopt` skill |
+| `recommended-companions` | convention | `conventions/recommended-companions.md` | — |
 
 ## What it does
 
@@ -24,6 +25,8 @@ capabilities (such as the SDD bundle) to any project.
 - Registers the installed capabilities in the target's instruction entrypoint
   (`AGENTS.md`, `CLAUDE.md`, or equivalent).
 - Verifies the copied assets are portable and registered.
+- Offers a bundle's recommended companions (declared in its `RECOMMENDS.md` per the
+  `recommended-companions` convention) as opt-in follow-ups after install.
 
 ## How to copy
 

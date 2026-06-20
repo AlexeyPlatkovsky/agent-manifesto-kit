@@ -28,9 +28,11 @@ implement step logic and does not emit its own output artifact.
 | 1. Detect | direct — locate the target's instruction entrypoint and capability area | none |
 | 2. Select | direct — confirm the bundle or items to install and their dependencies | none |
 | 3. Install | `Skill: kit-adopt` | `Skill: kit-adopt - output below` |
-| 4. Verify | direct, or `Agent: instruction-evaluator` when the target provides one | a portability/registration check result |
+| 4. Offer companions | direct — present the installed bundle's `RECOMMENDS.md` companions; install any the user selects via `Skill: kit-adopt` | `Skill: kit-adopt - output below` for selected companions, or a note that none were selected |
+| 5. Verify | direct, or `Agent: instruction-evaluator` when the target provides one | a portability/registration check result |
 
-Do not advance past a stage whose expected visible artifact is missing.
+Skip stage 4 when the installed bundle has no `RECOMMENDS.md`. Do not advance past a stage
+whose expected visible artifact is missing.
 
 ## Authority Sources
 
