@@ -63,6 +63,21 @@ Adapt each file to this project:
 
 const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
+// On Windows, `bash` in PATH resolves to the WSL relay (C:\Windows\System32\bash.exe),
+// which fails when WSL has no distro or no /bin/bash. Prefer Git Bash explicitly.
+function findBash(): string {
+  if (process.platform !== "win32") return "bash";
+  const candidates = [
+    `${process.env.PROGRAMFILES}\\Git\\bin\\bash.exe`,
+    `${process.env["PROGRAMFILES(X86)"]}\\Git\\bin\\bash.exe`,
+    "C:\\Program Files\\Git\\bin\\bash.exe",
+  ];
+  for (const c of candidates) {
+    try { if (existsSync(c)) return c; } catch { /* skip */ }
+  }
+  return "bash";
+}
+
 async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: string): Promise<number> {
   console.log(`\nRunning ${cli} to adapt adopted files — this may take a several minutes…`);
 
@@ -83,7 +98,7 @@ async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: st
   } else {
     promptFile = join(tmpdir(), `akt-prompt-${Date.now()}.txt`);
     writeFS(promptFile, prompt, "utf8");
-    child = spawn("bash", ["-c", inv.cmd, promptFile], { stdio: "inherit", cwd });
+    child = spawn(findBash(), ["-c", inv.cmd, promptFile], { stdio: "inherit", cwd });
   }
 
   // Spinner on stderr — visible when the AI CLI is silent during thinking.
