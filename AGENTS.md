@@ -97,3 +97,4 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - Keep reference docs factual; do not place behavioral rules there.
 - Prefer small, reviewable changes tied to a task or authority source.
 - Never revert user changes unless the user explicitly asks.
+- All branches must use a recognized prefix: `bugfix/`, `feature/`, or `release/`. The `pre-push` hook auto-bumps `package.json` accordingly.

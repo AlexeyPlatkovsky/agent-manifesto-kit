@@ -24,7 +24,9 @@
     "build": "tsc",
     "start": "node dist/cli.js",
     "test": "npm run build && node --test",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm test",
+    "prepare": "git config core.hooksPath .githooks",
+    "version-branch": "node .ai/scripts/bump-version.mjs"
   },
   "engines": {
     "node": ">=20"
