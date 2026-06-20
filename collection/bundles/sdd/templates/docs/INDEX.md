@@ -18,6 +18,10 @@
 | `roadmap.md` | Phases and sequencing | You need release plan or priorities |
 | `decisions/` | Architectural decisions | You need the rationale behind a choice |
 
+<!-- Add a row for each optional extension doc that exists, e.g.: -->
+<!-- | `api.md` | API / interface contracts | You need request/response details | -->
+<!-- | `db.md`  | Data model and schema     | You need entities or migrations    | -->
+
 ## Feature Registry
 
 | ID | Feature | Status | Requirements | Tasks | Scenarios | Serves |

@@ -20,6 +20,7 @@ docs/
   design.md
   testing.md
   roadmap.md
+  <extension docs, optional: api.md, db.md, security.md, operations.md, ...>
   decisions/ADR-NNN-<slug>.md
   features/F<NNN>_<short-name>/{requirements.md,tasks.md,scenarios.md}
 ```
@@ -42,6 +43,44 @@ Each document owns one concern. Do not duplicate a concern across documents; lin
 | `INDEX.md` | Live map of all docs + the feature registry with status and traceability links | Any authority or behavioral rule |
 
 `INDEX.md` is a lookup aid only. It must not contain routing, gates, or behavioral rules.
+
+## Optional Extension Docs
+
+`architecture.md` is the always-present technical overview. When a topic would bloat it,
+move the detail into an extension doc and leave a one-paragraph summary plus a link in
+`architecture.md`. Extension docs are optional, tier-independent, and added only when
+warranted.
+
+Use this recognized vocabulary so names stay consistent across projects:
+
+| Doc | Owns |
+| --- | --- |
+| `api.md` | API / interface contracts |
+| `db.md` | Persistence: data model, schema, migrations |
+| `security.md` | Threat model, authn/authz, secrets handling |
+| `operations.md` | Deployment, runtime, observability, runbooks |
+| `integrations.md` | External service contracts and dependencies |
+| `glossary.md` | Domain vocabulary |
+
+Add a doc outside this list only when none fits; record it in `INDEX.md` so it is discoverable.
+
+### When to split
+
+Split a section out of `architecture.md` when any of these hold:
+
+- it is routinely consulted on its own,
+- it has its own audience or lifecycle, or
+- it has grown large enough to hurt selective loading (context pollution).
+
+Splitting always leaves a summary + link behind in `architecture.md` and a registry row in
+`INDEX.md`. The same rule applies to any main doc, e.g. `design.md`.
+
+### Placement and escalation
+
+Extension docs default to flat files at the `docs/` root (`docs/api.md`). When one topic
+grows into a family — for example several API areas or subsystems — promote it to a
+subfolder `docs/<domain>/` with its own mini-index, and link to that index from
+`architecture.md` and `INDEX.md`. Do not create subfolders pre-emptively.
 
 ## Feature Folder Schema
 
