@@ -41,11 +41,12 @@ export function transform(content: string, provider: Provider): string {
 
 /** Remove the given keys from the leading YAML frontmatter block only. */
 function stripFrontmatterKeys(content: string, keys: string[]): string {
-  const m = /^(---\n)([\s\S]*?)(\n---)/.exec(content);
+  const m = /^(---\r?\n)([\s\S]*?)(\r?\n---)/.exec(content);
   if (!m) return content;
+  const eol = m[1].includes("\r") ? "\r\n" : "\n";
   const kept = m[2]
-    .split("\n")
+    .split(/\r?\n/)
     .filter((line) => !keys.some((k) => new RegExp(`^${k}\\s*:`).test(line)))
-    .join("\n");
+    .join(eol);
   return m[1] + kept + m[3] + content.slice(m[0].length);
 }
