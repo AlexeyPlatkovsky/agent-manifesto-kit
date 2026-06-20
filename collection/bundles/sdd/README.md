@@ -22,8 +22,9 @@ item below is also copyable on its own, subject to the dependencies listed.
 | `sdd-bootstrap` | pipeline | `pipelines/sdd-bootstrap.md` | skills + `sdd-spec-reviewer` |
 | `sdd-adopt` | pipeline | `pipelines/sdd-adopt.md` | `sdd-gap-analyzer` + skills + reviewer |
 
-> Checked in so far: the convention, templates, the three skills, and the two agents.
-> The pipelines are planned in the next phase of this bundle.
+> The SDD bundle is complete: convention, templates, three skills, two agents, and two
+> pipelines. The Part 2 `kit-adopt` installer (which copies and wires any bundle into a
+> target project) is tracked separately from this bundle.
 
 ## The document set it produces
 
