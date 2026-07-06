@@ -37,6 +37,12 @@ Adopt the Spec-Driven Development bundle for Claude:
 agentkit adopt sdd --provider claude
 ```
 
+Adopt the QA Automation bundle for browser and automated-test workflows:
+
+```bash
+agentkit adopt qa-automation --provider claude
+```
+
 Adopt a single skill for Codex:
 
 ```bash
@@ -62,8 +68,9 @@ Agent Manifesto Kit ships reusable instruction assets:
 | Bundles | Cohesive groups of capabilities designed to be adopted together |
 
 Bundles install their items into the provider's expected type-specific directories. For
-example, adopting the `sdd` bundle for Claude places skills under `.claude/skills/`,
-agents under `.claude/agents/`, and related bundle files under the Claude project root.
+example, adopting the `sdd` or `qa-automation` bundle for Claude places skills under
+`.claude/skills/`, agents under `.claude/agents/`, and non-capability bundle directories,
+such as templates, under `.claude/<bundle-name>/`.
 
 ## Commands
 
