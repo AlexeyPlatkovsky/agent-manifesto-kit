@@ -1,11 +1,18 @@
 #!/bin/sh
-# Pre-push hook — bumps package.json version for branch-prefixed work.
-# Runs only on branches matching bugfix/*, feature/*, or release/*.
+# Pre-push hook — verifies branch names for release hygiene.
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 case "$BRANCH" in
   bugfix/*|feature/*|release/*)
-    node .ai/scripts/bump-version.mjs
+    exit 0
+    ;;
+  main)
+    exit 0
+    ;;
+  *)
+    echo "pre-push: branch must start with bugfix/, feature/, or release/." >&2
+    echo "pre-push: current branch is '$BRANCH'." >&2
+    exit 1
     ;;
 esac
