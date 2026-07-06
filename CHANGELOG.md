@@ -2,7 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
-This project uses [semantic-release](https://semantic-release.gitbook.io/) to update this file automatically from Conventional Commits when changes land on `main`.
+Maintain this file as part of product or release-affecting work. Release automation may also update it from Conventional Commits when changes land on `main`.
+
+## 1.1.0 - 2026-07-06
+
+### Added
+
+- Added the `qa-automation` bundle with QA test creation, test debugging, Playwright CLI, exploration, review, and verification capabilities.
+
+### Changed
+
+- Updated project documentation for the released post-1.0 workflow and ongoing feature development.
+- Documented and configured the semantic-release GitHub failure-reporting workaround while keeping GitHub release publishing enabled.
 
 ## 1.0.0 - 2026-06-20
 

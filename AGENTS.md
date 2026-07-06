@@ -98,3 +98,4 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - Prefer small, reviewable changes tied to a task or authority source.
 - Never revert user changes unless the user explicitly asks.
 - Work branches must use a recognized prefix: `bugfix/`, `feature/`, or `release/`. The `pre-push` hook enforces this naming rule without mutating files or creating commits.
+- For product or release-affecting work, update `package.json`, `package-lock.json`, and `CHANGELOG.md` in the same task unless the user explicitly asks to defer release bookkeeping. Use semantic versioning: patch for fixes, minor for new features, and major for breaking changes. If the version impact is ambiguous, defer the version choice as an ambiguity case; do not guess.

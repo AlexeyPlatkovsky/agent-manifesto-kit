@@ -47,6 +47,7 @@ Known triggers include:
 - checking that a skill does not contain routing or orchestration logic
 - checking that an agent is justified by isolation or specialized judgment
 - keeping README, changelog, release workflow notes, and project specification aligned
+- keeping package version metadata and changelog entries aligned with product or release-affecting changes
 - validating adoption paths and package behavior before release
 - deciding whether a proposed capability belongs in the next feature release
 
@@ -96,6 +97,7 @@ Known triggers include:
 - For task work, start from the active user request and the smallest relevant product/workshop docs.
 - Before adding a new rule or structure, check whether the implementation code, existing product docs, or `.manifesto/` already owns that concern.
 - When modifying a deliverable asset, consider whether README guidance, adoption examples, release notes, catalog scanning behavior, or provider transforms also need updates.
+- For product or release-affecting changes, update `package.json`, `package-lock.json`, and `CHANGELOG.md` before closure unless the user explicitly defers release bookkeeping.
 - When external practices are useful, treat them as candidate guidance until accepted into local project conventions or docs.
 - Keep implementation changes small enough to review against the relevant capability boundary.
 
