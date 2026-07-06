@@ -13,7 +13,7 @@ Maintain this file as part of product or release-affecting work. Release automat
 ### Changed
 
 - Updated project documentation for the released post-1.0 workflow and ongoing feature development.
-- Documented and configured the semantic-release GitHub failure-reporting workaround while keeping GitHub release publishing enabled.
+- Updated the release workflow to use the semantic-release 25 plugin line with npm trusted publishing through GitHub Actions OIDC.
 
 ## 1.0.0 - 2026-06-20
 
