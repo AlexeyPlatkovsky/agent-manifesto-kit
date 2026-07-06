@@ -119,7 +119,7 @@ External best-practice research is allowed broadly for capability and library pr
 - Version 1.0.0 was published on 2026-06-20.
 - Release history is maintained in `CHANGELOG.md`.
 - Release automation runs from `.github/workflows/release.yml` on pushes to `main`.
-- `.releaserc.json` keeps GitHub release publishing enabled but disables GitHub failure issue creation with `failCommentCondition: false` to avoid the `@semantic-release/github` v11 fail-hook owner parsing bug.
+- Release automation uses the semantic-release 25 plugin line so npm trusted publishing can use GitHub Actions OIDC instead of long-lived npm tokens.
 - New work should be treated as feature development unless the user identifies it as release maintenance, bug fixing, or documentation correction.
 
 ## Current Instruction Entrypoints
