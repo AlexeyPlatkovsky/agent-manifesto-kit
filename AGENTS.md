@@ -11,6 +11,7 @@ Use it for every AI tool working in this repository. Tool-specific files are ada
 - Treat `collection/` as product output shipped to consumers.
 - Treat `.ai/` as workshop tooling for building this kit.
 - Treat `.manifesto/` as the vendored Agent Manifesto authority layer.
+- Treat `.taskpilot/` as local project task state managed through Taskpilot.
 - Treat `.docs/` and `.ai/docs/project_specification.md` as planning and project authority.
 - Do not create, edit, or delete `collection/` deliverable assets unless the user explicitly requests product asset work.
 - Do not create pipelines, templates, CLI installers, or extra provider targets unless the roadmap or user explicitly changes scope.
@@ -69,6 +70,7 @@ Non-trivial routed work must include:
 - Skill: `.ai/skills/validation-report/SKILL.md`
 - Skill: `.ai/skills/task-complete/SKILL.md`
 - Skill: `.ai/skills/skill-authoring/SKILL.md`
+- Skill: `.ai/skills/taskpilot/SKILL.md`
 - Pipeline: `.ai/pipelines/skill-authoring.md`
 - Convention: `.ai/conventions/ambiguity-resolution.md`
 - Convention: `.ai/conventions/capability-portability.md`
@@ -97,6 +99,10 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - Keep reference docs factual; do not place behavioral rules there.
 - Prefer small, reviewable changes tied to a task or authority source.
 - Never revert user changes unless the user explicitly asks.
-- Work branches must use a recognized prefix: `bugfix/`, `feature/`, or `release/`. The `pre-push` hook enforces this naming rule without mutating files or creating commits.
+- Work branches must use a recognized prefix: `bugfix/`, `feature/`, or `release/`. The `pre-push` hook enforces recognized prefixes without mutating files or creating commits.
+- For non-trivial work that is not a bug fix, not trivial, and not continuation of ongoing branch work, check Taskpilot for a suitable item before creating a branch. If no suitable item exists, suggest creating one and wait for user approval.
+- Taskpilot-backed feature/work branches use `feature/<task-id>-<slug>`, where `<task-id>` is lowercase `amk-NNN` derived from the Taskpilot item ID by zero-padding its numeric suffix, for example `feature/amk-001-add-new-bundle`.
+- Bug fixes, trivial changes, and continuing work on an existing suitable branch may use the recognized prefix strategy without creating a new Taskpilot item.
+- Taskpilot item deletion is a confirmation-gated soft delete. Require explicit user confirmation naming the item ID and title before setting status to `deleted`.
 - Treat `package.json` as the release-version source of truth. Release automation publishes that exact version; do not rely on commit-message-derived versioning.
 - For product output, package contents, release workflow, or published metadata changes, update `package.json`, `package-lock.json`, and `CHANGELOG.md` in the same task unless the user explicitly asks to defer release bookkeeping. Use semantic versioning: patch for fixes, minor for new features, and major for breaking changes. If the version impact is ambiguous, defer the version choice as an ambiguity case; do not guess.

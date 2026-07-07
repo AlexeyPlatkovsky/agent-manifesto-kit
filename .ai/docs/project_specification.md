@@ -35,6 +35,10 @@ Exact AI tools currently in use or required immediately:
 
 Claude-native `collection/` assets are the source-of-truth product format. Codex and AI-agnostic targets are supported through deterministic provider transforms rather than separate hand-authored source assets.
 
+Local workflow tooling currently in use:
+
+- Taskpilot for local-first project task tracking.
+
 ## Known Capability Triggers
 
 Known triggers include:
@@ -50,6 +54,7 @@ Known triggers include:
 - keeping package version metadata and changelog entries aligned with product or release-affecting changes
 - validating adoption paths and package behavior before release
 - deciding whether a proposed capability belongs in the next feature release
+- checking or creating local Taskpilot items for non-trivial work that should be reflected in branch names
 
 ## Domain Vocabulary
 
@@ -76,6 +81,7 @@ Known triggers include:
 - `.manifesto/MANIFEST.md` for framework values and principles.
 - `.manifesto/IMPLEMENTATION.md` for framework mechanics, layers, gates, and file conventions.
 - `.manifesto/protocols/*.md` and `.manifesto/conventions/*.md` for framework protocols and shared standards.
+- `.taskpilot/project.yaml` for local Taskpilot project identity and key configuration.
 
 ## Quality Expectations
 
@@ -95,6 +101,7 @@ Known triggers include:
 
 - Read the relevant product, workshop, and implementation documents before changing capability assets.
 - For task work, start from the active user request and the smallest relevant product/workshop docs.
+- Taskpilot is initialized for this repository with key `amk`; branch task segments use lowercase `amk-NNN` form derived from canonical Taskpilot item IDs.
 - Before adding a new rule or structure, check whether the implementation code, existing product docs, or `.manifesto/` already owns that concern.
 - When modifying a deliverable asset, consider whether README guidance, adoption examples, release notes, catalog scanning behavior, or provider transforms also need updates.
 - Release-affecting changes are expected to keep package metadata and changelog entries aligned before closure unless the user explicitly defers release bookkeeping.

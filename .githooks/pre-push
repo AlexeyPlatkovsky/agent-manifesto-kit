@@ -4,14 +4,21 @@
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 case "$BRANCH" in
-  bugfix/*|feature/*|release/*)
+  main)
     exit 0
     ;;
-  main)
+  bugfix/*|release/*)
+    exit 0
+    ;;
+  feature/amk-[0-9][0-9][0-9]-*)
+    exit 0
+    ;;
+  feature/*)
     exit 0
     ;;
   *)
     echo "pre-push: branch must start with bugfix/, feature/, or release/." >&2
+    echo "pre-push: non-trivial feature work should use feature/amk-NNN-slug." >&2
     echo "pre-push: current branch is '$BRANCH'." >&2
     exit 1
     ;;
