@@ -23,6 +23,8 @@ jobs:
         with:
           fetch-depth: 0 # semantic-release needs full history + tags
           persist-credentials: false
+      - name: Fetch release tags
+        run: git fetch --force --tags origin
       - uses: actions/setup-node@v4
         with:
           node-version: 24.10.0
@@ -30,6 +32,26 @@ jobs:
           cache: npm
       # Trusted publishing (OIDC) needs npm >= 11.5.1.
       - run: npm install -g npm@latest
+      - name: Verify published baseline tag
+        run: |
+          package_name="$(node -p "require('./package.json').name")"
+          published_version="$(npm view "$package_name" version --silent 2>/dev/null || true)"
+
+          if [ -z "$published_version" ]; then
+            exit 0
+          fi
+
+          if ! git rev-parse -q --verify "refs/tags/v$published_version" >/dev/null; then
+            echo "::error::npm has $package_name@$published_version, but tag v$published_version is not present in this checkout. semantic-release would treat the package as unreleased and may try to publish an existing version."
+            exit 1
+          fi
+
+          published_git_head="$(npm view "$package_name@$published_version" gitHead --silent 2>/dev/null || true)"
+          tag_head="$(git rev-list -n 1 "v$published_version")"
+
+          if [ -n "$published_git_head" ] && [ "$tag_head" != "$published_git_head" ]; then
+            echo "::warning::npm has $package_name@$published_version from $published_git_head, but tag v$published_version points to $tag_head. The published gitHead may be unavailable in repository history; ensure the next release is driven by a conventional commit after this tag."
+          fi
       - run: npm ci
       - run: npm test
       - run: npx semantic-release
