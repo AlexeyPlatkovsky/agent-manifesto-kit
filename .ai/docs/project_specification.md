@@ -70,7 +70,7 @@ Known triggers include:
 
 - `README.md` for public package usage, CLI commands, providers, and adoption examples.
 - `CHANGELOG.md` for published release history.
-- `.github/workflows/release.yml` and `.releaserc.json` for release automation.
+- `.github/workflows/release.yml` for release automation.
 - `src/catalog.ts`, `src/commands/adopt.ts`, and `src/providers.ts` for package behavior.
 - `collection/` for shipped skills, agents, pipelines, conventions, bundles, and templates.
 - `.manifesto/MANIFEST.md` for framework values and principles.
@@ -97,7 +97,7 @@ Known triggers include:
 - For task work, start from the active user request and the smallest relevant product/workshop docs.
 - Before adding a new rule or structure, check whether the implementation code, existing product docs, or `.manifesto/` already owns that concern.
 - When modifying a deliverable asset, consider whether README guidance, adoption examples, release notes, catalog scanning behavior, or provider transforms also need updates.
-- For product or release-affecting changes, update `package.json`, `package-lock.json`, and `CHANGELOG.md` before closure unless the user explicitly defers release bookkeeping.
+- Release-affecting changes are expected to keep package metadata and changelog entries aligned before closure unless the user explicitly defers release bookkeeping.
 - When external practices are useful, treat them as candidate guidance until accepted into local project conventions or docs.
 - Keep implementation changes small enough to review against the relevant capability boundary.
 
@@ -119,9 +119,10 @@ External best-practice research is allowed broadly for capability and library pr
 - Version 1.0.0 was published on 2026-06-20.
 - Release history is maintained in `CHANGELOG.md`.
 - Release automation runs from `.github/workflows/release.yml` on pushes to `main`.
-- Release automation uses the semantic-release 25 plugin line so npm trusted publishing can use GitHub Actions OIDC instead of long-lived npm tokens.
-- Release automation fetches tags explicitly, verifies that the latest npm-published version has a matching `v<version>` git tag, and warns when that tag differs from npm's recorded `gitHead`.
-- Release automation must not push generated release commits directly to protected `main`; version and changelog updates are maintained before merge.
+- Release automation treats `package.json` as the release-version source of truth and publishes that exact version to npm.
+- Release automation uses npm trusted publishing through GitHub Actions OIDC instead of long-lived npm tokens.
+- Release automation creates or verifies the matching `v<version>` GitHub release for the resolved package version.
+- Release automation must not push generated release commits directly to protected `main`; package version and changelog updates are maintained before merge.
 - New work should be treated as feature development unless the user identifies it as release maintenance, bug fixing, or documentation correction.
 
 ## Current Instruction Entrypoints
