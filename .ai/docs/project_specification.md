@@ -120,6 +120,7 @@ External best-practice research is allowed broadly for capability and library pr
 - Release history is maintained in `CHANGELOG.md`.
 - Release automation runs from `.github/workflows/release.yml` on pushes to `main`.
 - Release automation uses the semantic-release 25 plugin line so npm trusted publishing can use GitHub Actions OIDC instead of long-lived npm tokens.
+- Release automation fetches tags explicitly, verifies that the latest npm-published version has a matching `v<version>` git tag, and warns when that tag differs from npm's recorded `gitHead`.
 - Release automation must not push generated release commits directly to protected `main`; version and changelog updates are maintained before merge.
 - New work should be treated as feature development unless the user identifies it as release maintenance, bug fixing, or documentation correction.
 
