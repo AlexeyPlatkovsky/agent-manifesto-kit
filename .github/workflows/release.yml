@@ -10,9 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write # create tags, commits, and GitHub releases
-  issues: write # comment on released issues
-  pull-requests: write # comment on released PRs
+  contents: write # create tags and GitHub releases
   id-token: write # npm publish provenance (OIDC)
 
 jobs:
@@ -21,8 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0 # semantic-release needs full history + tags
-          persist-credentials: false
+          fetch-depth: 0 # release checks need full history + tags
       - name: Fetch release tags
         run: git fetch --force --tags origin
       - uses: actions/setup-node@v4
@@ -32,28 +29,86 @@ jobs:
           cache: npm
       # Trusted publishing (OIDC) needs npm >= 11.5.1.
       - run: npm install -g npm@latest
-      - name: Verify published baseline tag
+      - run: npm ci
+      - run: npm test
+      - name: Resolve package release
+        id: release
         run: |
           package_name="$(node -p "require('./package.json').name")"
-          published_version="$(npm view "$package_name" version --silent 2>/dev/null || true)"
+          package_version="$(node -p "require('./package.json').version")"
+          latest_version="$(npm view "$package_name" version --silent 2>/dev/null || true)"
+          exact_version="$(npm view "$package_name@$package_version" version --silent 2>/dev/null || true)"
 
-          if [ -z "$published_version" ]; then
-            exit 0
-          fi
-
-          if ! git rev-parse -q --verify "refs/tags/v$published_version" >/dev/null; then
-            echo "::error::npm has $package_name@$published_version, but tag v$published_version is not present in this checkout. semantic-release would treat the package as unreleased and may try to publish an existing version."
+          if [ "$package_version" = "0.0.0-development" ]; then
+            echo "::error::Refusing to publish development placeholder version."
             exit 1
           fi
 
-          published_git_head="$(npm view "$package_name@$published_version" gitHead --silent 2>/dev/null || true)"
-          tag_head="$(git rev-list -n 1 "v$published_version")"
+          node -e "
+            const [target, latest] = process.argv.slice(1);
+            const parse = (version) => {
+              const match = /^(\\d+)\\.(\\d+)\\.(\\d+)(?:-.+)?$/.exec(version);
+              if (!match) throw new Error('Unsupported semver: ' + version);
+              return match.slice(1).map(Number);
+            };
+            parse(target);
+            if (latest) {
+              const targetParts = parse(target);
+              const latestParts = parse(latest);
+              const comparison = targetParts.findIndex((part, index) => part !== latestParts[index]);
+              if (comparison !== -1 && targetParts[comparison] < latestParts[comparison]) {
+                throw new Error('package.json version ' + target + ' is lower than latest npm version ' + latest);
+              }
+            }
+          " "$package_version" "$latest_version"
 
-          if [ -n "$published_git_head" ] && [ "$tag_head" != "$published_git_head" ]; then
-            echo "::warning::npm has $package_name@$published_version from $published_git_head, but tag v$published_version points to $tag_head. The published gitHead may be unavailable in repository history; ensure the next release is driven by a conventional commit after this tag."
+          {
+            echo "package_name=$package_name"
+            echo "package_version=$package_version"
+          } >> "$GITHUB_OUTPUT"
+
+          if [ -n "$exact_version" ]; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+            echo "$package_name@$package_version already exists on npm; skipping npm publish and ensuring GitHub release."
+          else
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
           fi
-      - run: npm ci
-      - run: npm test
-      - run: npx semantic-release
+      - name: Publish npm package
+        if: steps.release.outputs.already_published == 'false'
+        run: npm publish --provenance --access public
+      - name: Prepare GitHub release notes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_VERSION: ${{ steps.release.outputs.package_version }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const version = process.env.PACKAGE_VERSION;
+          const lines = fs.readFileSync('CHANGELOG.md', 'utf8').split(/\r?\n/);
+          const start = lines.findIndex((line) => line.startsWith(`## ${version}`));
+          const end = start === -1 ? -1 : lines.findIndex((line, index) => index > start && line.startsWith('## '));
+          const section = start === -1 ? [] : lines.slice(start + 1, end === -1 ? undefined : end);
+          const notes = section.join('\n').trim() || `Release ${version}`;
+
+          fs.writeFileSync('release-notes.md', `${notes}\n`);
+          NODE
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_VERSION: ${{ steps.release.outputs.package_version }}
+        run: |
+          tag="v$PACKAGE_VERSION"
+
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            tag_head="$(git rev-list -n 1 "$tag")"
+            if [ "$tag_head" != "$GITHUB_SHA" ]; then
+              echo "::error::$tag already points to $tag_head, not this release commit $GITHUB_SHA."
+              exit 1
+            fi
+          fi
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "$tag GitHub release already exists."
+          else
+            gh release create "$tag" --target "$GITHUB_SHA" --title "$tag" --notes-file release-notes.md
+          fi
