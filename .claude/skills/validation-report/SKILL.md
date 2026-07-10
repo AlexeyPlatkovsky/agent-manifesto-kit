@@ -11,7 +11,7 @@ Convert verification evidence into a visible validation artifact for non-trivial
 
 ## Template Reference
 
-This skill follows `.ai/docs/skill-template.md`.
+This skill follows `.claude/docs/skill-template.md`.
 
 ## Scope
 

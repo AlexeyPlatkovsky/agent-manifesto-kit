@@ -13,7 +13,7 @@ This agent is read-only. It does not modify files.
 
 ## Template Reference
 
-This agent follows `.ai/docs/agent-template.md`.
+This agent follows `.claude/docs/agent-template.md`.
 
 ## Scope
 

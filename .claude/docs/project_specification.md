@@ -68,7 +68,7 @@ Known triggers include:
 - Provider adapter: the agent that translates source assets to target provider formats.
 - Source-of-truth format: Claude-native assets under `collection/`.
 - Product folder: `collection/`, containing assets shipped to consumers.
-- Workshop folder: `.ai/`, containing project-internal AI tooling and docs.
+- Workshop folder: `.claude/`, containing project-internal AI tooling and docs.
 - Consumer project: a project that installs or copies assets from this kit.
 
 ## Authoritative Local Sources
@@ -85,7 +85,7 @@ Known triggers include:
 
 ## Quality Expectations
 
-- Preserve the distinction between `collection/` as product and `.ai/` as workshop.
+- Preserve the distinction between `collection/` as product and `.claude/` as workshop.
 - Keep reusable assets modular, atomic, and selectively loaded.
 - Avoid duplicating Agent Manifesto rules inside kit assets when a framework source already owns the concern.
 - Keep skills execution-focused and free of routing or orchestration.
@@ -119,7 +119,7 @@ External best-practice research is allowed broadly for capability and library pr
 
 - The kit should not replace Agent Manifesto.
 - The kit should not mix project-internal AI tooling into consumer-facing deliverable assets.
-- The runtime catalog should not index `.ai/` workshop files.
+- The runtime catalog should not index `.claude/` workshop files.
 
 ## Released State
 
@@ -136,5 +136,5 @@ External best-practice research is allowed broadly for capability and library pr
 
 - `AGENTS.md` is the canonical root operational contract for this AI-agnostic project.
 - `CLAUDE.md` is a Claude Code adapter that imports and defers to `AGENTS.md`.
-- Project-internal instruction capabilities live under `.ai/`.
-- Consumer-facing deliverable assets still live under `collection/` and are not indexed from `.ai/`.
+- Project-internal instruction capabilities live under `.claude/`.
+- Consumer-facing deliverable assets still live under `collection/` and are not indexed from `.claude/`.

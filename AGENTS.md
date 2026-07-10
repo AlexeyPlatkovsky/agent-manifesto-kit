@@ -9,21 +9,23 @@ Use it for every AI tool working in this repository. Tool-specific files are ada
 ## Project Boundaries
 
 - Treat `collection/` as product output shipped to consumers.
-- Treat `.ai/` as workshop tooling for building this kit.
+- Treat `.claude/` as workshop tooling for building this kit (skills, agents, pipelines, conventions, docs, scripts, and manager routing), in addition to its usual role holding Claude Code settings.
 - Treat `.manifesto/` as the vendored Agent Manifesto authority layer.
 - Treat `.taskpilot/` as local project task state managed through Taskpilot.
-- Treat `.docs/` and `.ai/docs/project_specification.md` as planning and project authority.
+- Treat `.docs/` and `.claude/docs/project_specification.md` as planning and project authority.
 - Do not create, edit, or delete `collection/` deliverable assets unless the user explicitly requests product asset work.
 - Do not create pipelines, templates, CLI installers, or extra provider targets unless the roadmap or user explicitly changes scope.
+
+**Deviation from the vendored framework standard:** `.manifesto/IMPLEMENTATION.md` prescribes `.ai/` as the framework-standard path for workshop skills, agents, pipelines, conventions, and docs. This repo deliberately places that same content under `.claude/` instead, so Claude Code's built-in Skill/Agent auto-discovery can invoke workshop capabilities directly. This is a knowing, permanent local deviation from the vendored standard — not an oversight — accepted 2026-07-10. Do not "fix" it by moving content back to `.ai/` without the user's explicit direction.
 
 ## Authority Order
 
 1. User instructions in the active conversation.
 2. This root contract.
-3. `.ai/docs/project_specification.md`.
+3. `.claude/docs/project_specification.md`.
 4. Relevant `.docs/` planning or task files.
 5. `.manifesto/MANIFEST.md`, `.manifesto/IMPLEMENTATION.md`, and relevant `.manifesto/conventions/`.
-6. On-demand `.ai/` capabilities.
+6. On-demand `.claude/` capabilities.
 
 If authorities conflict, stop and surface the conflict before changing files.
 
@@ -37,7 +39,7 @@ Before doing anything, determine whether the user is asking or directing.
 
 ## Ambiguity Resolution
 
-When acting on a user-approved task, apply `.ai/conventions/ambiguity-resolution.md`.
+When acting on a user-approved task, apply `.claude/conventions/ambiguity-resolution.md`.
 
 - Implement unambiguous fixes without pausing when one solution is clearly best.
 - Defer ambiguous decisions when two or more materially valid solutions exist.
@@ -52,7 +54,7 @@ When acting on a user-approved task, apply `.ai/conventions/ambiguity-resolution
 Before creating, editing, or deleting files, classify the task out loud.
 
 - If the task is trivial and low risk, proceed directly and state that classification.
-- If the task is non-trivial, medium risk, high risk, or system-level, load `.ai/kit-manager.md` and emit its routing artifact before implementation.
+- If the task is non-trivial, medium risk, high risk, or system-level, load `.claude/kit-manager.md` and emit its routing artifact before implementation.
 - If unsure, treat the task as non-trivial.
 - If the user says "go ahead", "do it", "implement it", "fix it", or equivalent after discussion, run this gate again.
 
@@ -60,27 +62,27 @@ Non-trivial routed work must include:
 - a visible manager routing artifact
 - a validation report
 - documentation maintenance when project behavior, structure, commands, workflows, domain facts, or known failure modes changed
-- a task-complete closure table
+- a kit-task-complete closure table
 
 ## Capability Registry
 
-- Manager: `.ai/kit-manager.md`
-- Skill: `.ai/skills/brainstorm/SKILL.md`
-- Skill: `.ai/skills/documentation-maintenance/SKILL.md`
-- Skill: `.ai/skills/validation-report/SKILL.md`
-- Skill: `.ai/skills/task-complete/SKILL.md`
-- Skill: `.ai/skills/skill-authoring/SKILL.md`
-- Skill: `.ai/skills/taskpilot/SKILL.md`
-- Pipeline: `.ai/pipelines/skill-authoring.md`
-- Convention: `.ai/conventions/ambiguity-resolution.md`
-- Convention: `.ai/conventions/capability-portability.md`
-- Agent: `.ai/agents/instruction-evaluator.md`
-- Agent: `.ai/agents/artifact-acceptance-tester.md`
-- Agent: `.ai/agents/artifact-enricher.md`
+- Manager: `.claude/kit-manager.md`
+- Skill: `.claude/skills/kit-brainstorm/SKILL.md`
+- Skill: `.claude/skills/kit-documentation-maintenance/SKILL.md`
+- Skill: `.claude/skills/validation-report/SKILL.md`
+- Skill: `.claude/skills/kit-task-complete/SKILL.md`
+- Skill: `.claude/skills/skill-authoring/SKILL.md`
+- Skill: `.claude/skills/taskpilot/SKILL.md`
+- Pipeline: `.claude/pipelines/skill-authoring.md`
+- Convention: `.claude/conventions/ambiguity-resolution.md`
+- Convention: `.claude/conventions/capability-portability.md`
+- Agent: `.claude/agents/instruction-evaluator.md`
+- Agent: `.claude/agents/artifact-acceptance-tester.md`
+- Agent: `.claude/agents/artifact-enricher.md`
 
-Load only the capability needed for the current gate or task.
+Load only the capability needed for the current gate or task. Skills and agents under `.claude/` are also directly invocable through Claude Code's native Skill/Agent tools; the `kit-` prefix on `kit-brainstorm`, `kit-documentation-maintenance`, and `kit-task-complete` avoids name collisions with the product skills of the same base name shipped under `collection/skills/`.
 
-Pipelines under `.ai/pipelines/` are pre-baked routing plans the manager adopts when their "When to Apply" matches the request. They sequence existing skills and agents; they do not implement step logic and do not replace `kit-manager`.
+Pipelines under `.claude/pipelines/` are pre-baked routing plans the manager adopts when their "When to Apply" matches the request. They sequence existing skills and agents; they do not implement step logic and do not replace `kit-manager`.
 
 ## Required Reviews
 
@@ -92,17 +94,21 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 
 ## Work Standards
 
-- Preserve the `collection/` product and `.ai/` workshop distinction.
+- Preserve the `collection/` product and `.claude/` workshop distinction.
 - Keep capabilities atomic and project-local.
 - Keep routing out of skills.
 - Keep conventions factual and shared; do not turn them into procedures.
 - Keep reference docs factual; do not place behavioral rules there.
 - Prefer small, reviewable changes tied to a task or authority source.
 - Never revert user changes unless the user explicitly asks.
+- Never implement non-trivial work directly on `main`, unless the user explicitly says to work on `main`. Non-trivial work always happens on a properly named branch, created from `origin/main`.
 - Work branches must use a recognized prefix: `bugfix/`, `feature/`, or `release/`. The `pre-push` hook enforces recognized prefixes without mutating files or creating commits.
 - For non-trivial work that is not a bug fix, not trivial, and not continuation of ongoing branch work, check Taskpilot for a suitable item before creating a branch. If no suitable item exists, suggest creating one and wait for user approval.
-- Taskpilot-backed feature/work branches use `feature/<task-id>-<slug>`, where `<task-id>` is lowercase `amk-NNN` derived from the Taskpilot item ID by zero-padding its numeric suffix, for example `feature/amk-001-add-new-bundle`.
+- Taskpilot-backed work branches use `<prefix>/<task-id>-<slug>`, where `<prefix>` is `feature/` for `feature`-type items or `bugfix/` for `bug`-type items, and `<task-id>` is lowercase `amk-NNN` derived from the Taskpilot item ID by zero-padding its numeric suffix, for example `feature/amk-001-add-new-bundle` or `bugfix/amk-002-fix-adopt-cli-adaptation-handoff`.
 - Bug fixes, trivial changes, and continuing work on an existing suitable branch may use the recognized prefix strategy without creating a new Taskpilot item.
+- When creating a new branch for non-trivial work, branch it from `origin/main` and push it to the remote immediately after creation (before further commits), so the branch is tracked from the start.
+- When investigation during a task reveals that the actual problem is incorrect existing behavior rather than new work, that is a bug: update the Taskpilot item's `type` to `bug` (and its branch prefix to `bugfix/` if a branch has not been created yet) rather than leaving it classified as a `task` or `feature`.
+- Before implementing an approved task, validate it against the current codebase (read the affected files, confirm assumptions, check for edge cases the task description doesn't mention). If this validation surfaces ambiguity, a gap, or an uncovered case with more than one materially valid resolution, stop and clarify with the user before writing code, even if the task was already approved — approval covers the goal, not an unstated implementation choice.
 - Taskpilot item deletion is a confirmation-gated soft delete. Require explicit user confirmation naming the item ID and title before setting status to `deleted`.
 - Treat `package.json` as the release-version source of truth. Release automation publishes that exact version; do not rely on commit-message-derived versioning.
 - For product output, package contents, release workflow, or published metadata changes, update `package.json`, `package-lock.json`, and `CHANGELOG.md` in the same task unless the user explicitly asks to defer release bookkeeping. Use semantic versioning: patch for fixes, minor for new features, and major for breaking changes. If the version impact is ambiguous, defer the version choice as an ambiguity case; do not guess.

@@ -24,7 +24,7 @@ Evaluate new or materially changed:
 
 Read only the smallest relevant set:
 - `AGENTS.md`
-- `.ai/docs/project_specification.md`
+- `.claude/docs/project_specification.md`
 - target artifacts
 - directly related referenced artifacts
 

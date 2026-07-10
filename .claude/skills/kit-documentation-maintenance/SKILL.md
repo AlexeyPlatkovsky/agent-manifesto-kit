@@ -1,5 +1,5 @@
 ---
-name: documentation-maintenance
+name: kit-documentation-maintenance
 description: Checks whether completed non-trivial project changes require documentation updates and applies narrow updates when behavior, interfaces, workflows, or structure changed.
 ---
 
@@ -11,7 +11,7 @@ Keep Agent Manifesto Kit documentation synchronized with completed changes.
 
 ## Template Reference
 
-This skill follows `.ai/docs/skill-template.md`.
+This skill follows `.claude/docs/skill-template.md`.
 
 ## Scope
 
@@ -24,7 +24,7 @@ This skill follows `.ai/docs/skill-template.md`.
 
 - Summary of actual changes made.
 - Relevant diff or changed file list.
-- Authoritative docs from `.ai/docs/project_specification.md`, `.docs/`, and `README.md`.
+- Authoritative docs from `.claude/docs/project_specification.md`, `.docs/`, and `README.md`.
 
 ## Procedure
 
@@ -38,7 +38,7 @@ This skill follows `.ai/docs/skill-template.md`.
 
 Emit:
 
-`Skill: documentation-maintenance - output below`
+`Skill: kit-documentation-maintenance - output below`
 
 Include:
 

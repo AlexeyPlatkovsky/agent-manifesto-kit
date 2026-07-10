@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 import { scanCatalog, scanBundles, findCapability, findBundle } from "../dist/catalog.js";
 import { destinationFor, bundleExtrasDestination, isProvider, wiringHint } from "../dist/providers.js";
-import { adopt } from "../dist/commands/adopt.js";
+import { adopt, buildPrompt, CLI_INVOCATIONS } from "../dist/commands/adopt.js";
 import { transform, lint } from "../dist/portability.js";
 
 const AGENT_FIXTURE = `---
@@ -221,6 +221,43 @@ test("adopting an agent for codex strips the tools frontmatter on disk", async (
     assert.equal(await adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
     const content = readFileSync(join(dir, ".codex/agents/code-reviewer.md"), "utf8");
     assert.ok(!/^tools:/m.test(content), "adopted codex agent should have no tools frontmatter");
+  });
+});
+
+test("buildPrompt uses explicit approval/action language, not proposal language", () => {
+  const prompt = buildPrompt([".claude/skills/brainstorm/SKILL.md"]);
+  assert.match(prompt, /explicit.*approval|approved/i);
+  assert.match(prompt, /do not ask for confirmation/i);
+  assert.match(prompt, /not a proposal/i);
+  assert.ok(prompt.includes(".claude/skills/brainstorm/SKILL.md"));
+});
+
+test("codex invocation runs writable, no-approval automation appropriate for a CLI handoff", () => {
+  const codex = CLI_INVOCATIONS.codex;
+  assert.equal(codex.kind, "stdin");
+  assert.ok(codex.args.includes("--sandbox"));
+  assert.ok(codex.args.includes("workspace-write"), "codex must not inherit a read-only sandbox");
+  assert.ok(codex.args.includes("--ask-for-approval"));
+  assert.ok(codex.args.includes("never"), "codex must not stop mid-run to ask for approval");
+});
+
+test("claude invocation pipes the prompt via stdin so large prompts never hit argv limits", () => {
+  const claude = CLI_INVOCATIONS.claude;
+  assert.equal(claude.kind, "stdin");
+  assert.ok(!claude.args.some((a) => a.length > 200), "prompt must not be embedded in argv");
+});
+
+test("adopt --cli includes copied bundle extras (e.g. SDD templates) in the adaptation file list", async () => {
+  await withTmp(async (dir) => {
+    const files = [];
+    assert.equal(
+      await adopt({ name: "sdd", provider: "claude", projectRoot: dir }, (p) => files.push(p)),
+      0,
+    );
+    assert.ok(
+      files.some((f) => f.includes(join(".claude", "sdd", "templates"))),
+      "bundle extras copied to disk should also be tracked for adaptation",
+    );
   });
 });
 

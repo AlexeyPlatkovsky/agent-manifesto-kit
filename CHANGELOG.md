@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.1.1 - 2026-07-10
+
+### Fixed
+
+- Fixed `agentkit adopt --cli` so copied capabilities are actually adapted in target projects: Codex now runs with a writable sandbox and no approval prompts (`--sandbox workspace-write --ask-for-approval never`) instead of inheriting a read-only, proposal-only sandbox; the adaptation prompt now uses explicit approval/action language so it is treated as an actionable task rather than context; Claude Code now receives the prompt over stdin instead of argv so large prompts no longer risk hitting OS argument-length limits; copied bundle extras (e.g. SDD templates) are now included in the adaptation file list.
+
 ## 1.1.0 - 2026-07-07
 
 ### Added
