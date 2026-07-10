@@ -94,7 +94,7 @@ function findBash(): string {
   return "bash";
 }
 
-async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: string): Promise<number> {
+export async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: string): Promise<number> {
   console.log(`\nRunning ${cli} to adapt adopted files — this may take a several minutes…`);
 
   let promptFile: string | undefined;
@@ -186,9 +186,11 @@ function walkMd(dir: string): string[] {
   return out;
 }
 
+// Dotfiles (.gitkeep, .DS_Store, ...) are housekeeping, not adaptation-worthy content.
 function walkAll(dir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith(".")) continue;
     const p = join(dir, entry.name);
     if (entry.isDirectory()) out.push(...walkAll(p));
     else out.push(p);

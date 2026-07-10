@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 import { scanCatalog, scanBundles, findCapability, findBundle } from "../dist/catalog.js";
 import { destinationFor, bundleExtrasDestination, isProvider, wiringHint } from "../dist/providers.js";
-import { adopt, buildPrompt, CLI_INVOCATIONS } from "../dist/commands/adopt.js";
+import { adopt, buildPrompt, CLI_INVOCATIONS, invokeAi } from "../dist/commands/adopt.js";
 import { transform, lint } from "../dist/portability.js";
 
 const AGENT_FIXTURE = `---
@@ -245,6 +245,21 @@ test("claude invocation pipes the prompt via stdin so large prompts never hit ar
   const claude = CLI_INVOCATIONS.claude;
   assert.equal(claude.kind, "stdin");
   assert.ok(!claude.args.some((a) => a.length > 200), "prompt must not be embedded in argv");
+});
+
+test("invokeAi's stdin kind actually delivers the full prompt over stdin, not just in config", async () => {
+  await withTmp(async (dir) => {
+    const outFile = join(dir, "captured.txt");
+    const largePrompt = "adapt these files:\n" + "x".repeat(5000);
+    const inv = {
+      kind: "stdin",
+      bin: process.execPath,
+      args: ["-e", "require('fs').writeFileSync(process.argv[1], require('fs').readFileSync(0, 'utf8'))", outFile],
+    };
+    const code = await invokeAi(inv, largePrompt, dir, "test-cli");
+    assert.equal(code, 0);
+    assert.equal(readFileSync(outFile, "utf8"), largePrompt);
+  });
 });
 
 test("adopt --cli includes copied bundle extras (e.g. SDD templates) in the adaptation file list", async () => {
