@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.1.2 - 2026-07-10
+
+### Fixed
+
+- Fixed the release workflow by pinning the npm CLI upgrade to npm 11, preventing npm 12's newer Node engine requirement from breaking releases on the workflow's pinned Node version.
+
 ## 1.1.1 - 2026-07-10
 
 ### Fixed

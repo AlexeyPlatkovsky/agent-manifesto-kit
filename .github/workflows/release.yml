@@ -27,8 +27,9 @@ jobs:
           node-version: 24.10.0
           registry-url: "https://registry.npmjs.org/"
           cache: npm
-      # Trusted publishing (OIDC) needs npm >= 11.5.1.
-      - run: npm install -g npm@latest
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; pin npm 11 so newer npm majors
+      # cannot raise the Node engine floor ahead of this workflow's pinned Node version.
+      - run: npm install -g npm@11.18.0
       - run: npm ci
       - run: npm test
       - name: Resolve package release
