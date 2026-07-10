@@ -1,5 +1,5 @@
 ---
-name: task-complete
+name: kit-task-complete
 description: Produces the required closure table after non-trivial routed work completes validation, review, and documentation gates.
 ---
 
@@ -11,7 +11,7 @@ Close non-trivial routed work by reporting what actually happened and confirming
 
 ## Template Reference
 
-This skill follows `.ai/docs/skill-template.md`.
+This skill follows `.claude/docs/skill-template.md`.
 
 ## Scope
 
@@ -31,7 +31,7 @@ This skill follows `.ai/docs/skill-template.md`.
 
 Emit:
 
-`Skill: task-complete - output below`
+`Skill: kit-task-complete - output below`
 
 Then provide exactly this three-column table:
 

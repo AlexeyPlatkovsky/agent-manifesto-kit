@@ -128,9 +128,15 @@ agentkit adopt sdd --provider codex --cli codex
 agentkit adopt brainstorm --provider codex --cli agy
 ```
 
-The assistant receives a structured prompt asking it to read your project's local
-instructions and documentation, then adapt the adopted files to your naming, paths,
-vocabulary, and conventions.
+The assistant receives a structured prompt that explicitly frames the adaptation as an
+approved, actionable task (not a proposal), asking it to read your project's local
+instructions and documentation, then adapt the adopted files — including any bundle
+extras such as SDD templates — to your naming, paths, vocabulary, and conventions.
+
+Codex runs with a writable sandbox and no approval prompts (`--sandbox workspace-write
+--ask-for-approval never`) so it can make the edits directly instead of stopping to ask.
+Claude Code receives the prompt over stdin rather than as a CLI argument, so large
+prompts never hit OS argument-length limits.
 
 Supported AI CLIs:
 

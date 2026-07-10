@@ -1,0 +1,14 @@
+schema_version: 1
+id: amk-2
+title: Fix adopt --cli adaptation handoff
+priority: high
+type: bug
+status: in_progress
+created_at: '2026-07-10T07:37:56Z'
+updated_at: '2026-07-10T09:26:47Z'
+tags:
+- cli
+- adoption
+- bugfix
+description: 'Fix the AI-assisted adaptation step run by agentkit adopt --cli so copied capabilities are actually adapted in target projects. Current failures: Codex can inherit a read-only sandbox and treat the prompt as proposal-only work; Claude Code can receive the prompt but classify it as context rather than an actionable task; bundle extras such as SDD templates are copied but omitted from the adaptation file list. Expected scope: strengthen the adaptation prompt with explicit user approval/action language, run Codex with writable/no-approval automation settings appropriate for this CLI handoff, make Claude invocation robust for large prompts, include copied bundle extras in adaptation context, add focused tests, and update package release bookkeeping if product behavior changes.'
+created_by: codex

@@ -32,9 +32,17 @@ type CliInvocation =
   | { kind: "stdin";  bin: string; args: string[] }
   | { kind: "bash";   cmd: string };
 
-const CLI_INVOCATIONS: Record<SupportedCli, CliInvocation> = {
-  claude:   { kind: "direct", args: (p) => ["claude", "--dangerously-skip-permissions", "-p", p] },
-  codex:    { kind: "stdin",  bin: "codex", args: ["exec", "--skip-git-repo-check", "-"] },
+export const CLI_INVOCATIONS: Record<SupportedCli, CliInvocation> = {
+  // Piped via stdin (not argv) so large prompts never hit OS ARG_MAX limits.
+  claude: { kind: "stdin", bin: "claude", args: ["--dangerously-skip-permissions", "-p"] },
+  // workspace-write + never-approval: this handoff already runs in a project
+  // the user chose to adapt, so Codex must not fall back to a read-only
+  // sandbox or stop to ask for approval mid-run.
+  codex: {
+    kind: "stdin",
+    bin: "codex",
+    args: ["exec", "--skip-git-repo-check", "--sandbox", "workspace-write", "--ask-for-approval", "never", "-"],
+  },
   agy:      { kind: "bash",   cmd: 'agy --dangerously-skip-permissions -p "$(cat "$0")"' },
   aider:    { kind: "bash",   cmd: 'aider --message "$(cat "$0")" --yes-always' },
   opencode: { kind: "bash",   cmd: 'opencode run "$(cat "$0")"' },
@@ -43,9 +51,14 @@ const CLI_INVOCATIONS: Record<SupportedCli, CliInvocation> = {
   qwen:     { kind: "bash",   cmd: 'qwen --prompt "$(cat "$0")"' },
 };
 
-function buildPrompt(files: string[]): string {
-  return `You have adopted the following AI capability files into this project:
+export function buildPrompt(files: string[]): string {
+  return `You have been asked, with the user's explicit approval, to adapt the
+following AI capability files that were just adopted into this project:
 ${files.join("\n")}
+
+This is an approved, actionable task, not a proposal or a discussion point.
+Do not ask for confirmation, do not stop to summarize a plan, and do not
+treat this message as background context — edit the files directly now.
 
 Before editing anything:
 1. Read CLAUDE.md (or AGENTS.md if present), README.md, and any project
@@ -57,7 +70,10 @@ Adapt each file to this project:
 - Replace generic references with project-specific names, paths, and terms
 - Align tool references and file paths to what this project actually uses
 - Preserve the file's structure, scope, and intent exactly
-- Leave files that need no changes untouched`;
+- Leave files that need no changes untouched
+
+Apply the edits yourself, in this working directory, as your final action —
+do not defer them to the user.`;
 }
 
 const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
@@ -78,7 +94,7 @@ function findBash(): string {
   return "bash";
 }
 
-async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: string): Promise<number> {
+export async function invokeAi(inv: CliInvocation, prompt: string, cwd: string, cli: string): Promise<number> {
   console.log(`\nRunning ${cli} to adapt adopted files — this may take a several minutes…`);
 
   let promptFile: string | undefined;
@@ -170,6 +186,18 @@ function walkMd(dir: string): string[] {
   return out;
 }
 
+// Dotfiles (.gitkeep, .DS_Store, ...) are housekeeping, not adaptation-worthy content.
+function walkAll(dir: string): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith(".")) continue;
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkAll(p));
+    else out.push(p);
+  }
+  return out;
+}
+
 function surfaceCompanions(recommendsPath: string): void {
   const rows = readFileSync(recommendsPath, "utf8")
     .split("\n")
@@ -242,6 +270,7 @@ async function adoptBundle(bundle: Bundle, opts: AdoptOptions, onFile?: (path: s
     const dest = join(extrasBase, entry.name);
     mkdirSync(dirname(dest), { recursive: true });
     cpSync(src, dest, { recursive: true });
+    for (const f of walkAll(dest)) onFile?.(f);
   }
 
   console.log(`Adopted bundle "${bundle.name}" (${opts.provider}) -> ${opts.projectRoot}`);

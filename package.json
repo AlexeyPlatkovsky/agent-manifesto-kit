@@ -1,6 +1,6 @@
 {
   "name": "agent-manifesto-kit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "CLI to discover and adopt Agent Manifesto Kit capabilities (skills, agents, pipelines) into your project for Claude, Codex, or AI-agnostic targets.",
   "type": "module",
   "bin": {
@@ -26,7 +26,7 @@
     "test": "npm run build && node --test",
     "prepublishOnly": "npm run build && npm test",
     "prepare": "git config core.hooksPath .githooks",
-    "version-branch": "node .ai/scripts/bump-version.mjs"
+    "version-branch": "node .claude/scripts/bump-version.mjs"
   },
   "engines": {
     "node": ">=20"

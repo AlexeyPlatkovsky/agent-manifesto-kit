@@ -1,5 +1,5 @@
 ---
-name: brainstorm
+name: kit-brainstorm
 description: Resolves high-impact design or setup decisions one question at a time when multiple valid paths exist and user choice is required before safe execution.
 ---
 
@@ -11,7 +11,7 @@ Use this skill to resolve open decisions that materially affect routing, structu
 
 ## Template Reference
 
-This skill follows `.ai/docs/skill-template.md`.
+This skill follows `.claude/docs/skill-template.md`.
 
 ## Scope
 
@@ -33,7 +33,7 @@ This skill follows `.ai/docs/skill-template.md`.
 
 When all decisions are made, emit:
 
-`Skill: brainstorm - output below`
+`Skill: kit-brainstorm - output below`
 
 Include:
 
