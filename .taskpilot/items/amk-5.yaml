@@ -1,0 +1,58 @@
+schema_version: 1
+id: amk-5
+title: F002 AI-assisted adaptation
+priority: normal
+type: feature
+status: done
+created_at: '2026-07-13T09:10:47Z'
+updated_at: '2026-07-13T09:10:47Z'
+tags:
+- feature
+- sdd
+- adaptation
+description: 'Canonical feature record migrated from the former docs/features/F002_ai-assisted-adaptation tree.
+
+
+  Summary: The kit optionally hands an adopted capability or bundle to a supported AI CLI with enough context and invocation settings to adapt copied files to local project instructions.
+
+
+  Requirements:
+
+  - F002-R1: Invoke a selected supported AI CLI only when --cli is supplied.
+
+  - F002-R2: Frame the handoff as an approved actionable task and include every copied capability and bundle-extra path.
+
+  - F002-R3: Use invocation settings that permit the intended handoff and avoid OS argument-size failures.
+
+
+  Acceptance criteria:
+
+  - Adoption without --cli remains deterministic and invokes no AI child process.
+
+  - Bundle adaptation context includes skills, agents, pipelines, conventions, and templates.
+
+  - Codex uses writable/no-approval settings and Claude receives large prompts through stdin.
+
+
+  Tasks:
+
+  - F002-T1 define supported CLIs and the adaptation prompt.
+
+  - F002-T2 pass copied capability and bundle-extra files into context.
+
+  - F002-T3 configure Codex and Claude invocation safely.
+
+  - F002-T4 add focused handoff and long-prompt tests.
+
+
+  Scenarios:
+
+  - F002-S1 keep adaptation opt-in.
+
+  - F002-S2 adapt a bundle with complete context.
+
+  - F002-S3 send a long Claude prompt through stdin.
+
+
+  Out of scope: guaranteeing external AI edit quality; installing/configuring external CLIs; replacing consumer instructions wholesale. Status: done.'
+created_by: codex

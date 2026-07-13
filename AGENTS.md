@@ -12,7 +12,8 @@ Use it for every AI tool working in this repository. Tool-specific files are ada
 - Treat `.claude/` as workshop tooling for building this kit (skills, agents, pipelines, conventions, docs, scripts, and manager routing), in addition to its usual role holding Claude Code settings.
 - Treat `.manifesto/` as the vendored Agent Manifesto authority layer.
 - Treat `.taskpilot/` as local project task state managed through Taskpilot.
-- Treat `.docs/` and `.claude/docs/project_specification.md` as planning and project authority.
+- Treat `docs/` as stable project context documentation, `.taskpilot/` as the canonical work
+  and feature-tracking system, and `.claude/docs/project_specification.md` as project authority.
 - Do not create, edit, or delete `collection/` deliverable assets unless the user explicitly requests product asset work.
 - Do not create pipelines, templates, CLI installers, or extra provider targets unless the roadmap or user explicitly changes scope.
 
@@ -79,10 +80,20 @@ Non-trivial routed work must include:
 - Agent: `.claude/agents/instruction-evaluator.md`
 - Agent: `.claude/agents/artifact-acceptance-tester.md`
 - Agent: `.claude/agents/artifact-enricher.md`
+- SDD bundle convention: `.claude/conventions/sdd-doc-set.md`
+- SDD skills: `.claude/skills/sdd-doc-author/SKILL.md`, `.claude/skills/sdd-feature-author/SKILL.md`, `.claude/skills/sdd-index-sync/SKILL.md`
+- SDD agents: `.claude/agents/sdd-gap-analyzer.md`, `.claude/agents/sdd-spec-reviewer.md`
+- SDD pipelines: `.claude/pipelines/sdd-adopt.md`, `.claude/pipelines/sdd-bootstrap.md`
 
 Load only the capability needed for the current gate or task. Skills and agents under `.claude/` are also directly invocable through Claude Code's native Skill/Agent tools; the `kit-` prefix on `kit-brainstorm`, `kit-documentation-maintenance`, and `kit-task-complete` avoids name collisions with the product skills of the same base name shipped under `collection/skills/`.
 
 Pipelines under `.claude/pipelines/` are pre-baked routing plans the manager adopts when their "When to Apply" matches the request. They sequence existing skills and agents; they do not implement step logic and do not replace `kit-manager`.
+
+The adopted SDD bundle defines the project's `docs/` context tree. Use it for project intent,
+architecture, design, testing, roadmap, and decisions. Use Taskpilot project `amk` for all
+work and feature records, including requirements, acceptance criteria, tasks, scenarios,
+status, and progress. Do not create or maintain `docs/features/`. Keep `.claude/` as workshop
+tooling and `collection/` as shipped product output.
 
 ## Required Reviews
 
@@ -100,6 +111,8 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - Keep conventions factual and shared; do not turn them into procedures.
 - Keep reference docs factual; do not place behavioral rules there.
 - Prefer small, reviewable changes tied to a task or authority source.
+- Use Taskpilot items as the single canonical source for work and feature tracking; do not
+  duplicate requirements, tasks, scenarios, or status in `docs/features/`.
 - Never revert user changes unless the user explicitly asks.
 - Never implement non-trivial work directly on `main`, unless the user explicitly says to work on `main`. Non-trivial work always happens on a properly named branch, created from `origin/main`.
 - Work branches must use a recognized prefix: `bugfix/`, `feature/`, or `release/`. The `pre-push` hook enforces recognized prefixes without mutating files or creating commits.

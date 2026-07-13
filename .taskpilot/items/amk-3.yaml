@@ -1,0 +1,17 @@
+schema_version: 1
+id: amk-3
+title: Introduce SDD bundle for Agent Manifesto Kit
+priority: normal
+type: task
+status: done
+created_at: '2026-07-13T08:47:33Z'
+updated_at: '2026-07-13T09:16:29Z'
+tags:
+- sdd
+- documentation
+description: 'Adopted the existing SDD bundle into .claude/ and created Standard-tier context documentation under docs/ for the current project. Feature/work tracking is canonical in Taskpilot: migrated F001 to amk-4 and F002 to amk-5, and removed docs/features.'
+links:
+  relates_to:
+  - amk-4
+  - amk-5
+created_by: codex

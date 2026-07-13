@@ -15,6 +15,9 @@ description: Manages local Taskpilot work items for this repository and prepares
 ## Scope
 
 - Inspect, create, update, link, comment on, and soft-delete Taskpilot items in `.taskpilot/`.
+- Use Taskpilot `feature` items as the sole canonical record for feature requirements,
+  acceptance criteria, tasks, scenarios, status, and verification evidence in this project.
+- Do not create or maintain parallel feature records under `docs/features/`.
 - Prepare branch-name task segments from Taskpilot IDs.
 - Use JSON output for reads and changes whenever possible.
 - Do not manage Git branches directly; branch creation remains owned by the Git workflow or caller.
@@ -26,6 +29,14 @@ description: Manages local Taskpilot work items for this repository and prepares
 - For branch names, convert the canonical item ID to lowercase and zero-pad the numeric suffix to three digits.
 - Example: Taskpilot item `amk-1` becomes branch task segment `amk-001`.
 - New non-trivial feature/work branches use `feature/<task-segment>-<slug>`, for example `feature/amk-001-add-new-bundle`.
+
+## Feature Records
+
+- Create feature records with `--type feature` in project `amk`.
+- Put the feature summary, stable `F<NNN>-R<n>`, `F<NNN>-T<n>`, and `F<NNN>-S<n>` records,
+  acceptance criteria, constraints, and out-of-scope in the item description.
+- Put progress updates and validation evidence in Taskpilot comments.
+- Relate feature items to originating or enabling work items when the dependency is explicit.
 
 ## Procedure
 

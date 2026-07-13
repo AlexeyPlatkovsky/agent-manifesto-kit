@@ -78,6 +78,8 @@ Known triggers include:
 - `.github/workflows/release.yml` for release automation.
 - `src/catalog.ts`, `src/commands/adopt.ts`, and `src/providers.ts` for package behavior.
 - `collection/` for shipped skills, agents, pipelines, conventions, bundles, and templates.
+- `docs/` for stable project context: intent, architecture, design, testing, roadmap, and
+  decisions. Taskpilot project `amk` is the canonical source for work and feature tracking.
 - `.manifesto/MANIFEST.md` for framework values and principles.
 - `.manifesto/IMPLEMENTATION.md` for framework mechanics, layers, gates, and file conventions.
 - `.manifesto/protocols/*.md` and `.manifesto/conventions/*.md` for framework protocols and shared standards.
@@ -94,7 +96,7 @@ Known triggers include:
 - Treat ongoing work as new feature development after the 1.0.0 release.
 - Remove or rewrite initial-plan assumptions when they no longer describe shipped behavior.
 - Keep catalog-discoverable deliverable assets under `collection/` only.
-- Use task acceptance criteria as the local definition of completion for planned work.
+- Use Taskpilot item acceptance criteria as the local definition of completion for planned work.
 - Treat manual smoke validation as useful evidence for adoption workflows when automated validation does not cover the changed path.
 
 ## Preferred Workflows
@@ -102,6 +104,8 @@ Known triggers include:
 - Read the relevant product, workshop, and implementation documents before changing capability assets.
 - For task work, start from the active user request and the smallest relevant product/workshop docs.
 - Taskpilot is initialized for this repository with key `amk`; branch task segments use lowercase `amk-NNN` form derived from canonical Taskpilot item IDs.
+- Store each feature's requirements, acceptance criteria, tasks, scenarios, status, and progress
+  in its Taskpilot `feature` item. Do not create or maintain `docs/features/`.
 - Before adding a new rule or structure, check whether the implementation code, existing product docs, or `.manifesto/` already owns that concern.
 - When modifying a deliverable asset, consider whether README guidance, adoption examples, release notes, catalog scanning behavior, or provider transforms also need updates.
 - Release-affecting changes are expected to keep package metadata and changelog entries aligned before closure unless the user explicitly defers release bookkeeping.
@@ -138,3 +142,5 @@ External best-practice research is allowed broadly for capability and library pr
 - `CLAUDE.md` is a Claude Code adapter that imports and defers to `AGENTS.md`.
 - Project-internal instruction capabilities live under `.claude/`.
 - Consumer-facing deliverable assets still live under `collection/` and are not indexed from `.claude/`.
+- The project's own SDD context documentation lives under `docs/`; work and feature records
+  live in Taskpilot and link back to this specification and the root contract as needed.
