@@ -28,6 +28,8 @@ verification scenarios and evidence in the relevant Taskpilot feature item.
 - Adoption covers clean targets, existing targets, `--force`, bundles, and bundle extras.
 - AI-assisted adaptation covers the actionable prompt, complete file context, and child
   process invocation behavior; the corresponding evidence belongs in Taskpilot.
+- Filtered list views cover the default catalog, exact lowercase selectors, bundle item
+  summaries, empty results, invalid selectors, extra arguments, and unknown flags.
 
 ## Environments
 

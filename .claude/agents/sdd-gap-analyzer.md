@@ -33,11 +33,15 @@ Apply the Stop Conditions throughout; halt and report when any is met.
    features that exist but may be undocumented. Mark inferences as assumptions.
 3. Map existing material to each target document and to candidate Taskpilot feature items;
    treat Taskpilot as the canonical work/feature tracker when the project policy says so.
+   For every candidate feature, produce a discovery gap matrix covering intent, scope,
+   requirements, non-goals, dependencies, edge/error/data/permission cases, DoR, DoD, and
+   validation. A candidate is not ready for authoring while a material decision is open.
 4. Recommend a tier, justified by project size and the material found.
 5. For each target document, classify the action: `reuse as-is`, `migrate content`,
    `create new`, or `not needed` for the tier.
 6. Identify features to extract into Taskpilot `feature` items, with proposed `F<NNN>` IDs
-   and short names; do not propose `docs/features/` when Taskpilot is canonical.
+   and short names; do not propose `docs/features/` when Taskpilot is canonical. This is a
+   proposal only: do not create feature items or child tasks.
 7. Flag conflicts: duplicated concerns across existing docs, content that violates SDD
    ownership boundaries, and stale or contradictory material.
 8. Order the plan so foundational documents precede dependent ones.

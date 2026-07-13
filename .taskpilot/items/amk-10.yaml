@@ -1,0 +1,14 @@
+schema_version: 1
+id: amk-10
+title: F001-T2 Resolve provider destinations and copy items/extras
+priority: normal
+type: task
+status: done
+created_at: '2026-07-13T10:08:53Z'
+updated_at: '2026-07-13T10:08:53Z'
+parent_id: amk-4
+tags:
+- feature-task
+- adoption
+description: 'F001-T2: resolve provider destinations and copy capabilities and bundle extras.'
+created_by: codex

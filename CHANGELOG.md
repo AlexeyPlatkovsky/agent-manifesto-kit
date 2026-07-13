@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.2.0 - 2026-07-13
+
+### Added
+
+- Added exact lowercase `agentkit list skills`, `agentkit list agents`, and
+  `agentkit list bundles` views while preserving the default full catalog.
+- Added explicit validation for unsupported selectors, extra arguments, and unknown list
+  options, plus stable empty-result behavior.
+
 ## 1.1.2 - 2026-07-10
 
 ### Fixed

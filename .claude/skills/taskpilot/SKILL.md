@@ -15,8 +15,8 @@ description: Manages local Taskpilot work items for this repository and prepares
 ## Scope
 
 - Inspect, create, update, link, comment on, and soft-delete Taskpilot items in `.taskpilot/`.
-- Use Taskpilot `feature` items as the sole canonical record for feature requirements,
-  acceptance criteria, tasks, scenarios, status, and verification evidence in this project.
+- Use Taskpilot `feature` items as the sole canonical record for feature intent, readiness,
+  completion, child tasks, status, and verification evidence in this project.
 - Do not create or maintain parallel feature records under `docs/features/`.
 - Prepare branch-name task segments from Taskpilot IDs.
 - Use JSON output for reads and changes whenever possible.
@@ -33,10 +33,24 @@ description: Manages local Taskpilot work items for this repository and prepares
 ## Feature Records
 
 - Create feature records with `--type feature` in project `amk`.
-- Put the feature summary, stable `F<NNN>-R<n>`, `F<NNN>-T<n>`, and `F<NNN>-S<n>` records,
-  acceptance criteria, constraints, and out-of-scope in the item description.
-- Put progress updates and validation evidence in Taskpilot comments.
+- Keep `description` concise: problem/value, scope, non-goals, stable feature/requirement
+  references, and links only. Do not place DoR, DoD, tests, or a task breakdown there.
+- Store readiness conditions in the feature's `dor` list.
+- Store observable acceptance/completion conditions in the feature's `dod` list; tests and
+  verification checks may be included there.
+- Create one separate Taskpilot `task` item for every implementation task, with the feature
+  item as its `parent_id`. Put the stable `F<NNN>-T<n>` identifier on the child task, not only
+  in the feature description. Child task status is authoritative for that work unit.
+- Store stable scenario IDs and the acceptance mapping in `dod` or child-task descriptions as
+  appropriate; keep execution evidence and later decisions in Taskpilot comments.
 - Relate feature items to originating or enabling work items when the dependency is explicit.
+
+The installed CLI may not expose `--dor` or `--dod` flags. Inspect the actual Taskpilot
+schema and, when the fields are supported but omitted from the CLI, update the canonical
+`.taskpilot/items/<id>.yaml` record through a schema-valid structured edit, preserve its
+identity/history, and run `taskpilot --json validate` immediately. If neither the CLI nor
+that canonical structured path is available, stop and report the tooling gap; never flatten
+the fields or child tasks into Description.
 
 ## Procedure
 
@@ -74,6 +88,9 @@ Before and during these steps, apply Stop Conditions immediately; when one match
    taskpilot --json item blocks BLOCKER_ID TARGET_ID
    taskpilot --json item relates SOURCE_ID TARGET_ID
    ```
+   For feature breakdowns, create each child task with `--type task` and `--parent FEATURE_ID`,
+   then verify the child's `parent_id` in JSON output. Do not represent the breakdown only as
+   `F<NNN>-T<n>` prose.
 8. For deletion, require explicit user confirmation naming the item ID and title. After confirmation, soft-delete by setting status to `deleted`:
    ```bash
    taskpilot --json item update amk-1 --status deleted
@@ -88,6 +105,11 @@ Before and during these steps, apply Stop Conditions immediately; when one match
 - Stop if `taskpilot --json validate` reports errors.
 - Stop if `.taskpilot/project.yaml` is missing or the project key is not `amk`.
 - Stop if item creation, update, relationship changes, or deletion were not explicitly requested or approved.
+- Stop if a feature has an empty/missing `dor` or `dod` when the workflow requires them.
+- Stop if a feature's implementation tasks are prose-only, lack child Taskpilot items, or have
+  the wrong parent/type.
+- Stop if a writer would place DoR, DoD, tests, or tasks in Description because structured
+  fields or child relationships are inconvenient.
 - Stop before deletion unless the user confirms the exact item ID and title.
 - Stop if two or more existing items are plausible matches for branch work; present the options instead of guessing.
 

@@ -85,14 +85,25 @@ subfolder `docs/<domain>/` with its own mini-index, and link to that index from
 
 ## Taskpilot Feature Record
 
-Each feature is a Taskpilot item with `type: feature` in project `amk`. Its description owns
-the feature summary, stable requirement IDs, acceptance criteria, task breakdown, scenarios,
-constraints, and out-of-scope. Taskpilot comments own progress updates and verification
-evidence. The item status is the canonical feature status.
+Each feature is a Taskpilot item with `type: feature` in project `amk`. The fields have
+separate ownership:
 
-Feature IDs use the stable domain IDs `F<NNN>` inside the Taskpilot item, while the Taskpilot
-item ID (`amk-NNN`) is the canonical record identifier. Do not create a parallel feature
-folder or duplicate the record in `docs/`.
+| Taskpilot field | Feature content | Not a substitute for |
+| --- | --- | --- |
+| `description` | concise problem/value summary, scope, non-goals, and links to stable context | DoR, DoD, tests, or implementation task records |
+| `dor` | readiness conditions, confirmed inputs, constraints, and resolved decisions required before work starts | completion criteria |
+| `dod` | observable completion/acceptance conditions, including tests and verification checks | implementation task records |
+| child `task` items via `parent_id` | one concrete implementation unit per item, with its own title, description, status, and links | a text-only task list in the feature description |
+| comments | progress updates, decisions made during execution, and evidence | canonical planned scope or acceptance criteria |
+
+Taskpilot hierarchy allows `feature -> task`; child tasks are the canonical task breakdown.
+Requirements and scenarios may be referenced in the concise description or represented by the
+DoR/DoD checklists, but they must not be used to smuggle a full task plan, DoR, DoD, or test
+plan into Description.
+
+Feature IDs use the stable domain IDs `F<NNN>` inside the feature item and its child task
+titles/descriptions, while the Taskpilot item ID (`amk-NNN`) is the canonical record identifier.
+Do not create a parallel feature folder or duplicate the record in `docs/`.
 
 ## Identifier Scheme
 

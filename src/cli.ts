@@ -48,12 +48,14 @@ function help(): void {
   console.log(`agentkit - discover and adopt Agent Manifesto Kit capabilities
 
 Usage:
-  agentkit list
+  agentkit list [skills|agents|bundles]
   agentkit lint [name]
   agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>] [--force] [--cli <cli>]
 
   <name> is a capability (skill/agent/pipeline/convention) or a bundle.
   Adopting a bundle explodes it into type-specific directories.
+
+  list accepts one exact lowercase selector. Without a selector it shows the full catalog.
 
   Pass --cli to run an AI assistant after adoption to adapt the files to your project.
   Pass --force to overwrite existing targets without prompting.
@@ -72,7 +74,7 @@ async function main(): Promise<number> {
   const { positionals, flags } = parseArgs(process.argv.slice(2));
   const cmd = positionals[0];
 
-  if (flags.version || flags.v) {
+  if ((flags.version || flags.v) && cmd !== "list") {
     console.log(version());
     return 0;
   }
@@ -90,7 +92,7 @@ async function main(): Promise<number> {
       help();
       return 0;
     case "list":
-      return list();
+      return list(positionals.slice(1), flags);
     case "lint":
       return runLint(positionals[1]);
     case "adopt": {

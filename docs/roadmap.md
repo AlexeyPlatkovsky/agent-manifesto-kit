@@ -21,7 +21,8 @@ development; release history is recorded in `CHANGELOG.md`.
 
 - **Goal:** Extend reusable capabilities and adoption workflows while preserving the
   collection/workshop boundary.
-- **Features:** To be selected as future Taskpilot `feature` items.
+- **Features:** Taskpilot `amk-6` (filtered list views), `amk-7` (capability tags and tag
+  filtering), and `amk-8` (unique bundle indexes and deduplication).
 - **Milestone / exit criteria:** A feature has accepted requirements, implementation tasks,
   scenarios, passing validation, and synchronized documentation.
 

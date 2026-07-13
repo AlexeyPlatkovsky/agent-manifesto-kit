@@ -1,0 +1,32 @@
+schema_version: 1
+id: amk-8
+title: F005 Unique bundle indexes and deduplication
+priority: high
+type: feature
+status: backlog
+created_at: '2026-07-13T09:42:02Z'
+updated_at: '2026-07-13T10:10:00Z'
+tags:
+- feature
+- bundles
+- deduplication
+description: >-
+  F005: Replace duplicated bundle capability copies with one authoritative bundle index that
+  references canonical reusable skills and agents while retaining explicit bundle-local items
+  and extras. Scope includes index schema, migration, catalog resolution, adoption, drift
+  validation, and guidance. Requirements F005-R1 through F005-R5 are mapped to the child tasks
+  and DoD.
+dor:
+- Flat and bundled capability inventories, current collisions, bundle extras, and provider adoption paths were inspected.
+- Canonical identity, reusable-versus-local ownership, index authority, broken-link behavior, and migration constraints are confirmed.
+- F005-T1 through F005-T7 exist as Taskpilot child tasks under amk-8.
+dod:
+- 'F005-S1: an indexed canonical flat skill is exposed once with bundle context.'
+- 'F005-S2: multiple bundles may reference one canonical reusable source without copying it.'
+- 'F005-S3: duplicate index identities fail before catalog use.'
+- 'F005-S4: missing, wrong-type, or ambiguous links fail with source and target context.'
+- 'F005-S5: indexed adoption copies each resolved item once and preserves bundle extras.'
+- 'F005-S6: bundle-local pipelines or conventions remain local and are not misclassified.'
+- 'F005-S7: current kit-adopt collisions are resolved explicitly without silent overwrite.'
+- Migration, broken-link, duplicate-entry, no-drift, and adoption regression tests pass.
+created_by: codex

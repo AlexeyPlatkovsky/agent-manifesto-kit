@@ -84,6 +84,7 @@ Non-trivial routed work must include:
 - SDD skills: `.claude/skills/sdd-doc-author/SKILL.md`, `.claude/skills/sdd-feature-author/SKILL.md`, `.claude/skills/sdd-index-sync/SKILL.md`
 - SDD agents: `.claude/agents/sdd-gap-analyzer.md`, `.claude/agents/sdd-spec-reviewer.md`
 - SDD pipelines: `.claude/pipelines/sdd-adopt.md`, `.claude/pipelines/sdd-bootstrap.md`
+- SDD feature-planning pipeline: `.claude/pipelines/sdd-feature-planning.md`
 
 Load only the capability needed for the current gate or task. Skills and agents under `.claude/` are also directly invocable through Claude Code's native Skill/Agent tools; the `kit-` prefix on `kit-brainstorm`, `kit-documentation-maintenance`, and `kit-task-complete` avoids name collisions with the product skills of the same base name shipped under `collection/skills/`.
 
@@ -94,6 +95,30 @@ architecture, design, testing, roadmap, and decisions. Use Taskpilot project `am
 work and feature records, including requirements, acceptance criteria, tasks, scenarios,
 status, and progress. Do not create or maintain `docs/features/`. Keep `.claude/` as workshop
 tooling and `collection/` as shipped product output.
+
+### Feature-planning gate
+
+For every new feature request, complete discovery before creating or revising a Taskpilot
+`feature` item. Inspect the current code, docs, and Taskpilot records; identify missing
+requirements, scope boundaries, non-goals, dependencies, edge/error/data/permission cases,
+and validation expectations. If any material decision is unresolved, route through
+`kit-brainstorm`, ask one question at a time, and wait for the user's confirmation of the
+decision summary. Do not create the feature item or its child tasks before that confirmation.
+
+The gate may be skipped only when the existing authoritative context explicitly covers all
+of those areas and is internally consistent; the author must record the evidence for that
+decision. Approval of a feature goal does not imply approval of unstated implementation
+choices.
+
+Taskpilot feature records use the schema fields deliberately: `description` is a concise
+feature summary, goal, scope, and non-goals; `dor` is the readiness checklist; `dod` is the
+completion checklist and may include tests and verification evidence. Concrete implementation
+work is represented by Taskpilot `task` items with the feature as `parent_id`, not by a
+text-only task list in the feature description. If the CLI cannot set `dor` or `dod`, use a
+schema-valid structured update to the canonical `.taskpilot/items/<id>.yaml` record, preserve
+the record identity/history, and run Taskpilot validation immediately. If neither the CLI nor
+that canonical structured path is available, stop and report the tooling gap rather than
+falling back to Description.
 
 ## Required Reviews
 
@@ -122,6 +147,7 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - When creating a new branch for non-trivial work, branch it from `origin/main` and push it to the remote immediately after creation (before further commits), so the branch is tracked from the start.
 - When investigation during a task reveals that the actual problem is incorrect existing behavior rather than new work, that is a bug: update the Taskpilot item's `type` to `bug` (and its branch prefix to `bugfix/` if a branch has not been created yet) rather than leaving it classified as a `task` or `feature`.
 - Before implementing an approved task, validate it against the current codebase (read the affected files, confirm assumptions, check for edge cases the task description doesn't mention). If this validation surfaces ambiguity, a gap, or an uncovered case with more than one materially valid resolution, stop and clarify with the user before writing code, even if the task was already approved — approval covers the goal, not an unstated implementation choice.
+- Before accepting a feature-planning result, verify the actual Taskpilot record shape: separate non-empty `dor` and `dod`, concise `description`, and one real child `task` item for every implementation task. A reviewer must reject task IDs, DoR/DoD headings, or test plans embedded only in Description.
 - Taskpilot item deletion is a confirmation-gated soft delete. Require explicit user confirmation naming the item ID and title before setting status to `deleted`.
 - Treat `package.json` as the release-version source of truth. Release automation publishes that exact version; do not rely on commit-message-derived versioning.
 - For product output, package contents, release workflow, or published metadata changes, update `package.json`, `package-lock.json`, and `CHANGELOG.md` in the same task unless the user explicitly asks to defer release bookkeeping. Use semantic versioning: patch for fixes, minor for new features, and major for breaking changes. If the version impact is ambiguous, defer the version choice as an ambiguity case; do not guess.

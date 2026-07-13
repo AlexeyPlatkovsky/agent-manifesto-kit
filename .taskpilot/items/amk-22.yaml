@@ -1,0 +1,14 @@
+schema_version: 1
+id: amk-22
+title: F003-T5 Update help and command documentation
+priority: normal
+type: task
+status: done
+created_at: '2026-07-13T10:09:06Z'
+updated_at: '2026-07-13T12:08:31Z'
+parent_id: amk-6
+tags:
+- feature-task
+- list
+description: 'F003-T5: update CLI help and user-facing command documentation.'
+created_by: codex

@@ -1,0 +1,34 @@
+schema_version: 1
+id: amk-7
+title: F004 Capability tags and tag filtering
+priority: normal
+type: feature
+status: backlog
+created_at: '2026-07-13T09:42:02Z'
+updated_at: '2026-07-13T10:10:00Z'
+tags:
+- feature
+- metadata
+- filtering
+description: >-
+  F004: Add constrained machine-readable tags to every skill, agent, and pipeline and expose
+  deterministic tag discovery plus OR-based list filtering. Scope includes metadata placement,
+  normalization, catalog validation, flat/bundle propagation, CLI behavior, and documentation;
+  conventions remain out of scope unless explicitly added. Requirements F004-R1 through F004-R5
+  are mapped to the child tasks and DoD.
+dor:
+- Existing skill, agent, pipeline, bundle, and catalog metadata shapes were inspected.
+- The 2-4 tag count, required placement, normalization, # display/input policy, OR semantics, and convention exclusion are confirmed.
+- F004-T1 through F004-T6 exist as Taskpilot child tasks under amk-7.
+dod:
+- 'F004-S1: agentkit list tags lists unique normalized tags in stable order.'
+- 'F004-S2: agentkit list tags qa playwright returns items carrying qa OR playwright with type and bundle context.'
+- 'F004-S3: unknown tags return a clear stable empty result without fallback.'
+- 'F004-S4: one/five/duplicate/malformed tags fail with precise source errors.'
+- 'F004-S5: bundled taggable items use the same catalog path and expose tags.'
+- 'F004-S6: list tags without arguments is not confused with category selectors.'
+- Catalog, metadata-validation, CLI, bundle, unknown-tag, malformed-tag, duplicate-tag, and count-boundary tests pass.
+links:
+  relates_to:
+  - amk-8
+created_by: codex

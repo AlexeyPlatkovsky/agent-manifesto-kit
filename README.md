@@ -31,6 +31,14 @@ List available capabilities:
 agentkit list
 ```
 
+Show one catalog view:
+
+```bash
+agentkit list skills
+agentkit list agents
+agentkit list bundles
+```
+
 Adopt the Spec-Driven Development bundle for Claude:
 
 ```bash
@@ -75,7 +83,7 @@ such as templates, under `.claude/<bundle-name>/`.
 ## Commands
 
 ```bash
-agentkit list
+agentkit list [skills|agents|bundles]
 agentkit lint [name]
 agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>] [--force] [--cli <cli>]
 ```
@@ -84,7 +92,7 @@ Command summary:
 
 | Command | Description |
 | --- | --- |
-| `agentkit list` | Show every capability and bundle available in the package |
+| `agentkit list [skills|agents|bundles]` | Show the full catalog or one selected view; bundle views include item summaries |
 | `agentkit lint [name]` | Check all capabilities, or one named capability, for provider-specific tokens |
 | `agentkit adopt <name>` | Copy a capability or bundle into your project |
 

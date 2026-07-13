@@ -1,0 +1,14 @@
+schema_version: 1
+id: amk-23
+title: F004-T1 Define normalized tag grammar and filter rules
+priority: normal
+type: task
+status: backlog
+created_at: '2026-07-13T10:09:07Z'
+updated_at: '2026-07-13T10:09:07Z'
+parent_id: amk-7
+tags:
+- feature-task
+- tags
+description: 'F004-T1: define normalized tag grammar, case rules, allowed characters, and filter spelling.'
+created_by: codex

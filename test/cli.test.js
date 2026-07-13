@@ -7,6 +7,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import { scanCatalog, scanBundles, findCapability, findBundle } from "../dist/catalog.js";
+import { list } from "../dist/commands/list.js";
 import { destinationFor, bundleExtrasDestination, isProvider, wiringHint } from "../dist/providers.js";
 import { adopt, buildPrompt, CLI_INVOCATIONS, invokeAi } from "../dist/commands/adopt.js";
 import { transform, lint } from "../dist/portability.js";
@@ -21,6 +22,32 @@ Body refers to .claude/skills/foo and CLAUDE.md
 `;
 
 const CLI = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
+
+function captureOutput(fn) {
+  const logs = [];
+  const errors = [];
+  const originalLog = console.log;
+  const originalError = console.error;
+  console.log = (...args) => logs.push(args.join(" "));
+  console.error = (...args) => errors.push(args.join(" "));
+  try {
+    return { result: fn(), stdout: logs.join("\n"), stderr: errors.join("\n") };
+  } finally {
+    console.log = originalLog;
+    console.error = originalError;
+  }
+}
+
+function assertCliFails(args, expected) {
+  assert.throws(
+    () => execFileSync("node", [CLI, ...args], { encoding: "utf8", stdio: "pipe" }),
+    (error) => {
+      assert.equal(error.stdout.toString(), "", "invalid list input must not produce partial output");
+      assert.match(error.stderr.toString(), expected);
+      return true;
+    },
+  );
+}
 
 async function withTmp(fn) {
   const dir = mkdtempSync(join(tmpdir(), "akt-test-"));
@@ -160,6 +187,49 @@ test("CLI `list` runs and prints type and bundle headings", () => {
   assert.match(out, /Agents \(\d+\)/);
   assert.match(out, /Pipelines \(\d+\)/);
   assert.match(out, /Bundles \(\d+\)/);
+});
+
+test("CLI list selectors render only the requested view", () => {
+  const skills = execFileSync("node", [CLI, "list", "skills"], { encoding: "utf8" });
+  assert.match(skills, /Skills \(\d+\)/);
+  assert.doesNotMatch(skills, /Agents \(/);
+  assert.doesNotMatch(skills, /Pipelines \(/);
+  assert.doesNotMatch(skills, /Conventions \(/);
+  assert.doesNotMatch(skills, /Bundles \(/);
+
+  const agents = execFileSync("node", [CLI, "list", "agents"], { encoding: "utf8" });
+  assert.match(agents, /Agents \(\d+\)/);
+  assert.doesNotMatch(agents, /Skills \(/);
+  assert.doesNotMatch(agents, /Bundles \(/);
+
+  const bundles = execFileSync("node", [CLI, "list", "bundles"], { encoding: "utf8" });
+  assert.match(bundles, /Bundles \(\d+\)/);
+  assert.match(bundles, /items:/);
+  assert.doesNotMatch(bundles, /Skills \(/);
+  assert.doesNotMatch(bundles, /Agents \(/);
+});
+
+test("CLI list rejects unsupported selectors, extra arguments, and unknown flags", () => {
+  assertCliFails(["list", "tags"], /unsupported selector "tags"/);
+  assertCliFails(["list", "skills", "agents"], /expected at most one selector/);
+  assertCliFails(["list", "--unknown"], /unknown option "--unknown"/);
+});
+
+test("CLI list selectors are exact lowercase tokens", () => {
+  assertCliFails(["list", "Skills"], /unsupported selector "Skills"/);
+  assertCliFails(["list", "skill"], /unsupported selector "skill"/);
+});
+
+test("list reports an explicit empty result for a valid selector", () => {
+  const captured = captureOutput(() => list(["agents"], {}, { catalog: [], bundles: [] }));
+  assert.equal(captured.result, 0);
+  assert.equal(captured.stdout.trim(), "No items found");
+  assert.equal(captured.stderr, "");
+});
+
+test("list help documents the supported selectors", () => {
+  const out = execFileSync("node", [CLI, "list", "--help"], { encoding: "utf8" });
+  assert.match(out, /agentkit list \[skills\|agents\|bundles\]/);
 });
 
 test("CLI `adopt` with bad provider exits non-zero", () => {

@@ -1,0 +1,29 @@
+schema_version: 1
+id: amk-6
+title: F003 Filtered list command views
+priority: normal
+type: feature
+status: done
+created_at: '2026-07-13T09:41:22Z'
+updated_at: '2026-07-13T12:08:33Z'
+tags:
+- feature
+- cli
+- list
+description: 'F003: Extend agentkit list with exact skills, agents, and bundles selectors while preserving the current no-argument catalog view. Scope includes selector parsing, category rendering, help, and focused validation. Requirements F003-R1 through F003-R4 are mapped to the child tasks and DoD. Tag filtering and bundle-index changes are out of scope and tracked by F004 and F005.'
+dor:
+- Current list command and CLI argument flow were inspected.
+- No-argument compatibility, exact lowercase selector grammar, invalid-input behavior, and empty-result behavior are confirmed.
+- F003-T1 through F003-T5 exist as Taskpilot child tasks under amk-6.
+dod:
+- 'F003-S1: agentkit list preserves the complete existing catalog.'
+- 'F003-S2: agentkit list skills shows skills only; agents, pipelines, conventions, and bundles are excluded.'
+- 'F003-S3: agentkit list agents shows agents only.'
+- 'F003-S4: agentkit list bundles shows bundles and their item summaries only.'
+- 'F003-S5: unknown selectors, repeated selectors, and extra arguments fail non-zero without partial output.'
+- 'F003-S6: a valid selector with no matches returns a stable explicit empty result.'
+- CLI, command-level, sorting, help, and empty-result tests pass.
+links:
+  relates_to:
+  - amk-7
+created_by: codex

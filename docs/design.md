@@ -15,6 +15,11 @@
 2. The CLI displays flat capabilities and available bundles with their types.
 3. The maintainer chooses a capability or bundle name.
 
+The maintainer may select one exact lowercase view with `agentkit list skills`, `agentkit list
+agents`, or `agentkit list bundles`. The bundles view includes each bundle's description and
+item summary; an empty valid view prints `No items found` and exits successfully. Unsupported
+selectors, extra arguments, and unknown flags fail with a concise error and no partial output.
+
 ### Adopt a capability or bundle
 
 1. The maintainer runs `agentkit adopt <name> --provider <provider>`.
@@ -34,7 +39,7 @@
 
 | Screen / View | Purpose | Entry point |
 | --- | --- | --- |
-| Catalog output | Show capabilities and bundles available for adoption | `agentkit list` |
+| Catalog output | Show the full catalog or a selected capability/bundle view | `agentkit list [skills|agents|bundles]` |
 | Adoption output | Confirm provider, destination, copied items, and companions | `agentkit adopt` |
 | Conflict prompt | Let the maintainer replace or skip an existing target | Adoption without `--force` |
 | Adaptation handoff | Give the selected AI CLI the files and requested action | Adoption with `--cli` |

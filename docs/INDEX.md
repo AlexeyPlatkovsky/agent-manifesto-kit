@@ -27,6 +27,9 @@ progress are canonical in Taskpilot project `amk`.
 | `amk-3` | SDD adoption and tracking-policy migration |
 | `amk-4` | Capability discovery and adoption |
 | `amk-5` | AI-assisted adaptation |
+| `amk-6` | Filtered list command views |
+| `amk-7` | Capability tags and tag filtering |
+| `amk-8` | Unique bundle indexes and deduplication |
 
 ## Decision Log
 

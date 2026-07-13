@@ -104,8 +104,19 @@ Known triggers include:
 - Read the relevant product, workshop, and implementation documents before changing capability assets.
 - For task work, start from the active user request and the smallest relevant product/workshop docs.
 - Taskpilot is initialized for this repository with key `amk`; branch task segments use lowercase `amk-NNN` form derived from canonical Taskpilot item IDs.
-- Store each feature's requirements, acceptance criteria, tasks, scenarios, status, and progress
-  in its Taskpilot `feature` item. Do not create or maintain `docs/features/`.
+- Store each feature's requirements, acceptance criteria, scenarios, status, and progress in
+  its Taskpilot feature graph (the feature item plus its structured fields, child tasks, and
+  comments). Do not create or maintain `docs/features/`.
+- Before authoring a new feature item, inspect implementation and context, enumerate gaps and
+  edge cases, and resolve every material open decision with the user through the brainstorm
+  gate. The only skip condition is complete, consistent authoritative coverage of intent,
+  scope, requirements, non-goals, dependencies, edge/error/data/permission cases, DoR, DoD,
+  and validation expectations.
+- Use Taskpilot fields according to their purpose: `description` holds the concise feature
+  summary, goal, scope, non-goals, and necessary links; `dor` holds readiness conditions;
+  `dod` holds completion/acceptance conditions and may include tests. Each implementation task
+  is a separate `task` item whose `parent_id` is the feature. Never treat a task list in the
+  feature description as a substitute for child items.
 - Before adding a new rule or structure, check whether the implementation code, existing product docs, or `.manifesto/` already owns that concern.
 - When modifying a deliverable asset, consider whether README guidance, adoption examples, release notes, catalog scanning behavior, or provider transforms also need updates.
 - Release-affecting changes are expected to keep package metadata and changelog entries aligned before closure unless the user explicitly defers release bookkeeping.

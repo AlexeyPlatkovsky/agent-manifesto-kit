@@ -1,6 +1,6 @@
 {
   "name": "agent-manifesto-kit",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "CLI to discover and adopt Agent Manifesto Kit capabilities (skills, agents, pipelines) into your project for Claude, Codex, or AI-agnostic targets.",
   "type": "module",
   "bin": {

@@ -1,0 +1,14 @@
+schema_version: 1
+id: amk-21
+title: F003-T4 Add selector, error, sorting, and empty-result tests
+priority: normal
+type: task
+status: done
+created_at: '2026-07-13T10:09:05Z'
+updated_at: '2026-07-13T12:08:30Z'
+parent_id: amk-6
+tags:
+- feature-task
+- list
+description: 'F003-T4: test default and filtered views, invalid/extra arguments, sorting, and empty results.'
+created_by: codex
