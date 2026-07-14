@@ -25,10 +25,11 @@ implement step logic and does not emit its own output artifact.
 | 4. Brainstorm | `Skill: kit-brainstorm` for each material unresolved choice, one question at a time | `Skill: kit-brainstorm - output below` |
 | 5. Confirm plan | direct — obtain user confirmation of the consolidated decision summary | confirmed summary |
 | 6. Author feature | `Skill: sdd-feature-author` | `Skill: sdd-feature-author - output below` |
-| 7. Review graph | `Agent: sdd-spec-reviewer` | `Agent: sdd-spec-reviewer - output below` |
-| 8. Validate | `Skill: validation-report` | `Skill: validation-report - output below` |
-| 9. Maintain docs | `Skill: kit-documentation-maintenance` when workflow, commands, or known failure modes changed | `Skill: kit-documentation-maintenance - output below` |
-| 10. Close | `Skill: kit-task-complete` | `Skill: kit-task-complete - output below` |
+| 7. Git preflight | `Skill: work-with-git` before implementation or any Git state change | `Skill: work-with-git - output below` |
+| 8. Review graph | `Agent: sdd-spec-reviewer` | `Agent: sdd-spec-reviewer - output below` |
+| 9. Validate | `Skill: validation-report` | `Skill: validation-report - output below` |
+| 10. Maintain docs | `Skill: kit-documentation-maintenance` when workflow, commands, or known failure modes changed | `Skill: kit-documentation-maintenance - output below` |
+| 11. Close | `Skill: kit-task-complete` | `Skill: kit-task-complete - output below` |
 
 Do not create the feature item, DoR/DoD fields, or child tasks before stage 5. Do not advance
 past a stage whose expected visible artifact is missing.

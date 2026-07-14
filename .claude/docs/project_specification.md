@@ -104,6 +104,10 @@ Known triggers include:
 - Read the relevant product, workshop, and implementation documents before changing capability assets.
 - For task work, start from the active user request and the smallest relevant product/workshop docs.
 - Taskpilot is initialized for this repository with key `amk`; branch task segments use lowercase `amk-NNN` form derived from canonical Taskpilot item IDs.
+- Project-local Git workflow is governed by `.claude/skills/work-with-git/SKILL.md`. Features use
+  `feat/amk-NNN-<slug>` branches and bugs use `fix/amk-NNN-<slug>` branches. Branch creation
+  approval permits publishing the initial branch reference only; commits and later pushes each
+  require explicit user requests.
 - Store each feature's requirements, acceptance criteria, scenarios, status, and progress in
   its Taskpilot feature graph (the feature item plus its structured fields, child tasks, and
   comments). Do not create or maintain `docs/features/`.

@@ -23,6 +23,8 @@ Do not use it for trivial low-risk direct edits or purely factual answers.
 2. Identify the smallest relevant authority sources to read.
 3. Check `.claude/pipelines/` for a pipeline whose "When to Apply" matches the request. When one matches, adopt its stage list as the routing plan rather than composing one from scratch.
 4. Select the immediate next capability or direct implementation step.
+   For feature or bug-fix implementation, select the project-local `work-with-git` skill as
+   the Git preflight before implementation begins.
 5. Name validation and review gates.
 6. Add documentation maintenance after implementation when its trigger applies.
 7. Add `kit-task-complete` as the final step.
