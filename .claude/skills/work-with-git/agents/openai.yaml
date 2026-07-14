@@ -1,0 +1,4 @@
+interface:
+  display_name: "Work with Git"
+  short_description: "Safely manage project-local branches and explicit Git operations"
+  default_prompt: "Use $work-with-git before feature or bug-fix implementation to inspect Git state and govern branches, commits, and pushes."

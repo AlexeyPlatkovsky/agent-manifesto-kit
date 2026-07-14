@@ -20,7 +20,8 @@ description: Manages local Taskpilot work items for this repository and prepares
 - Do not create or maintain parallel feature records under `docs/features/`.
 - Prepare branch-name task segments from Taskpilot IDs.
 - Use JSON output for reads and changes whenever possible.
-- Do not manage Git branches directly; branch creation remains owned by the Git workflow or caller.
+- Route Git preflight and all branch, commit, and push operations through the project-local
+  `.claude/skills/work-with-git/SKILL.md`; do not perform Git operations ad hoc in this skill.
 - Do not replace the root routing gate or decide whether a task is trivial.
 
 ## Branch Task Segment
@@ -28,7 +29,18 @@ description: Manages local Taskpilot work items for this repository and prepares
 - Taskpilot's canonical item ID is the source of truth.
 - For branch names, convert the canonical item ID to lowercase and zero-pad the numeric suffix to three digits.
 - Example: Taskpilot item `amk-1` becomes branch task segment `amk-001`.
-- New non-trivial feature/work branches use `feature/<task-segment>-<slug>`, for example `feature/amk-001-add-new-bundle`.
+- New feature branches use `feat/<task-segment>-<slug>` and bug branches use
+  `fix/<task-segment>-<slug>`, for example `feat/amk-001-add-new-bundle` or
+  `fix/amk-002-fix-adopt-cli-adaptation-handoff`.
+
+## Git Workflow Handoff
+
+- Before implementing a new feature or bug fix, the manager must route through
+  `work-with-git`.
+- Taskpilot supplies the canonical item ID and type for branch naming; `work-with-git` decides
+  whether the current branch is related and owns any approved branch operation.
+- Taskpilot item creation, update, relationship, comment, and validation operations remain here;
+  Git branch, commit, and push operations do not.
 
 ## Feature Records
 

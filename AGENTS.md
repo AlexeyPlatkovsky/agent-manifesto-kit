@@ -73,6 +73,7 @@ Non-trivial routed work must include:
 - Skill: `.claude/skills/validation-report/SKILL.md`
 - Skill: `.claude/skills/kit-task-complete/SKILL.md`
 - Skill: `.claude/skills/skill-authoring/SKILL.md`
+- Skill: `.claude/skills/work-with-git/SKILL.md`
 - Skill: `.claude/skills/taskpilot/SKILL.md`
 - Pipeline: `.claude/pipelines/skill-authoring.md`
 - Convention: `.claude/conventions/ambiguity-resolution.md`
@@ -89,6 +90,10 @@ Non-trivial routed work must include:
 Load only the capability needed for the current gate or task. Skills and agents under `.claude/` are also directly invocable through Claude Code's native Skill/Agent tools; the `kit-` prefix on `kit-brainstorm`, `kit-documentation-maintenance`, and `kit-task-complete` avoids name collisions with the product skills of the same base name shipped under `collection/skills/`.
 
 Pipelines under `.claude/pipelines/` are pre-baked routing plans the manager adopts when their "When to Apply" matches the request. They sequence existing skills and agents; they do not implement step logic and do not replace `kit-manager`.
+
+For every new feature or bug-fix implementation, the manager routes through the project-local
+`work-with-git` skill before implementation. That skill owns branch decisions and all Git state
+changes; feature and bug-fix implementation capabilities do not perform Git operations ad hoc.
 
 The adopted SDD bundle defines the project's `docs/` context tree. Use it for project intent,
 architecture, design, testing, roadmap, and decisions. Use Taskpilot project `amk` for all
@@ -139,13 +144,22 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - Use Taskpilot items as the single canonical source for work and feature tracking; do not
   duplicate requirements, tasks, scenarios, or status in `docs/features/`.
 - Never revert user changes unless the user explicitly asks.
-- Never implement non-trivial work directly on `main`, unless the user explicitly says to work on `main`. Non-trivial work always happens on a properly named branch, created from `origin/main`.
-- Work branches must use a recognized prefix: `bugfix/`, `feature/`, or `release/`. The `pre-push` hook enforces recognized prefixes without mutating files or creating commits.
+- Never push directly to `main`. New feature and bug-fix implementation work uses a properly
+  named branch; an explicit active user instruction may authorize a draft on `main`, but never
+  authorizes pushing work changes there.
+- Work branches must use `feat/amk-NNN-task-title` for features or `fix/amk-NNN-task-title` for
+  bugs. The `pre-push` hook enforces these prefixes without mutating files or creating commits.
 - For non-trivial work that is not a bug fix, not trivial, and not continuation of ongoing branch work, check Taskpilot for a suitable item before creating a branch. If no suitable item exists, suggest creating one and wait for user approval.
-- Taskpilot-backed work branches use `<prefix>/<task-id>-<slug>`, where `<prefix>` is `feature/` for `feature`-type items or `bugfix/` for `bug`-type items, and `<task-id>` is lowercase `amk-NNN` derived from the Taskpilot item ID by zero-padding its numeric suffix, for example `feature/amk-001-add-new-bundle` or `bugfix/amk-002-fix-adopt-cli-adaptation-handoff`.
-- Bug fixes, trivial changes, and continuing work on an existing suitable branch may use the recognized prefix strategy without creating a new Taskpilot item.
-- When creating a new branch for non-trivial work, branch it from `origin/main` and push it to the remote immediately after creation (before further commits), so the branch is tracked from the start.
-- When investigation during a task reveals that the actual problem is incorrect existing behavior rather than new work, that is a bug: update the Taskpilot item's `type` to `bug` (and its branch prefix to `bugfix/` if a branch has not been created yet) rather than leaving it classified as a `task` or `feature`.
+- Taskpilot-backed work branches use lowercase, zero-padded IDs: `feat/amk-NNN-<slug>` for
+  `feature` items and `fix/amk-NNN-<slug>` for `bug` items, for example
+  `feat/amk-001-add-new-bundle` or `fix/amk-002-fix-adopt-cli-adaptation-handoff`.
+- When the current branch is unrelated to the requested item, ask whether to create a new
+  branch or continue; never switch or create silently. When a new branch is approved, create it
+  from the latest `origin/main` and push only its initial branch reference immediately. That
+  approval does not authorize pushing later work commits.
+- Never commit without an explicit user request. Never push work commits or changes without an
+  explicit user request. Inspect state after each consequential Git operation.
+- When investigation during a task reveals that the actual problem is incorrect existing behavior rather than new work, that is a bug: update the Taskpilot item's `type` to `bug` (and use the `fix/` branch prefix if a branch has not been created yet) rather than leaving it classified as a `task` or `feature`.
 - Before implementing an approved task, validate it against the current codebase (read the affected files, confirm assumptions, check for edge cases the task description doesn't mention). If this validation surfaces ambiguity, a gap, or an uncovered case with more than one materially valid resolution, stop and clarify with the user before writing code, even if the task was already approved — approval covers the goal, not an unstated implementation choice.
 - Before accepting a feature-planning result, verify the actual Taskpilot record shape: separate non-empty `dor` and `dod`, concise `description`, and one real child `task` item for every implementation task. A reviewer must reject task IDs, DoR/DoD headings, or test plans embedded only in Description.
 - Taskpilot item deletion is a confirmation-gated soft delete. Require explicit user confirmation naming the item ID and title before setting status to `deleted`.
