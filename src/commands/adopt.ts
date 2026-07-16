@@ -41,7 +41,7 @@ export const CLI_INVOCATIONS: Record<SupportedCli, CliInvocation> = {
   codex: {
     kind: "stdin",
     bin: "codex",
-    args: ["exec", "--skip-git-repo-check", "--dangerously-bypass-approvals-and-sandbox", "-"],
+    args: ["exec", "--skip-git-repo-check", "--sandbox", "workspace-write", "--ask-for-approval", "never", "-"],
   },
   agy:      { kind: "bash",   cmd: 'agy --dangerously-skip-permissions -p "$(cat "$0")"' },
   aider:    { kind: "bash",   cmd: 'aider --message "$(cat "$0")" --yes-always' },
