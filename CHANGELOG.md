@@ -26,6 +26,8 @@ Maintain this file as part of product or release-affecting work. Release automat
   positional argument.
 - A read-only Claude tool list is reported as translated to Codex `sandbox_mode` rather than
   dropped.
+- The `kit-adopt` bundle names `AGENTS.md` (or the tool's equivalent root contract) as the
+  instruction entrypoint instead of listing a Claude-specific file.
 
 ## 1.2.1 - 2026-09-30
 

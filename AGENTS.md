@@ -148,7 +148,10 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
   named branch; an explicit active user instruction may authorize a draft on `main`, but never
   authorizes pushing work changes there.
 - Work branches must use `feat/amk-NNN-task-title` for features or `fix/amk-NNN-task-title` for
-  bugs. The `pre-push` hook enforces these prefixes without mutating files or creating commits.
+  standalone bugs. The `pre-push` hook enforces these prefixes without mutating files or creating commits.
+- A bug found while implementing a feature stays on that feature's branch: record it as its own
+  Taskpilot `bug` item linked to the feature (`relates_to`) and fix it there. Open a separate
+  `fix/` branch only for a bug worked on by itself, or when the user asks for one.
 - For non-trivial work that is not a bug fix, not trivial, and not continuation of ongoing branch work, check Taskpilot for a suitable item before creating a branch. If no suitable item exists, suggest creating one and wait for user approval.
 - Taskpilot-backed work branches use lowercase, zero-padded IDs: `feat/amk-NNN-<slug>` for
   `feature` items and `fix/amk-NNN-<slug>` for `bug` items, for example
@@ -159,7 +162,7 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
   approval does not authorize pushing later work commits.
 - Never commit without an explicit user request. Never push work commits or changes without an
   explicit user request. Inspect state after each consequential Git operation.
-- When investigation during a task reveals that the actual problem is incorrect existing behavior rather than new work, that is a bug: update the Taskpilot item's `type` to `bug` (and use the `fix/` branch prefix if a branch has not been created yet) rather than leaving it classified as a `task` or `feature`.
+- When investigation during a task reveals that the actual problem is incorrect existing behavior rather than new work, that is a bug: update the Taskpilot item's `type` to `bug` (and use the `fix/` branch prefix if no branch exists yet and the work is not already on a feature branch) rather than leaving it classified as a `task` or `feature`.
 - Before implementing an approved task, validate it against the current codebase (read the affected files, confirm assumptions, check for edge cases the task description doesn't mention). If this validation surfaces ambiguity, a gap, or an uncovered case with more than one materially valid resolution, stop and clarify with the user before writing code, even if the task was already approved — approval covers the goal, not an unstated implementation choice.
 - Before accepting a feature-planning result, verify the actual Taskpilot record shape: separate non-empty `dor` and `dod`, concise `description`, and one real child `task` item for every implementation task. A reviewer must reject task IDs, DoR/DoD headings, or test plans embedded only in Description.
 - Taskpilot item deletion is a confirmation-gated soft delete. Require explicit user confirmation naming the item ID and title before setting status to `deleted`.

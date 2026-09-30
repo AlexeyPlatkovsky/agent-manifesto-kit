@@ -1,6 +1,7 @@
 ---
 name: sdd-gap-analyzer
 description: Inventories a project's existing documentation, code, and Taskpilot records, maps them onto the SDD context document set, and produces a tier recommendation and ordered adoption plan. Use when introducing SDD into a project that already has docs or code. Read-only.
+isolation_reason: "Inventorying a whole project's docs, code and Taskpilot records is large exploration that would crowd the main context; only the plan comes back."
 tools: Read, Grep, Glob
 ---
 
