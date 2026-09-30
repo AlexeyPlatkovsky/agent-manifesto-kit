@@ -1,6 +1,7 @@
 ---
 name: artifact-acceptance-tester
 description: Runs scenario-based acceptance tests against new or materially changed skills, agents, routing artifacts, validation gates, or output contracts before acceptance.
+isolation_reason: "Acceptance scenarios must run without the author's context so they test what the artifact says, not what its author meant."
 ---
 
 # Artifact Acceptance Tester

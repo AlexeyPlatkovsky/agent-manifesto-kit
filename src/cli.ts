@@ -4,6 +4,8 @@ import { join } from "node:path";
 import { list } from "./commands/list.js";
 import { adopt, isSupportedCli, SUPPORTED_CLIS } from "./commands/adopt.js";
 import { runLint } from "./commands/lint.js";
+import { ingest } from "./commands/ingest.js";
+import { sync, SYNC_PROVIDERS, type SyncProvider } from "./commands/sync.js";
 import { isProvider } from "./providers.js";
 import { packageRoot } from "./catalog.js";
 
@@ -21,6 +23,9 @@ interface Parsed {
   flags: Record<string, string | boolean>;
 }
 
+/** Flags that never take a value, so a following positional is not swallowed. */
+const BOOLEAN_FLAGS = new Set(["force", "replace", "dry-run", "help", "version"]);
+
 function parseArgs(args: string[]): Parsed {
   const positionals: string[] = [];
   const flags: Record<string, string | boolean> = {};
@@ -29,7 +34,7 @@ function parseArgs(args: string[]): Parsed {
     if (arg.startsWith("--")) {
       const key = arg.slice(2);
       const next = args[i + 1];
-      if (next !== undefined && !next.startsWith("-")) {
+      if (!BOOLEAN_FLAGS.has(key) && next !== undefined && !next.startsWith("-")) {
         flags[key] = next;
         i++;
       } else {
@@ -51,20 +56,34 @@ Usage:
   agentkit list [skills|agents|bundles]
   agentkit lint [name]
   agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>] [--force] [--cli <cli>]
+  agentkit ingest <path> [--bundle <name>] [--replace] [--kit <dir>]
+  agentkit sync [<name>...] [--provider claude,codex] [--remove <name,...>] [--dest <dir>] [--force] [--dry-run]
 
   <name> is a capability (skill/agent/pipeline/convention) or a bundle.
   Adopting a bundle explodes it into type-specific directories.
 
   list accepts one exact lowercase selector. Without a selector it shows the full catalog.
 
+  ingest imports a skill folder (SKILL.md), a Claude agent .md, or a Codex agent .toml
+  into the kit's collection/ as a canonical Claude-style capability.
+
+  sync keeps hard copies of skills and agents in the project's native Claude and Codex
+  locations. Names add to the sync set recorded in .agentkit-lock.json; without names it
+  refreshes that set. Locally edited files are kept and reported unless --force is given.
+
   Pass --cli to run an AI assistant after adoption to adapt the files to your project.
   Pass --force to overwrite existing targets without prompting.
 
 Options:
-  --provider   target AI provider (default: claude)
+  --provider   target AI provider (default: claude; sync: claude,codex)
   --cli        AI CLI to run after adoption for project-specific adaptation
                supported: ${SUPPORTED_CLIS.join("|")}
   --force      overwrite existing targets without prompting
+  --bundle     ingest into collection/bundles/<name>/ instead of the flat collection
+  --replace    let ingest overwrite an existing item at the same location
+  --kit        kit checkout whose collection/ ingest writes to (default: this package)
+  --remove     comma-separated names to drop from the sync set
+  --dry-run    show what sync would change without writing
   --dest       target project root (default: current directory)
   --version,-v print the installed version
   --help,-h    show this help`);
@@ -114,6 +133,43 @@ async function main(): Promise<number> {
       const projectRoot = typeof flags.dest === "string" ? flags.dest : process.cwd();
       const force = flags.force === true;
       return adopt({ name, provider, projectRoot, force, cli });
+    }
+    case "ingest": {
+      const source = positionals[1];
+      if (!source || positionals.length > 2) {
+        console.error("ingest requires exactly one <path>: a skill folder, an agent .md, or a Codex agent .toml.");
+        return 1;
+      }
+      return ingest({
+        source,
+        bundle: typeof flags.bundle === "string" ? flags.bundle : undefined,
+        kitRoot: typeof flags.kit === "string" ? flags.kit : undefined,
+        replace: flags.replace === true,
+      });
+    }
+    case "sync": {
+      let providers: SyncProvider[] | undefined;
+      if (flags.provider !== undefined) {
+        const list = typeof flags.provider === "string" ? flags.provider.split(",").map((p) => p.trim()) : [];
+        const bad = list.filter((p) => !SYNC_PROVIDERS.includes(p as SyncProvider));
+        if (list.length === 0 || bad.length > 0) {
+          console.error(`Invalid --provider "${String(flags.provider)}". sync supports: ${SYNC_PROVIDERS.join(",")}.`);
+          return 1;
+        }
+        providers = [...new Set(list)] as SyncProvider[];
+      }
+      if (flags.remove === true) {
+        console.error("--remove needs a comma-separated list of names.");
+        return 1;
+      }
+      return sync({
+        names: positionals.slice(1),
+        remove: typeof flags.remove === "string" ? flags.remove.split(",").map((n) => n.trim()).filter(Boolean) : [],
+        providers,
+        projectRoot: typeof flags.dest === "string" ? flags.dest : process.cwd(),
+        force: flags.force === true,
+        dryRun: flags["dry-run"] === true,
+      });
     }
     default:
       console.error(`Unknown command "${cmd}". Run "agentkit --help".`);

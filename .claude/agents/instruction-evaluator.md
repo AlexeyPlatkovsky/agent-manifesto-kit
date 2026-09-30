@@ -1,6 +1,7 @@
 ---
 name: instruction-evaluator
 description: Reviews new or materially changed AI instruction artifacts for framework compliance, layer purity, duplication, ambiguity, and integration risk before acceptance.
+isolation_reason: "Independent review should not inherit the assumptions and momentum of the context that wrote the artifacts."
 ---
 
 ## Purpose

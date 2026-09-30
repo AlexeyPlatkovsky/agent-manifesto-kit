@@ -23,7 +23,7 @@ capabilities (such as the SDD bundle) to any project.
 - Rewrites bundle-relative paths to the target layout and substitutes declared placeholders
   (project name, docs root) with consumer-provided values.
 - Registers the installed capabilities in the target's instruction entrypoint
-  (`AGENTS.md`, `CLAUDE.md`, or equivalent).
+  (`AGENTS.md`, or the tool's equivalent root contract).
 - Verifies the copied assets are portable and registered.
 - Offers a bundle's recommended companions (declared in its `RECOMMENDS.md` per the
   `recommended-companions` convention) as opt-in follow-ups after install.

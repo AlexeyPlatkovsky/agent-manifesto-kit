@@ -1,6 +1,7 @@
 ---
 name: sdd-spec-reviewer
 description: Reviews an SDD context docs/ tree and the actual Taskpilot feature graph for discovery completeness, separate DoR/DoD, testable acceptance, and real child-task traceability. Use before implementation or after documentation/tracking changes. Read-only.
+isolation_reason: "Spec review must judge the documents and task graph as written, without the author's knowledge filling the gaps."
 tools: Read, Grep, Glob
 ---
 

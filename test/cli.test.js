@@ -11,6 +11,7 @@ import { list } from "../dist/commands/list.js";
 import { destinationFor, bundleExtrasDestination, isProvider, wiringHint } from "../dist/providers.js";
 import { adopt, buildPrompt, CLI_INVOCATIONS, invokeAi } from "../dist/commands/adopt.js";
 import { transform, lint } from "../dist/portability.js";
+import { markdownAgentToCodexToml } from "../dist/agent-format.js";
 
 const AGENT_FIXTURE = `---
 name: x
@@ -114,9 +115,10 @@ test("isProvider accepts the three providers and rejects others", () => {
 test("destinationFor maps provider root and type dir", () => {
   const skill = findCapability("brainstorm").match;
   assert.equal(destinationFor(skill, "claude", "/p"), join("/p", ".claude/skills/brainstorm"));
-  assert.equal(destinationFor(skill, "codex", "/p"), join("/p", ".codex/skills/brainstorm"));
+  assert.equal(destinationFor(skill, "codex", "/p"), join("/p", ".agents/skills/brainstorm"));
   const agent = findCapability("code-reviewer").match;
   assert.equal(destinationFor(agent, "agnostic", "/p"), join("/p", ".ai/agents/code-reviewer.md"));
+  assert.equal(destinationFor(agent, "codex", "/p"), join("/p", ".codex/agents/code-reviewer.toml"));
 });
 
 test("bundleExtrasDestination places extras under the provider root bundle name", () => {
@@ -136,10 +138,29 @@ test("adopt copies a skill folder for the default (claude) provider", async () =
   });
 });
 
-test("adopt copies an agent file for codex", async () => {
+test("adopt writes a codex agent as native TOML", async () => {
   await withTmp(async (dir) => {
     assert.equal(await adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
-    assert.ok(existsSync(join(dir, ".codex/agents/code-reviewer.md")));
+    assert.ok(existsSync(join(dir, ".codex/agents/code-reviewer.toml")));
+    assert.ok(!existsSync(join(dir, ".codex/agents/code-reviewer.md")));
+  });
+});
+
+test("adopt puts codex skills where codex discovers them", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "brainstorm", provider: "codex", projectRoot: dir }), 0);
+    assert.ok(existsSync(join(dir, ".agents/skills/brainstorm/SKILL.md")));
+    assert.ok(!existsSync(join(dir, ".codex/skills")));
+  });
+});
+
+test("adopting a bundle for codex uses native skill and agent locations", async () => {
+  await withTmp(async (dir) => {
+    assert.equal(await adopt({ name: "sdd", provider: "codex", projectRoot: dir }), 0);
+    assert.ok(existsSync(join(dir, ".agents/skills/sdd-doc-author/SKILL.md")));
+    assert.ok(existsSync(join(dir, ".codex/agents/sdd-spec-reviewer.toml")));
+    assert.ok(existsSync(join(dir, ".codex/conventions/sdd-doc-set.md")));
+    assert.ok(existsSync(join(dir, ".codex/sdd/templates/docs/idea.md")));
   });
 });
 
@@ -260,7 +281,7 @@ test("transform leaves claude content unchanged", () => {
 
 test("transform for codex swaps path tokens and strips tools frontmatter", () => {
   const out = transform(AGENT_FIXTURE, "codex");
-  assert.ok(out.includes(".codex/skills/foo"));
+  assert.ok(out.includes(".agents/skills/foo"));
   assert.ok(!out.includes(".claude/"));
   assert.ok(!/^tools:/m.test(out), "tools key should be stripped for codex");
   assert.ok(out.includes("name: x"), "neutral frontmatter keys are kept");
@@ -286,12 +307,35 @@ test("lint detects breaking tokens with line numbers", () => {
   assert.equal(claudeMd.line, 7);
 });
 
-test("adopting an agent for codex strips the tools frontmatter on disk", async () => {
+test("adopted codex agent TOML carries name, description, instructions and read-only sandbox", async () => {
   await withTmp(async (dir) => {
     assert.equal(await adopt({ name: "code-reviewer", provider: "codex", projectRoot: dir }), 0);
-    const content = readFileSync(join(dir, ".codex/agents/code-reviewer.md"), "utf8");
-    assert.ok(!/^tools:/m.test(content), "adopted codex agent should have no tools frontmatter");
+    const content = readFileSync(join(dir, ".codex/agents/code-reviewer.toml"), "utf8");
+    assert.match(content, /^name = "code-reviewer"$/m);
+    assert.match(content, /^description = "Independent code reviewer/m);
+    assert.match(content, /^sandbox_mode = "read-only"$/m, "no write tools means read-only in codex");
+    assert.match(content, /^developer_instructions = """\n/m);
+    assert.ok(!/^tools/m.test(content), "claude tools list is not carried into codex");
   });
+});
+
+test("markdownAgentToCodexToml maps codex block, escapes body, and reports dropped keys", () => {
+  const md = `---\nname: r\ndescription: "Says \\"hi\\""\ntools: Read, Edit\nmodel: sonnet\ncodex:\n  model_reasoning_effort: high\n---\n\nUse C:\\path and """quotes""".\n`;
+  const { toml, dropped } = markdownAgentToCodexToml(md, "fallback");
+  assert.match(toml, /^name = "r"$/m);
+  assert.match(toml, /^description = "Says \\"hi\\""$/m);
+  assert.match(toml, /^model_reasoning_effort = "high"$/m);
+  assert.ok(!/sandbox_mode/.test(toml), "an agent with write tools is not forced read-only");
+  assert.ok(toml.includes("C:\\\\path"), "backslashes are escaped");
+  assert.ok(toml.includes('""\\"quotes""\\"'), "triple quotes cannot terminate the string");
+  assert.deepEqual(dropped.sort(), ["model", "tools"]);
+  const readOnly = markdownAgentToCodexToml(`---\nname: r\ndescription: d\ntools: Read, Grep\n---\nbody\n`, "r");
+  assert.deepEqual(readOnly.dropped, [], "a read-only tool list is translated to sandbox_mode, not dropped");
+});
+
+test("codex transform maps agent references to TOML files", () => {
+  const out = transform("See .claude/agents/code-reviewer.md and .claude/skills/x/SKILL.md", "codex");
+  assert.equal(out, "See .codex/agents/code-reviewer.toml and .agents/skills/x/SKILL.md");
 });
 
 test("buildPrompt uses explicit approval/action language, not proposal language", () => {

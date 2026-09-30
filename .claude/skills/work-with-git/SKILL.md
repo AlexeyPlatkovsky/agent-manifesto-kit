@@ -43,7 +43,9 @@ description: "Governs project-local Git work for every feature or bug fix: inspe
 1. Determine the current branch and inspect the working tree before any branch operation.
 2. Treat the current branch as related only when its Taskpilot segment matches the requested
    item or the item is an explicit direct parent/child/related record of the branch's item.
-3. If the current branch is related, continue on it after reporting the relationship.
+3. If the current branch is related, continue on it after reporting the relationship. A bug found
+   while working on a feature branch counts as related once it is a Taskpilot `bug` item linked to
+   the feature: fix it on the feature branch instead of creating a `fix/` branch.
 4. If the current branch is `main`, or is unrelated to the requested work, ask whether to create
    a new branch or use the current branch. Do not decide silently.
 5. If uncommitted changes exist and a branch switch or creation is needed, stop and ask the user

@@ -1,4 +1,5 @@
-import { PROVIDER_ROOT, type Provider } from "./providers.js";
+import { CODEX_SKILLS_DIR, PROVIDER_ROOT, type Provider } from "./providers.js";
+import { markdownAgentToCodexToml } from "./agent-format.js";
 
 /** Breaking Claude-specific tokens — high-precision, safe to match mechanically. */
 const BREAKING_TOKENS = ["CLAUDE.md", "Task tool"];
@@ -34,9 +35,32 @@ const RULES: Record<Provider, TransformRule> = {
 export function transform(content: string, provider: Provider): string {
   const rule = RULES[provider];
   let out = content;
-  if (rule.swapPaths) out = out.split(".claude/").join(`${PROVIDER_ROOT[provider]}/`);
+  if (rule.swapPaths) out = swapPaths(out, provider);
   if (rule.stripKeys.length > 0) out = stripFrontmatterKeys(out, rule.stripKeys);
   return out;
+}
+
+/** Rewrite `.claude/` references to the provider's native locations. */
+function swapPaths(content: string, provider: Provider): string {
+  let out = content;
+  if (provider === "codex") {
+    out = out.split(".claude/skills/").join(`${CODEX_SKILLS_DIR}/`);
+    out = out.replace(/\.claude\/agents\/([A-Za-z0-9_.-]+)\.md/g, ".codex/agents/$1.toml");
+  }
+  return out.split(".claude/").join(`${PROVIDER_ROOT[provider]}/`);
+}
+
+export interface RenderedAgent {
+  content: string;
+  /** Frontmatter keys dropped because the provider has no equivalent. */
+  dropped: string[];
+}
+
+/** Render a canonical Markdown agent in the provider's native agent format. */
+export function renderAgent(content: string, provider: Provider, name: string): RenderedAgent {
+  if (provider !== "codex") return { content: transform(content, provider), dropped: [] };
+  const { toml, dropped } = markdownAgentToCodexToml(swapPaths(content, provider), name);
+  return { content: toml, dropped };
 }
 
 /** Remove the given keys from the leading YAML frontmatter block only. */

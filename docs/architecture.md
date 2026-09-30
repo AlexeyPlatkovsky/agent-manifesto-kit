@@ -14,7 +14,10 @@ copied files using the consumer project's local instructions and documentation.
 | CLI entrypoint | Parse commands and options, dispatch operations | `src/cli.ts` |
 | Catalog scanner | Discover flat capabilities and bundle items | `src/catalog.ts`, `collection/` |
 | Adoption command | Copy capabilities, bundles, and bundle extras; handle conflicts | `src/commands/adopt.ts` |
-| Provider adapters | Resolve target paths and mechanical provider transforms | `src/providers.ts` |
+| Ingest command | Import Claude or Codex skills and agents into `collection/` in canonical form | `src/commands/ingest.ts` |
+| Sync command | Maintain lock-tracked hard copies of skills and agents in native Claude and Codex locations | `src/commands/sync.ts` |
+| Provider adapters | Resolve native target paths and mechanical provider transforms | `src/providers.ts`, `src/portability.ts` |
+| Agent format | Convert between canonical Markdown agents and Codex TOML agents | `src/agent-format.ts` |
 | Portability checks | Detect provider-specific wording or tokens | `src/portability.ts`, `src/commands/lint.ts` |
 | Product collection | Claude-native source assets shipped to consumers | `collection/` |
 | Workshop layer | Repository-local skills, agents, pipelines, conventions, and docs | `.claude/` |
@@ -52,12 +55,18 @@ mechanical path/frontmatter transforms.
   indexed as product output.
 - Claude-native collection assets are the source format; Codex and agnostic targets use
   deterministic transforms.
+- Codex targets follow Codex native discovery: skills under `.agents/skills/`, custom agents as
+  `.codex/agents/<name>.toml`; other items and bundle extras stay under `.codex/`.
 - `package.json` is the release-version source of truth.
 - Non-trivial work on this repository follows the root contract and Taskpilot workflow.
 
 ## Cross-Cutting Concerns
 
 - Adoption must preserve type-specific provider directories and bundle extras.
+- Sync owns only the files recorded in the project's `.agentkit-lock.json`; it keeps locally
+  edited or unowned files unless `--force` is given, and never writes symlinks.
+- Ingest writes canonical content only: `.claude/` path tokens, Markdown agents, and a `codex:`
+  frontmatter block for Codex-only agent settings.
 - Existing target files require explicit conflict handling unless `--force` is supplied.
 - AI-assisted adaptation must receive an actionable prompt and the complete copied file set.
 - Tests, public README guidance, changelog entries, and release metadata are maintained

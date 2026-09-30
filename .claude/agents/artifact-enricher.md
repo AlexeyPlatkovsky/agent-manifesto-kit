@@ -1,6 +1,7 @@
 ---
 name: artifact-enricher
 description: Researches domain best practices and strengthens under-specified skills or agents when they lack operational depth, safety controls, output contracts, or current tool guidance.
+isolation_reason: "Domain research is broad and noisy; running it separately keeps that exploration out of the main context and returns only the proposed strengthening."
 ---
 
 # Artifact Enricher

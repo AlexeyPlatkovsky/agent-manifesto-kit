@@ -22,7 +22,8 @@ development; release history is recorded in `CHANGELOG.md`.
 - **Goal:** Extend reusable capabilities and adoption workflows while preserving the
   collection/workshop boundary.
 - **Features:** Taskpilot `amk-6` (filtered list views), `amk-7` (capability tags and tag
-  filtering), and `amk-8` (unique bundle indexes and deduplication).
+  filtering), `amk-8` (unique bundle indexes and deduplication), `amk-37` (capability ingestion
+  and provider sync), and `amk-38` (public `blender-3d` bundle).
 - **Milestone / exit criteria:** A feature has accepted requirements, implementation tasks,
   scenarios, passing validation, and synchronized documentation.
 
@@ -37,6 +38,7 @@ development; release history is recorded in `CHANGELOG.md`.
 ## Non-Goals (Over Time)
 
 - Separate hand-authored provider source trees — deferred while deterministic transforms are
-  sufficient.
+  sufficient; `agentkit sync` generates native Claude and Codex copies from the one source.
+- User-level (home directory) sync targets — deferred; sync writes into a project.
 - Moving workshop capabilities from `.claude/` to `.ai/` — excluded by an accepted local
   project decision.

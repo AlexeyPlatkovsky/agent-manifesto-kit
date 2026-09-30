@@ -1,0 +1,13 @@
+schema_version: 1
+id: amk-39
+title: F006-T1 Implement agentkit ingest
+priority: normal
+type: task
+status: done
+created_at: '2026-09-30T08:55:21Z'
+updated_at: '2026-09-30T09:19:11Z'
+parent_id: amk-37
+tags:
+- feature-task
+description: 'F006-T1: ingest a Claude or Codex skill folder, Claude agent .md or Codex agent .toml into collection/ (flat or --bundle) in canonical Markdown; lint; refuse existing names without --replace.'
+created_by: claude

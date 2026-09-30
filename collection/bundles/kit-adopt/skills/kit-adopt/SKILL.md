@@ -14,8 +14,8 @@ description: Installs a kit bundle or an individual capability into a target pro
 ## Required Environment
 
 - The kit source tree containing the bundle or item to install.
-- A target project with an instruction entrypoint (for example `AGENTS.md`, `CLAUDE.md`, or
-  an equivalent root contract) and a capability area to receive the assets.
+- A target project with an instruction entrypoint (`AGENTS.md`, or the tool's equivalent root
+  contract) and a capability area to receive the assets.
 - The `capability-portability` concept: copied assets work in the target after consumer-
   declared configuration (paths, project vocabulary) is supplied, without other source edits.
 
