@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.2.1 - 2026-09-30
+
+### Fixed
+
+- Fixed Codex adoption so Codex can discover adopted capabilities: skills are now written to
+  `.agents/skills/<name>/` instead of `.codex/skills/`, and agents are rendered as native Codex
+  TOML (`.codex/agents/<name>.toml` with `name`, `description`, `developer_instructions`)
+  instead of Markdown. Read-only Claude tool lists map to `sandbox_mode = "read-only"`; an
+  optional `codex:` frontmatter block supplies other Codex settings; other Claude-only keys are
+  dropped with a warning. `.claude/skills/` and `.claude/agents/*.md` references are rewritten
+  to the matching Codex locations.
+
 ## 1.2.0 - 2026-07-13
 
 ### Added

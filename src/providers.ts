@@ -20,10 +20,20 @@ export function isProvider(value: string): value is Provider {
   return value === "claude" || value === "codex" || value === "agnostic";
 }
 
+/** Codex discovers project skills under `.agents/skills`, not under its own `.codex` root. */
+export const CODEX_SKILLS_DIR = ".agents/skills";
+
+/** True when this provider stores this capability type in a non-Markdown native format. */
+export function isCodexAgent(cap: Pick<Capability, "type">, provider: Provider): boolean {
+  return provider === "codex" && cap.type === "agent";
+}
+
 /** Provider-correct destination for a single capability inside the consumer project. */
 export function destinationFor(cap: Capability, provider: Provider, projectRoot: string): string {
+  if (provider === "codex" && cap.type === "skill") return join(projectRoot, CODEX_SKILLS_DIR, cap.name);
   const base = join(projectRoot, PROVIDER_ROOT[provider], TYPE_DIR[cap.type]);
-  return cap.isDir ? join(base, cap.name) : join(base, `${cap.name}.md`);
+  if (cap.isDir) return join(base, cap.name);
+  return join(base, `${cap.name}${isCodexAgent(cap, provider) ? ".toml" : ".md"}`);
 }
 
 /** Destination for bundle extras (templates, etc.) that are not capability items. */
@@ -36,7 +46,7 @@ export function wiringHint(provider: Provider): string {
     case "claude":
       return "Wire it up: reference it from CLAUDE.md or your .claude configuration as needed.";
     case "codex":
-      return "Wire it up: register it in your AGENTS.md capability registry.";
+      return "Codex discovers .agents/skills and .codex/agents/*.toml natively; list other items in AGENTS.md.";
     case "agnostic":
       return "Wire it up: register it in your project's AGENTS.md / .ai capability registry.";
   }

@@ -120,8 +120,13 @@ only mechanical provider transforms.
 | Provider | Destination | Transform |
 | --- | --- | --- |
 | `claude` | `.claude/` | Copy Claude-native assets as packaged |
-| `codex` | `.codex/` | Rewrite `.claude/` path tokens to `.codex/` and strip Claude-only `tools:` frontmatter |
+| `codex` | Skills: `.agents/skills/`; agents: `.codex/agents/*.toml`; other items: `.codex/` | Rewrite `.claude/` path tokens to Codex locations; render agents as Codex TOML (`name`, `description`, `developer_instructions`), mapping read-only Claude tool lists to `sandbox_mode = "read-only"` and dropping other Claude-only frontmatter with a warning |
 | `agnostic` | `.ai/` | Rewrite `.claude/` path tokens to `.ai/` |
+
+Codex discovers project skills under `.agents/skills/` and custom agents only as TOML under
+`.codex/agents/`, so those two types do not use the `.codex/` root. An agent may carry Codex-only
+settings in a `codex:` frontmatter block (for example `model_reasoning_effort: high`); they are
+written as TOML keys for Codex and ignored by other providers.
 
 Use `agentkit lint` before or after adoption when you want to inspect capabilities for
 provider-specific wording.

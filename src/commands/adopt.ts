@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { findBundle, findCapability, type Bundle, type Capability } from "../catalog.js";
 import { bundleExtrasDestination, destinationFor, wiringHint, type Provider } from "../providers.js";
-import { lint, transform } from "../portability.js";
+import { lint, renderAgent, transform } from "../portability.js";
 
 // ── Supported CLIs ──────────────────────────────────────────────────────────
 
@@ -210,6 +210,16 @@ function surfaceCompanions(recommendsPath: string): void {
   console.log("Adopt any you want with: agentkit adopt <name>");
 }
 
+/** Render a single-file capability in the provider's native format, reporting dropped metadata. */
+export function renderFile(cap: Capability, content: string, provider: Provider): string {
+  if (cap.type !== "agent") return transform(content, provider);
+  const { content: rendered, dropped } = renderAgent(content, provider, cap.name);
+  if (dropped.length > 0) {
+    console.warn(`warning: ${cap.name}: frontmatter ${dropped.join(", ")} has no ${provider} equivalent and was not carried over.`);
+  }
+  return rendered;
+}
+
 const CAPABILITY_DIRS = new Set(["skills", "agents", "pipelines", "conventions"]);
 
 async function adoptBundle(bundle: Bundle, opts: AdoptOptions, onFile?: (path: string) => void): Promise<number> {
@@ -258,7 +268,7 @@ async function adoptBundle(bundle: Bundle, opts: AdoptOptions, onFile?: (path: s
       for (const f of lint(content)) {
         console.warn(`warning: ${item.name}:${f.line} contains "${f.token}" — review for ${opts.provider}.`);
       }
-      writeFileSync(target, transform(content, opts.provider));
+      writeFileSync(target, renderFile(item, content, opts.provider));
       onFile?.(target);
     }
   }
@@ -307,7 +317,7 @@ async function adoptSingle(match: Capability, opts: AdoptOptions, onFile?: (path
       onFile?.(md);
     }
   } else {
-    writeFileSync(target, transform(readFileSync(match.sourceCopyPath, "utf8"), opts.provider));
+    writeFileSync(target, renderFile(match, readFileSync(match.sourceCopyPath, "utf8"), opts.provider));
     onFile?.(target);
   }
 
