@@ -51,6 +51,12 @@ Adopt the QA Automation bundle for browser and automated-test workflows:
 agentkit adopt qa-automation --provider claude
 ```
 
+Keep skills and agents synced into both Claude and Codex locations of a project:
+
+```bash
+agentkit sync blender-3d brainstorm --provider claude,codex
+```
+
 Adopt a single skill for Codex:
 
 ```bash
@@ -86,6 +92,8 @@ such as templates, under `.claude/<bundle-name>/`.
 agentkit list [skills|agents|bundles]
 agentkit lint [name]
 agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>] [--force] [--cli <cli>]
+agentkit ingest <path> [--bundle <name>] [--replace] [--kit <dir>]
+agentkit sync [<name>...] [--provider claude,codex] [--remove <name,...>] [--dest <dir>] [--force] [--dry-run]
 ```
 
 Command summary:
@@ -95,6 +103,8 @@ Command summary:
 | `agentkit list [skills|agents|bundles]` | Show the full catalog or one selected view; bundle views include item summaries |
 | `agentkit lint [name]` | Check all capabilities, or one named capability, for provider-specific tokens |
 | `agentkit adopt <name>` | Copy a capability or bundle into your project |
+| `agentkit ingest <path>` | Import a skill folder or agent file (Claude or Codex format) into the kit's `collection/` |
+| `agentkit sync [<name>...]` | Keep hard copies of skills and agents in a project's native Claude and Codex locations |
 
 Global options:
 
@@ -130,6 +140,50 @@ written as TOML keys for Codex and ignored by other providers.
 
 Use `agentkit lint` before or after adoption when you want to inspect capabilities for
 provider-specific wording.
+
+## Ingest
+
+`collection/` is the single source for every provider. `agentkit ingest` brings an existing
+capability into it from either tool's layout:
+
+| Source | Result |
+| --- | --- |
+| Skill folder with `SKILL.md` (Claude or Codex) | `collection/skills/<name>/`, all files copied; dotfiles and `__pycache__` skipped |
+| Claude agent `.md` | `collection/agents/<name>.md` |
+| Codex agent `.toml` | `collection/agents/<name>.md`: `developer_instructions` becomes the body; `sandbox_mode = "read-only"` becomes a read-only `tools:` list; other scalar settings are kept under a `codex:` block; tables such as `[mcp_servers]` are reported and skipped |
+
+Codex paths inside Markdown (`.agents/skills/`, `.codex/agents/*.toml`) are rewritten to the
+canonical `.claude/` tokens that adopt and sync translate per provider. Pass `--bundle <name>` to
+place the item in `collection/bundles/<name>/`. Ingest refuses a name already used anywhere in the
+catalog, and an existing item at the same location unless you pass `--replace`. It writes into
+the kit checkout that runs the command, or into `--kit <dir>`.
+
+## Sync
+
+`agentkit sync` maintains hard copies (no symlinks) of skills and agents in a project:
+
+| Provider | Skills | Agents |
+| --- | --- | --- |
+| `claude` | `.claude/skills/<name>/` | `.claude/agents/<name>.md` |
+| `codex` | `.agents/skills/<name>/` | `.codex/agents/<name>.toml` |
+
+The sync set (item names and providers) and a SHA-256 hash of every written file are recorded
+in `.agentkit-lock.json` at the project root; commit it with the project. Names you pass are
+added to the set, `--remove` drops names, and running `agentkit sync` with no names refreshes
+the set from the current kit.
+
+On each run, sync:
+
+- creates missing files and updates files it wrote whose contents still match the lock
+- keeps and reports files edited locally, and existing files it did not create; `--force`
+  replaces them
+- removes files of dropped items or providers when they are unmodified, and cleans up the
+  folders that become empty
+- never touches files outside the lock file's records
+
+Sync exits with status 1 when it kept any file, so automation notices. `--dry-run` prints the
+plan without writing. Bundles sync their skills and agents; pipelines, conventions and bundle
+extras stay with `agentkit adopt`.
 
 ## AI-Assisted Adaptation
 

@@ -3,9 +3,9 @@ id: amk-43
 title: F007-T1 Author blender-reference-model skill and scripts
 priority: normal
 type: task
-status: backlog
+status: done
 created_at: '2026-09-30T08:55:25Z'
-updated_at: '2026-09-30T08:55:25Z'
+updated_at: '2026-09-30T09:19:14Z'
 parent_id: amk-38
 tags:
 - feature-task

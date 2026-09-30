@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.3.0 - 2026-09-30
+
+### Added
+
+- Added `agentkit ingest <path>` to import a skill folder, a Claude agent `.md`, or a Codex
+  agent `.toml` into `collection/` (flat or `--bundle <name>`) in canonical form. Codex agents
+  become Markdown agents with a read-only `tools:` list for read-only sandboxes and a `codex:`
+  block for other settings.
+- Added `agentkit sync` to keep hard copies of skills and agents in a project's native Claude
+  (`.claude/skills`, `.claude/agents`) and Codex (`.agents/skills`, `.codex/agents/*.toml`)
+  locations, tracked by `.agentkit-lock.json`: owned files update in place, local edits and
+  unowned files are kept unless `--force`, dropped items and providers are removed, and
+  `--dry-run` previews changes.
+- Added the public `blender-3d` bundle: `blender-reference-model` and `blender-mocap-retarget`
+  skills with tested Blender and image scripts, and a read-only `visual-reviewer` agent.
+
+### Changed
+
+- Boolean CLI flags (`--force`, `--replace`, `--dry-run`) no longer consume a following
+  positional argument.
+- A read-only Claude tool list is reported as translated to Codex `sandbox_mode` rather than
+  dropped.
+
 ## 1.2.1 - 2026-09-30
 
 ### Fixed

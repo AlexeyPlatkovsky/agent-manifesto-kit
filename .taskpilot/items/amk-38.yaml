@@ -3,31 +3,24 @@ id: amk-38
 title: F007 Public blender-3d bundle
 priority: normal
 type: feature
-status: backlog
+status: done
 created_at: '2026-09-30T08:55:04Z'
-updated_at: '2026-09-30T08:55:50Z'
+updated_at: '2026-09-30T09:19:17Z'
 tags:
 - feature
 - bundle
 - blender
-description: 'F007: ship a public collection/bundles/blender-3d bundle distilled from successful reference-modeling
-  and mocap-retarget sessions: blender-reference-model and blender-mocap-retarget skills with their scripts,
-  and a fresh-context visual-reviewer agent. Machine-specific paths stay in consumer context, not in the
-  bundle. Non-goals: hook-based workflow guards, evidence receipts.'
-created_by: claude
+description: 'F007: ship a public collection/bundles/blender-3d bundle distilled from successful reference-modeling and mocap-retarget sessions: blender-reference-model and blender-mocap-retarget skills with their scripts, and a fresh-context visual-reviewer agent. Machine-specific paths stay in consumer context, not in the bundle. Non-goals: hook-based workflow guards, evidence receipts.'
 dor:
 - User approved a public bundle on 2026-09-30.
-- 'Source material reviewed: Blender/opus and Blender/sonnet session scripts and transcripts, astra-skills
-  review guidance.'
+- 'Source material reviewed: Blender/opus and Blender/sonnet session scripts and transcripts, astra-skills review guidance.'
 - F007-T1 through F007-T3 exist as child tasks under amk-38.
 dod:
-- collection/bundles/blender-3d contains blender-reference-model and blender-mocap-retarget skills with
-  scripts and a visual-reviewer agent.
-- No machine-specific absolute paths or project names in the bundle; agentkit lint reports no breaking
-  tokens.
-- All bundle Python scripts compile (py_compile) and the compare/edges scripts run on a synthetic image
-  pair.
+- collection/bundles/blender-3d contains blender-reference-model and blender-mocap-retarget skills with scripts and a visual-reviewer agent.
+- No machine-specific absolute paths or project names in the bundle; agentkit lint reports no breaking tokens.
+- All bundle Python scripts compile (py_compile) and the compare/edges scripts run on a synthetic image pair.
 - agentkit list shows the bundle; adopt and sync into a temp project produce Claude and Codex native layouts.
 links:
   relates_to:
   - amk-37
+created_by: claude

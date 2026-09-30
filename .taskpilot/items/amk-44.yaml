@@ -3,9 +3,9 @@ id: amk-44
 title: F007-T2 Author blender-mocap-retarget skill and scripts
 priority: normal
 type: task
-status: backlog
+status: done
 created_at: '2026-09-30T08:55:26Z'
-updated_at: '2026-09-30T08:55:26Z'
+updated_at: '2026-09-30T09:19:15Z'
 parent_id: amk-38
 tags:
 - feature-task

@@ -28,6 +28,22 @@ selectors, extra arguments, and unknown flags fail with a concise error and no p
 4. The CLI copies capability files and any bundle extras.
 5. The CLI prints the adopted target and optional recommended companions.
 
+### Ingest an existing capability
+
+1. The maintainer runs `agentkit ingest <skill-folder|agent.md|agent.toml> [--bundle <name>]`
+   from a kit checkout.
+2. The CLI detects the source format, converts Codex agents and paths to canonical form, and
+   checks that the name is unique in the catalog.
+3. The CLI writes the item under `collection/` and reports portability warnings.
+
+### Keep a project in sync
+
+1. The maintainer runs `agentkit sync <names...> --provider claude,codex` in a project.
+2. The CLI renders each skill and agent in each provider's native format and location.
+3. The CLI writes new and owned-unmodified files, keeps and reports local edits, removes
+   dropped items' unmodified files, and records hashes in `.agentkit-lock.json`.
+4. Later runs of `agentkit sync` without names refresh the same set from the current kit.
+
 ### Adapt adopted files with an AI CLI
 
 1. The maintainer adds `--cli <supported-cli>` to the adoption command.
@@ -43,6 +59,8 @@ selectors, extra arguments, and unknown flags fail with a concise error and no p
 | Adoption output | Confirm provider, destination, copied items, and companions | `agentkit adopt` |
 | Conflict prompt | Let the maintainer replace or skip an existing target | Adoption without `--force` |
 | Adaptation handoff | Give the selected AI CLI the files and requested action | Adoption with `--cli` |
+| Ingest output | Confirm the canonical destination, file count, and portability warnings | `agentkit ingest` |
+| Sync report | List created (+), updated (~), removed (-) and kept (!) files with a summary | `agentkit sync` |
 
 ## States
 
@@ -55,7 +73,8 @@ selectors, extra arguments, and unknown flags fail with a concise error and no p
 
 ## Interaction Patterns
 
-- Commands are explicit and composable: list, lint, and adopt.
+- Commands are explicit and composable: list, lint, adopt, ingest, and sync.
+- `--dry-run` previews a sync without writing.
 - `--dest` scopes adoption to a named consumer project root.
 - `--force` is the automation escape hatch for known replacement intent.
 - Optional AI adaptation is opt-in through `--cli`.

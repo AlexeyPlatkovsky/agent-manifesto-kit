@@ -3,39 +3,28 @@ id: amk-37
 title: F006 Capability ingestion and provider sync
 priority: normal
 type: feature
-status: backlog
+status: done
 created_at: '2026-09-30T08:55:03Z'
-updated_at: '2026-09-30T08:55:50Z'
+updated_at: '2026-09-30T09:19:17Z'
 tags:
 - feature
 - ingest
 - sync
-description: 'F006: keep collection/ as the single canonical source and add (1) agentkit ingest to import
-  a Claude or Codex skill folder or agent file into collection/ (flat or into a bundle) in canonical Claude-style
-  Markdown, and (2) agentkit sync to write hard copies of chosen skills and agents into a project''s native
-  Claude and Codex locations, tracked by a lock file so owned files update in place, local edits are reported
-  instead of overwritten, and items dropped from the source are removed. Non-goals: user-level installs,
-  symlinks, hooks/config ingestion, syncing pipelines or conventions, separate provider source trees.'
-created_by: claude
+description: 'F006: keep collection/ as the single canonical source and add (1) agentkit ingest to import a Claude or Codex skill folder or agent file into collection/ (flat or into a bundle) in canonical Claude-style Markdown, and (2) agentkit sync to write hard copies of chosen skills and agents into a project''s native Claude and Codex locations, tracked by a lock file so owned files update in place, local edits are reported instead of overwritten, and items dropped from the source are removed. Non-goals: user-level installs, symlinks, hooks/config ingestion, syncing pipelines or conventions, separate provider source trees.'
 dor:
-- 'Scope decisions confirmed with the user on 2026-09-30: project-level only (no user-level installs),
-  hard copies, lock-file update-in-place, ingestion of skills and agents from Claude and Codex layouts.'
+- 'Scope decisions confirmed with the user on 2026-09-30: project-level only (no user-level installs), hard copies, lock-file update-in-place, ingestion of skills and agents from Claude and Codex layouts.'
 - Codex native discovery verified against official documentation.
 - F006-T1 through F006-T4 exist as child tasks under amk-37.
 dod:
-- 'F006-S1: agentkit ingest <claude-skill-dir> copies the folder into collection/skills/<name>/ unchanged
-  apart from canonical frontmatter.'
-- 'F006-S2: agentkit ingest <codex-agent.toml> writes collection/agents/<name>.md with name/description
-  frontmatter, codex.* extras and the developer_instructions body.'
-- 'F006-S3: ingest into --bundle <name> writes under collection/bundles/<name>/; an existing name fails
-  without --replace.'
+- 'F006-S1: agentkit ingest <claude-skill-dir> copies the folder into collection/skills/<name>/ unchanged apart from canonical frontmatter.'
+- 'F006-S2: agentkit ingest <codex-agent.toml> writes collection/agents/<name>.md with name/description frontmatter, codex.* extras and the developer_instructions body.'
+- 'F006-S3: ingest into --bundle <name> writes under collection/bundles/<name>/; an existing name fails without --replace.'
 - 'F006-S4: agentkit sync <names> --provider claude,codex writes native hard copies and .agentkit-lock.json.'
-- 'F006-S5: re-sync after a source change updates owned files; a locally edited owned file is reported
-  and kept unless --force.'
-- 'F006-S6: an item dropped from the sync set is removed only if its files are unmodified; unowned files
-  are never touched.'
+- 'F006-S5: re-sync after a source change updates owned files; a locally edited owned file is reported and kept unless --force.'
+- 'F006-S6: an item dropped from the sync set is removed only if its files are unmodified; unowned files are never touched.'
 - Ingest and sync tests pass with npm test; docs, README, CHANGELOG and version are aligned.
 links:
   relates_to:
   - amk-36
   - amk-38
+created_by: claude

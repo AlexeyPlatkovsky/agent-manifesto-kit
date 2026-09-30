@@ -34,12 +34,12 @@ export function packageRoot(): string {
   return dirname(here);
 }
 
-function collectionDir(): string {
-  return join(packageRoot(), "collection");
+function collectionDir(root: string = packageRoot()): string {
+  return join(root, "collection");
 }
 
-function bundlesDir(): string {
-  return join(collectionDir(), "bundles");
+function bundlesDir(root?: string): string {
+  return join(collectionDir(root), "bundles");
 }
 
 function parseFrontmatter(text: string): Record<string, string> {
@@ -133,8 +133,8 @@ function scanTypeDir(base: string, type: CapType, bundle?: string): Capability[]
 const ALL_TYPES: CapType[] = ["skill", "agent", "pipeline", "convention"];
 
 /** Bundles found under collection/bundles/, each a cohesive, independently adoptable unit. */
-export function scanBundles(): Bundle[] {
-  const root = bundlesDir();
+export function scanBundles(kitRoot?: string): Bundle[] {
+  const root = bundlesDir(kitRoot);
   if (!existsSync(root)) return [];
   const bundles: Bundle[] = [];
   for (const entry of readdirSync(root, { withFileTypes: true })) {
@@ -154,19 +154,19 @@ export function scanBundles(): Bundle[] {
 }
 
 /** All individually addressable capabilities: flat collection items plus every bundle's items. */
-export function scanCatalog(): Capability[] {
-  const root = collectionDir();
+export function scanCatalog(kitRoot?: string): Capability[] {
+  const root = collectionDir(kitRoot);
   const flat = ALL_TYPES.flatMap((t) => scanTypeDir(root, t));
-  const bundled = scanBundles().flatMap((b) => b.items);
+  const bundled = scanBundles(kitRoot).flatMap((b) => b.items);
   return [...flat, ...bundled];
 }
 
-export function findCapability(name: string): { match?: Capability; ambiguous: Capability[] } {
-  const matches = scanCatalog().filter((c) => c.name === name);
+export function findCapability(name: string, kitRoot?: string): { match?: Capability; ambiguous: Capability[] } {
+  const matches = scanCatalog(kitRoot).filter((c) => c.name === name);
   if (matches.length === 1) return { match: matches[0], ambiguous: [] };
   return { ambiguous: matches.length > 1 ? matches : [] };
 }
 
-export function findBundle(name: string): Bundle | undefined {
-  return scanBundles().find((b) => b.name === name);
+export function findBundle(name: string, kitRoot?: string): Bundle | undefined {
+  return scanBundles(kitRoot).find((b) => b.name === name);
 }

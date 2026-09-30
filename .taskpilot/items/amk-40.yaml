@@ -3,9 +3,9 @@ id: amk-40
 title: F006-T2 Implement agentkit sync with lock file
 priority: normal
 type: task
-status: backlog
+status: done
 created_at: '2026-09-30T08:55:22Z'
-updated_at: '2026-09-30T08:55:22Z'
+updated_at: '2026-09-30T09:19:11Z'
 parent_id: amk-37
 tags:
 - feature-task

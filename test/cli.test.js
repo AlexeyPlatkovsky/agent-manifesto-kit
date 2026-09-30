@@ -329,6 +329,8 @@ test("markdownAgentToCodexToml maps codex block, escapes body, and reports dropp
   assert.ok(toml.includes("C:\\\\path"), "backslashes are escaped");
   assert.ok(toml.includes('""\\"quotes""\\"'), "triple quotes cannot terminate the string");
   assert.deepEqual(dropped.sort(), ["model", "tools"]);
+  const readOnly = markdownAgentToCodexToml(`---\nname: r\ndescription: d\ntools: Read, Grep\n---\nbody\n`, "r");
+  assert.deepEqual(readOnly.dropped, [], "a read-only tool list is translated to sandbox_mode, not dropped");
 });
 
 test("codex transform maps agent references to TOML files", () => {

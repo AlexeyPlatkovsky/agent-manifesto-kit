@@ -28,6 +28,10 @@ verification scenarios and evidence in the relevant Taskpilot feature item.
 - Adoption covers clean targets, existing targets, `--force`, bundles, and bundle extras.
 - AI-assisted adaptation covers the actionable prompt, complete file context, and child
   process invocation behavior; the corresponding evidence belongs in Taskpilot.
+- Ingest covers skill folders, Claude agents, Codex TOML agents, bundle targets, canonical
+  path rewriting, duplicate and name-clash refusal, and missing descriptions.
+- Sync covers native layouts for both providers, the lock file, update-in-place, local-edit and
+  unowned-file protection, `--force`, item and provider removal, and `--dry-run`.
 - Filtered list views cover the default catalog, exact lowercase selectors, bundle item
   summaries, empty results, invalid selectors, extra arguments, and unknown flags.
 
