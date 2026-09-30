@@ -1,0 +1,33 @@
+schema_version: 1
+id: amk-36
+title: Codex adoption targets undiscoverable paths and formats
+priority: high
+type: bug
+status: backlog
+created_at: '2026-09-30T08:55:02Z'
+updated_at: '2026-09-30T08:55:50Z'
+tags:
+- bug
+- codex
+- providers
+description: 'Codex adoption writes skills to .codex/skills and agents as .codex/agents/*.md. Codex discovers
+  skills only under .agents/skills (project) and reads custom agents only as .codex/agents/*.toml with
+  name, description and developer_instructions. Fix: skills -> .agents/skills/<name>/, agents -> .codex/agents/<name>.toml
+  generated from the canonical Markdown agent; drop Claude-only frontmatter with a warning.'
+created_by: claude
+dor:
+- Official Codex docs confirm skill discovery under .agents/skills and custom agents as .codex/agents/*.toml.
+- Current providers.ts and portability.ts behavior was inspected.
+dod:
+- agentkit adopt <skill> --provider codex writes .agents/skills/<name>/SKILL.md.
+- agentkit adopt <agent> --provider codex writes .codex/agents/<name>.toml with name, description and
+  developer_instructions.
+- Claude-only agent frontmatter keys are dropped with a warning; codex.* frontmatter keys become TOML
+  keys.
+- Bundle adoption for codex uses the same destinations; pipelines/conventions/extras keep their current
+  .codex location.
+- Existing tests updated and new codex path/TOML tests pass (npm test).
+- CHANGELOG.md, package.json and package-lock.json record a patch release.
+links:
+  relates_to:
+  - amk-37

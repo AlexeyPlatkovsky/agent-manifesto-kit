@@ -1,0 +1,13 @@
+schema_version: 1
+id: amk-43
+title: F007-T1 Author blender-reference-model skill and scripts
+priority: normal
+type: task
+status: backlog
+created_at: '2026-09-30T08:55:25Z'
+updated_at: '2026-09-30T08:55:25Z'
+parent_id: amk-38
+tags:
+- feature-task
+description: 'F007-T1: skill policy plus measure/render/compare/edges/zoom/colors/sheet/mesh-check scripts distilled from the Opus and Sonnet sessions.'
+created_by: claude
