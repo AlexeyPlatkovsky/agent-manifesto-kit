@@ -1,0 +1,105 @@
+# Declarative instructions for the calling agent/manager; not executable automation.
+version: 1
+name: blender-asset
+purpose: Choose the smallest workflow that meets the task's acceptance criteria.
+entry: blender-asset
+contract:
+  required:
+    - brief and authoritative input/output paths
+    - profile with reason and measurable acceptance criteria
+    - required evidence IDs, views/checks and task-specific tolerances
+    - allowed changes, units/axes/origin and deliverables
+  optional:
+    - reference priority and intentional deviations
+    - source motion, root-motion mode and expected clip names
+    - target engine, intended gameplay size and deformation constraints
+    - local model/effort preset and usage/render budget
+selection:
+  owner: calling agent or manager
+  rules:
+    - Honor an explicitly requested profile; never silently weaken its required gates.
+    - Choose quick for a simple prop, prototype, material/origin edit or isolated repair.
+    - Choose standard for reference matching, modular assets or ordinary game-ready delivery.
+    - Choose production for strict fidelity, complex assemblies, critical deformation or dependent deliverables.
+    - Classify by acceptance risk and dependencies, not polygon count alone.
+    - Record the choice briefly; only ask about a missing decision that changes acceptance.
+profiles:
+  quick:
+    stages: [contract, build, technical_checks, affected_views, conditional_review, delivery]
+    reviewer: optional_only_when_requested_or_material_uncertainty
+    max_repairs: 1
+  standard:
+    stages: [contract, proportions, build, reference_comparison_if_applicable, technical_checks, conditional_review, delivery]
+    reviewer: required_when_requested_or_identity_or_acceptance_remains_uncertain
+    max_repairs: 2
+  production:
+    stages: [contract, blockout_checkpoint, refine, technical_checks, independent_review, delivery]
+    reviewer: required
+    max_repairs: 3
+stage_owners:
+  contract: calling agent records criteria, required evidence IDs and repair limit before building
+  proportions: builder establishes dimensions and primary forms before detail
+  blockout_checkpoint: compare primary forms to acceptance; resolve material ambiguity before refining
+  build: blender-asset, or blender-reference-model when matching a supplied reference
+  refine: same builder capability with the accepted blockout and scoped changes
+  technical_checks: builder runs only the contract's relevant geometry, material, motion and export checks
+  reference_comparison_if_applicable: blender-reference-model produces matched views and identity-detail evidence
+  affected_views: builder renders only views needed to judge the changed region and its dependencies
+  conditional_review: visual-reviewer if the profile's condition holds; otherwise record why unnecessary
+  independent_review: visual-reviewer receives a compact evidence packet in a fresh context
+  delivery: calling agent evaluates every required criterion against current evidence
+capability_additions:
+  reference:
+    when: task requires fidelity to a supplied reference
+    capability: blender-reference-model
+    rule: Supply view priorities and tolerances; no universal silhouette IoU target.
+  motion:
+    when: task rigs or retargets existing source motion onto an existing character
+    capability: blender-mocap-retarget
+    rule: Preserve the authoritative model; add source comparison, rest-pose identity and motion checks without restarting modeling.
+  export:
+    when: task requests an interchange or engine-ready deliverable
+    tools: blender-mocap-retarget/scripts/verify_gltf.py; godot_verify.py only for a Godot target
+    rule: Declare expected clip set and required geometry/skin/rig; re-import the exported artifact and run target checks when required.
+review:
+  default_team: none
+  production_reviewers: 1
+  packet:
+    - brief, priorities, intentional deviations and acceptance criteria
+    - reference/source images when relevant, current evidence and intended display size
+    - changed regions, unresolved findings and missing views/checks
+  rules:
+    - Do not send full session transcripts, repeated skill text or builder code.
+    - If image viewing or an independent agent is unavailable, record review as not_tested.
+    - A required review that cannot run blocks acceptance; deliver partial progress and identify the missing capability.
+    - A Quick or Standard reviewer trigger adds a gate without automatically escalating the entire profile.
+repair:
+  owner: calling agent
+  rules:
+    - Initialize task_state.py with the profile limit before building and reserve each repair before starting it.
+    - Each repair targets the highest-priority unmet criteria; preserve successful work.
+    - A separate fix session resumes from task state, asset/script paths and current findings, not the full transcript.
+    - Reuse evidence only if all its declared input dependencies still match; hashes cannot infer omitted dependencies.
+    - After a change, rerun affected checks and views, including required reviewer findings affected by the change.
+    - Include asset, script, task contract, references, render settings and export inputs as appropriate dependencies.
+    - If a repair makes no material progress or the limit is exhausted, stop repairing and report remaining defects with a scoped next step.
+    - Never reset task state or raise a limit silently to continue; a further work budget requires a user decision.
+    - Escalate profile only when new acceptance risk requires it; retain valid evidence and consumed rounds.
+usage:
+  rules:
+    - The coordinator is the sole writer of task state and usage journals; serialize writes and collect child metrics instead of concurrent appends.
+    - Record separate create, review, fix and delivery phases with model, effort and parent/child call identity when available.
+    - Record own per-call usage only; do not add child usage to an already inclusive parent total.
+    - Record tokens, API/tool calls, render count/time and acceptance; unknown metrics remain null, never zero.
+    - Treat cost estimates as advisory unless complete live metering exists; report coverage and price source.
+    - Stop new work when a declared measurable render/time/token budget is exhausted; report remaining criteria and request a revised budget.
+    - When a required hard budget cannot be metered, report that limitation before proceeding under it; do not infer room from unknown usage.
+    - Select model and effort from consumer configuration; do not assume a cheaper model achieves equal quality.
+    - Prefer one builder and bounded fixes; delegate only independent work likely to justify its context and review cost.
+completion:
+  rules:
+    - All required checks and reviews must pass with current evidence; not_tested or stale evidence blocks acceptance.
+    - Visual approval cannot replace a technical or engine gate; technical pass cannot replace required visual review.
+    - Optional defects and untested optional capabilities are disclosed without forcing extra rounds.
+    - Deliver editable source, persisted scripts, requested exports, evidence summary and measured usage coverage.
+    - Record outcome as accepted, partial or blocked; never claim savings without comparable accepted-task measurements.

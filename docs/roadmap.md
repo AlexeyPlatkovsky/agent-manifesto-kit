@@ -23,7 +23,9 @@ development; release history is recorded in `CHANGELOG.md`.
   collection/workshop boundary.
 - **Features:** Taskpilot `amk-6` (filtered list views), `amk-7` (capability tags and tag
   filtering), `amk-8` (unique bundle indexes and deduplication), `amk-37` (capability ingestion
-  and provider sync), and `amk-38` (public `blender-3d` bundle).
+  and provider sync), `amk-38` (public `blender-3d` bundle), and `amk-46` (session retro with a
+  Stop-hook nudge), plus `amk-56` (cost-aware Blender profiles and evidence/usage handoffs, 1.5.0)
+  and `amk-62` (explicit CLI self-update through npm).
 - **Milestone / exit criteria:** A feature has accepted requirements, implementation tasks,
   scenarios, passing validation, and synchronized documentation.
 

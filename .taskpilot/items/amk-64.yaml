@@ -1,0 +1,11 @@
+schema_version: 1
+id: amk-64
+title: F010-T2 Document and validate update release
+priority: normal
+type: task
+status: done
+created_at: '2026-10-01T15:17:38Z'
+updated_at: '2026-10-01T15:21:21Z'
+parent_id: amk-62
+description: Update help, README, architecture/testing/roadmap and pending 1.5.0 changelog; run full validation and close feature records.
+created_by: codex

@@ -1,0 +1,11 @@
+schema_version: 1
+id: amk-63
+title: F010-T1 Implement and test CLI update
+priority: normal
+type: task
+status: done
+created_at: '2026-10-01T15:17:36Z'
+updated_at: '2026-10-01T15:21:18Z'
+parent_id: amk-62
+description: Add fixed latest-tag global npm invocation, strict update argument validation and process-result handling; test with isolated fake npm executables.
+created_by: codex

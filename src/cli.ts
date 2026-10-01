@@ -6,6 +6,7 @@ import { adopt, isSupportedCli, SUPPORTED_CLIS } from "./commands/adopt.js";
 import { runLint } from "./commands/lint.js";
 import { ingest } from "./commands/ingest.js";
 import { sync, SYNC_PROVIDERS, type SyncProvider } from "./commands/sync.js";
+import { update } from "./commands/update.js";
 import { isProvider } from "./providers.js";
 import { packageRoot } from "./catalog.js";
 
@@ -25,6 +26,7 @@ interface Parsed {
 
 /** Flags that never take a value, so a following positional is not swallowed. */
 const BOOLEAN_FLAGS = new Set(["force", "replace", "dry-run", "help", "version"]);
+const VALUE_FLAGS = new Set(["provider", "dest", "cli", "bundle", "kit", "remove"]);
 
 function parseArgs(args: string[]): Parsed {
   const positionals: string[] = [];
@@ -32,16 +34,27 @@ function parseArgs(args: string[]): Parsed {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg.startsWith("--")) {
-      const key = arg.slice(2);
+      const equal = arg.indexOf("=");
+      const key = arg.slice(2, equal === -1 ? undefined : equal);
+      if (equal !== -1) {
+        const value = arg.slice(equal + 1);
+        if (BOOLEAN_FLAGS.has(key)) throw new Error(`--${key} does not take a value.`);
+        if (!value) throw new Error(`--${key} needs a value.`);
+        flags[key] = value;
+        continue;
+      }
       const next = args[i + 1];
       if (!BOOLEAN_FLAGS.has(key) && next !== undefined && !next.startsWith("-")) {
         flags[key] = next;
         i++;
       } else {
+        if (VALUE_FLAGS.has(key)) throw new Error(`--${key} needs a value.`);
         flags[key] = true;
       }
     } else if (arg.length > 1 && arg.startsWith("-")) {
-      flags[arg.slice(1)] = true;
+      const key = arg.slice(1);
+      if (VALUE_FLAGS.has(key)) throw new Error(`Unknown option "${arg}". Use "--${key} <value>".`);
+      flags[key] = true;
     } else {
       positionals.push(arg);
     }
@@ -53,6 +66,7 @@ function help(): void {
   console.log(`agentkit - discover and adopt Agent Manifesto Kit capabilities
 
 Usage:
+  agentkit update
   agentkit list [skills|agents|bundles]
   agentkit lint [name]
   agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>] [--force] [--cli <cli>]
@@ -63,6 +77,9 @@ Usage:
   Adopting a bundle explodes it into type-specific directories.
 
   list accepts one exact lowercase selector. Without a selector it shows the full catalog.
+
+  update installs agent-manifesto-kit@latest globally using npm. Run sync separately
+  in each project to refresh installed skills and agents.
 
   ingest imports a skill folder (SKILL.md), a Claude agent .md, or a Codex agent .toml
   into the kit's collection/ as a canonical Claude-style capability.
@@ -110,11 +127,26 @@ async function main(): Promise<number> {
     case "help":
       help();
       return 0;
+    case "update":
+      if (positionals.length !== 1 || Object.keys(flags).length !== 0) {
+        console.error('update takes no arguments or options. Run "agentkit update".');
+        return 1;
+      }
+      return update();
     case "list":
       return list(positionals.slice(1), flags);
     case "lint":
       return runLint(positionals[1]);
     case "adopt": {
+      const unknown = Object.keys(flags).find((key) => !["provider", "dest", "force", "cli"].includes(key));
+      if (unknown) {
+        console.error(`adopt: unknown option "--${unknown}". Use "--help" for help.`);
+        return 1;
+      }
+      if (positionals.length > 2) {
+        console.error('adopt requires exactly one <name>. Use "--provider codex" or "--provider=codex" to select Codex.');
+        return 1;
+      }
       const name = positionals[1];
       if (!name) {
         console.error('adopt requires a <name>. Run "agentkit list" to see options.');

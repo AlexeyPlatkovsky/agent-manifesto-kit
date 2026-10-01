@@ -15,11 +15,14 @@ copied files using the consumer project's local instructions and documentation.
 | Catalog scanner | Discover flat capabilities and bundle items | `src/catalog.ts`, `collection/` |
 | Adoption command | Copy capabilities, bundles, and bundle extras; handle conflicts | `src/commands/adopt.ts` |
 | Ingest command | Import Claude or Codex skills and agents into `collection/` in canonical form | `src/commands/ingest.ts` |
+| Update command | Install the latest CLI/catalog through the active global npm prefix; propagate process failures | `src/commands/update.ts` |
 | Sync command | Maintain lock-tracked hard copies of skills and agents in native Claude and Codex locations | `src/commands/sync.ts` |
 | Provider adapters | Resolve native target paths and mechanical provider transforms | `src/providers.ts`, `src/portability.ts` |
 | Agent format | Convert between canonical Markdown agents and Codex TOML agents | `src/agent-format.ts` |
 | Portability checks | Detect provider-specific wording or tokens | `src/portability.ts`, `src/commands/lint.ts` |
 | Product collection | Claude-native source assets shipped to consumers | `collection/` |
+| Blender bundle | Profile-based asset workflow, evidence/usage helpers, reference and retarget capabilities, conditional independent review | `collection/bundles/blender-3d/`; workflow nested inside `blender-asset` for sync portability |
+| Session retro bundle | Local digest preparation, read-only analysis, optional deterministic Stop-hook nudge | `collection/bundles/session-retro/`; Python standard library |
 | Workshop layer | Repository-local skills, agents, pipelines, conventions, and docs | `.claude/` |
 
 ## Data Model
@@ -44,7 +47,7 @@ mechanical path/frontmatter transforms.
 
 ## Integrations
 
-- npm registry for package publication and version checks.
+- npm registry for publication and explicit global CLI updates; `update` delegates to npm on `PATH`.
 - GitHub Actions and GitHub Releases for release automation.
 - Supported AI CLIs (`claude`, `codex`, `agy`, `aider`, `opencode`, `grok`, `kilo`, and
   `qwen`) for optional post-adoption adaptation.
@@ -57,6 +60,8 @@ mechanical path/frontmatter transforms.
   deterministic transforms.
 - Codex targets follow Codex native discovery: skills under `.agents/skills/`, custom agents as
   `.codex/agents/<name>.toml`; other items and bundle extras stay under `.codex/`.
+- CLI value options accept both `--key value` and `--key=value`; adoption rejects missing
+  values, unknown flags and extra arguments before copying artifacts.
 - `package.json` is the release-version source of truth.
 - Non-trivial work on this repository follows the root contract and Taskpilot workflow.
 
@@ -71,6 +76,9 @@ mechanical path/frontmatter transforms.
 - AI-assisted adaptation must receive an actionable prompt and the complete copied file set.
 - Tests, public README guidance, changelog entries, and release metadata are maintained
   when product behavior changes.
+- Retro preparation writes a local digest outside the repository; review and approved changes
+  are separate consumer-managed operations. Optional hook registration is explicit and is not
+  part of sync. Hook cache contains counters and derived signal metadata, without raw commands.
 
 ## Key Decisions
 

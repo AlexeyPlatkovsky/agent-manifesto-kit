@@ -1,0 +1,24 @@
+schema_version: 1
+id: amk-56
+title: F009 Cost-aware Blender asset workflows
+priority: normal
+type: feature
+status: done
+created_at: '2026-10-01T14:43:59Z'
+updated_at: '2026-10-01T15:08:12Z'
+tags:
+- blender
+description: 'F009: evolve the portable blender-3d bundle with Quick, Standard and Production profiles, bounded repair, compact evidence handoffs and honest per-phase usage accounting. Preserve reference modeling and retarget capabilities. Non-goals: always-on hooks, automatic teams, model presets or guaranteed cost savings.'
+dor:
+- User approved the audited three-profile design, implementation, version 1.5.0 and current branch.
+- Discovery covers scope, boundaries, failure cases and validation; F009-T1 through T4 are real child tasks.
+dod:
+- 'F009-S1: three profiles and optional animation/export capabilities sync into Claude and Codex layouts.'
+- 'F009-S2: changed evidence is invalidated, repairs bounded and unknown parent/child usage represented honestly.'
+- 'F009-S3: requested technical thresholds and exact export requirements fail when unmet or untested.'
+- 'F009-S4: independent instruction and scenario reviews accept artifacts; tests, Blender fixtures, sync and package checks pass.'
+- 'F009-S5: docs and package versions agree on 1.5.0, preserving session-retro work.'
+links:
+  relates_to:
+  - amk-38
+created_by: codex
