@@ -1,0 +1,13 @@
+schema_version: 1
+id: amk-47
+title: F008-T1 Session digest for Claude and Codex logs
+priority: normal
+type: task
+status: done
+created_at: '2026-09-30T14:21:44Z'
+updated_at: '2026-10-01T13:51:17Z'
+parent_id: amk-46
+tags:
+- feature-task
+description: 'F008-T1: session_digest.py parses both log formats incrementally into a bounded digest (markdown or JSON) and locates the latest session for a project.'
+created_by: claude

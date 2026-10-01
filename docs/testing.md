@@ -32,8 +32,36 @@ verification scenarios and evidence in the relevant Taskpilot feature item.
   path rewriting, duplicate and name-clash refusal, and missing descriptions.
 - Sync covers native layouts for both providers, the lock file, update-in-place, local-edit and
   unowned-file protection, `--force`, item and provider removal, and `--dry-run`.
+- Bundle scripts with logic of their own are tested from the Node suite: the `session-retro`
+  digest, Stop hook and installer run against synthetic Claude Code and Codex logs (skipped
+  when `python3` is unavailable). Coverage includes private pending-tool state, partial/truncated
+  logs, bounded summaries, native adoption/sync, executed hook wrappers, default/shared settings,
+  preview, installation/removal, unrelated-hook preservation and invalid threshold flags.
+- Adoption option parsing covers space/equals provider forms and rejects malformed arguments
+  before writing. Package preview checks that Python bytecode is excluded from `collection/`.
 - Filtered list views cover the default catalog, exact lowercase selectors, bundle item
   summaries, empty results, invalid selectors, extra arguments, and unknown flags.
+
+## CLI Update Validation
+
+`test/update.test.js` runs the built CLI against isolated fake npm executables. It covers fixed
+global/latest arguments, inherited output, failure exit codes, missing npm, interruption,
+argument rejection and non-mutating help/version. Tests perform no real global install or
+registry request. Windows uses an npm `.cmd` shim; the POSIX signal-specific test is skipped
+there. Actual registry access and global write permissions remain installation-environment concerns.
+
+## Blender Bundle Validation
+
+The Blender tests cover task-state evidence invalidation, repair ceilings, unknown/duplicate
+usage, exact export requirements, provider sync and nested workflow packaging. Python script
+tests use `python3`; Blender fixture tests use `BLENDER` or an executable on `PATH`. Run
+`BLENDER=/path/to/blender npm test` to include actual headless motion/export fixtures; without
+Blender those tests are reported as skipped. A release validation claiming Blender coverage
+must record its version and run those fixtures. The 1.5.0 local validation uses Blender 5.2.1 LTS.
+
+Instruction evaluation and scenario acceptance review test the five changed instruction
+artifacts separately from script execution. Neither these tests nor the audit establish a
+specific percentage saving or quality equivalence between model/effort presets.
 
 ## Environments
 

@@ -1,0 +1,15 @@
+schema_version: 1
+id: amk-52
+title: Session retro hook cache retains raw pending Bash commands
+priority: normal
+type: bug
+status: done
+created_at: '2026-10-01T13:32:35Z'
+updated_at: '2026-10-01T13:51:26Z'
+tags:
+- bug
+description: During F008 completion, confirmed slim_state retains entire pending Bash commands despite counter-only cache contract. Store derived signal metadata only while preserving incremental results across tool-result boundaries; verify no raw commands or request text persist.
+links:
+  relates_to:
+  - amk-46
+created_by: codex

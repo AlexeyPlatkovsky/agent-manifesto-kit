@@ -1,0 +1,18 @@
+schema_version: 1
+id: amk-62
+title: F010 CLI self-update command
+priority: normal
+type: feature
+status: done
+created_at: '2026-10-01T15:17:15Z'
+updated_at: '2026-10-01T15:21:25Z'
+description: 'F010: add agentkit update for the documented global npm installation, using the latest published package tag and clear process failure reporting. Scope: command, tests and docs in the pending 1.5.0 release. Non-goals: automatic project sync, source checkout updates, alternative package managers and background update checks.'
+dor:
+- User requested the update command and previously authorized the current branch and 1.5.0 release.
+- 'Discovery: README documents global npm installation; command style and process failure handling inspected; official npm install semantics checked. No unresolved product choices.'
+dod:
+- 'F010-S1: agentkit update invokes only npm install --global agent-manifesto-kit@latest with visible progress.'
+- 'F010-S2: npm errors, missing executable and interruption return nonzero without false success.'
+- 'F010-S3: unsupported arguments fail before spawning; help/version remain non-mutating.'
+- 'F010-S4: fake-npm end-to-end tests and full suite pass without installing globally; docs and pending 1.5.0 notes align.'
+created_by: codex

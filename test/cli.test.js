@@ -275,6 +275,36 @@ test("CLI `adopt` with bad --cli exits non-zero", () => {
   });
 });
 
+test("CLI adoption accepts space and equals provider forms in native Codex locations", async () => {
+  for (const provider of [["--provider", "codex"], ["--provider=codex"]]) {
+    await withTmp((dir) => {
+      execFileSync("node", [CLI, "adopt", "sdd", ...provider, `--dest=${dir}`], { stdio: "pipe" });
+      assert.ok(existsSync(join(dir, ".agents/skills/sdd-doc-author/SKILL.md")));
+      assert.ok(existsSync(join(dir, ".codex/agents/sdd-spec-reviewer.toml")));
+      assert.ok(!existsSync(join(dir, ".claude")));
+    });
+  }
+});
+
+test("CLI adoption rejects malformed options and extra arguments before writing", async () => {
+  for (const [args, error] of [
+    [["provider=codex"], /exactly one <name>/],
+    [["--provider"], /--provider needs a value/],
+    [["--provider="], /--provider needs a value/],
+    [["--provider", "--force"], /--provider needs a value/],
+    [["--provder=codex"], /unknown option/],
+    [["-provider"], /Unknown option "-provider"/],
+    [["--force=true"], /--force does not take a value/],
+  ]) {
+    await withTmp((dir) => {
+      assertCliFails(["adopt", "brainstorm", "--dest", dir, ...args], error);
+      assert.ok(!existsSync(join(dir, ".claude")));
+      assert.ok(!existsSync(join(dir, ".agents")));
+      assert.ok(!existsSync(join(dir, ".codex")));
+    });
+  }
+});
+
 test("transform leaves claude content unchanged", () => {
   assert.equal(transform(AGENT_FIXTURE, "claude"), AGENT_FIXTURE);
 });

@@ -4,6 +4,61 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.5.0 - 2026-10-01
+
+### Added
+
+- Added `agentkit update` to install `agent-manifesto-kit@latest` globally through npm,
+  with streamed output, strict argument validation and propagated installation failures.
+  Project capabilities continue to refresh through `agentkit sync`.
+
+- Expanded `blender-3d` with a `blender-asset` entry skill and nested Quick, Standard and
+  Production workflows. The full bundle syncs into Claude and Codex with no CLI changes.
+- Added compact artifact/evidence handoffs, bounded repair reservations and per-phase usage
+  records that distinguish unknown metrics from measured zero and identify parent/child calls.
+- Added task-defined strict motion thresholds with coverage reporting, exact exported clip-set
+  validation and optional mesh, skin and rig requirements.
+
+### Changed
+
+- Reference matching uses task-specific tolerances and identity checks instead of a universal
+  silhouette score. Review effort and required views follow the chosen profile and changed scope.
+- Retargeting chooses root displacement explicitly and applies pose offsets only to observed
+  defects. Required missing evidence blocks acceptance; independent review is required for
+  Production. Consumer projects retain machine paths, model choices and budgets.
+
+### Fixed
+
+- Loop-seam checks sample fractional action endpoints precisely instead of rounding both to
+  the same whole frame and potentially hiding a rotation discontinuity.
+
+## 1.4.0 - 2026-10-01
+
+### Added
+
+- Added the public `session-retro` bundle: a digest-preparation skill and a read-only
+  `retro-analyst` agent that reviews a finished Claude Code or Codex session and proposes at most
+  five evidence-backed improvements (new or fixed scripts, skill pitfalls, project facts,
+  removals). Approved changes use the consumer project's normal workflow. Its scripts summarize both tools' session logs
+  (`session_digest.py`), provide one Stop hook for both tools that never blocks and nudges once
+  per session when failure, repetition, inline-script, file-churn or correction thresholds are
+  crossed (`retro_hook.py`), and register that hook in personal `.claude/settings.local.json`
+  (or shared `.claude/settings.json` with `--shared`) and `.codex/hooks.json` (`install_hooks.py`).
+
+### Changed
+
+- Python bytecode caches are ignored so they cannot enter the repository or the package.
+
+### Fixed
+
+- `adopt` accepts `--provider=codex` as well as `--provider codex`. Missing option values,
+  unknown adoption options and extra positional arguments fail before files are copied,
+  instead of silently selecting the default Claude layout.
+- Retro hook state stores derived pending-tool metadata without raw commands or request text,
+  and resets counters when a transcript is truncated or replaced by a different path.
+- Hook installation preserves unrelated scripts named `retro_hook.py` and rejects provider
+  overrides among threshold flags. Digest detail is capped while signal totals remain exact.
+
 ## 1.3.0 - 2026-09-30
 
 ### Added

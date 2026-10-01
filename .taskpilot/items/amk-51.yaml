@@ -1,0 +1,15 @@
+schema_version: 1
+id: amk-51
+title: Adopt silently falls back to Claude for malformed provider arguments
+priority: normal
+type: bug
+status: done
+created_at: '2026-10-01T13:32:33Z'
+updated_at: '2026-10-01T13:51:25Z'
+tags:
+- bug
+description: During F008 completion, reproduced adopt --provider=codex, bare provider=codex and missing --provider values writing Claude assets. Support equals-form options; reject missing values, unknown adoption flags and extra positional arguments before filesystem writes. Add CLI regression coverage.
+links:
+  relates_to:
+  - amk-46
+created_by: codex

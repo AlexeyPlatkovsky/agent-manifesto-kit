@@ -1,0 +1,26 @@
+schema_version: 1
+id: amk-46
+title: F008 Session retro with Stop-hook nudge
+priority: normal
+type: feature
+status: done
+created_at: '2026-09-30T14:21:43Z'
+updated_at: '2026-10-01T13:51:33Z'
+tags:
+- feature
+- retro
+- hooks
+description: 'F008: a session-retro bundle that turns finished work into concrete improvements. A deterministic session_digest.py summarizes Claude Code and Codex session logs (failed commands, repeated commands and inline scripts, file churn, user corrections, skills used, time and tokens); a read-only retro-analyst agent returns at most five evidence-backed suggestions (new or fixed scripts, skill pitfalls, project facts, removals); a cheap Stop hook shared by Claude and Codex runs only the digest incrementally and nudges once per session when thresholds are crossed. Retros run manually or after a nudge; nothing is applied without user approval. Non-goals: automatic background analysis, automatic edits, syncing hook config through agentkit sync.'
+dor:
+- 'User chose option B on 2026-09-30: manual retros plus a cheap Stop hook, for both Claude Code and Codex.'
+- 'Official hook docs checked: both tools send session_id, transcript_path, cwd and stop_hook_active on stdin and accept a non-blocking systemMessage.'
+- Claude and Codex session log formats inspected on real logs.
+- F008-T1 through F008-T4 exist as child tasks under amk-46.
+dod:
+- 'F008-S1: session_digest.py produces a bounded digest for a Claude log and a Codex log, and --latest finds the newest session for a project.'
+- 'F008-S2: retro_hook.py stays silent below thresholds, nudges once per session with a systemMessage above them, never blocks, and exits 0 on any error.'
+- 'F008-S3: the hook parses only new log lines on later calls (incremental state).'
+- 'F008-S4: install_hooks.py registers the hook for Claude and Codex idempotently and leaves other hooks intact.'
+- 'F008-S5: the retro-analyst agent is read-only and returns at most five typed, evidence-backed suggestions; nothing is applied without approval.'
+- Tests pass with npm test; lint clean; CHANGELOG and version updated.
+created_by: claude

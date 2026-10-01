@@ -5,18 +5,27 @@ description: Rig, skin and retarget an existing motion-capture or library clip (
 
 # Blender Mocap Retarget
 
-## Outcome
+## Scope
 
-The existing character performs the source motion on its own skeleton, with its proportions,
-materials and modular parts unchanged. Feet plant without sliding or sinking, limbs clear the
-body and equipment, the loop is seamless, and the export plays exactly the intended clips in the
-target engine.
+Rig, skin and retarget source motion onto an existing character while preserving its appearance.
+Work to the task's motion, root displacement, loop and delivery criteria. Profile selection,
+independent review and bounded repairs are owned by `../blender-asset/workflows/asset.yml`;
+adding animation does not require restarting the modeling workflow.
+
+## Prerequisites
+
+- Install the complete `blender-3d` bundle; its sibling skills and workflow are required context.
+- Install [Blender](https://www.blender.org/download/); verify `blender --version`.
+- Install [Python 3](https://www.python.org/downloads/) and `python3 -m pip install Pillow numpy`
+  for sibling [Pillow](https://pillow.readthedocs.io/) / [NumPy](https://numpy.org/) image helpers; verify `python3 -c "import PIL, numpy"`.
+- Only for a required Godot check: install [Godot 4](https://godotengine.org/download/) and
+  verify `godot --version`; set `GODOT` if the executable is not on `PATH`.
+- Resolve script paths from their skill directories; keep executable paths in consumer config.
 
 ## Invariants
 
 - Do not remodel. The rest pose must render identically to the unrigged model: render
-  baseline views before rigging and diff them against rest-pose renders afterwards (Method
-  steps 1 and 7). If deformation truly needs geometry (for example extra loops at joints), add it
+  baseline views before rigging and diff them against rest-pose renders afterwards. If deformation truly needs geometry (for example extra loops at joints), add it
   without changing the rest-pose renders, and show the diff.
 - Build the armature on the character's own joints. Never stretch the character to the source
   skeleton; absorb differences in the retarget.
@@ -36,42 +45,49 @@ Scripts in this skill's `scripts/` folder (Blender scripts run with `blender -b 
 | `check_motion.py` | Ground penetration, planted-foot slide, interpenetration beyond the rest baseline, loop seam |
 | `render_frames.py` | Frame renders from several angles with following cameras and a checker floor |
 | `export_gltf_clip.py` | GLB export with exactly one clip per named action |
-| `verify_gltf.py` | Re-import the export; report meshes, skinned meshes and bones; fail on missing clips or clips not starting at frame 0 |
+| `verify_gltf.py` | Re-import; check requested mesh/skin/rig requirements and clip timing; `--exact-clips` rejects extra or missing original clip names |
 | `godot_verify.py` | Optional: headless Godot import of the GLB, checking meshes, bones, clips and key timing |
 
 The sibling skill's scripts are used too, at `../blender-reference-model/scripts/` relative to
 this skill's folder (not the working directory): `render_views.py` and `diff_renders.py` for the
 rest-pose check, and `contact_sheet.py` to tile frame renders.
 
-## Method That Works
+## Procedure
 
-1. Before touching the model, render baseline views with `render_views.py` (the model's
-   `ref_spec.json`, or any spec whose views frame the character) into a `before/` folder.
-2. Inspect the source. Plan from its fps, range, rest pose (T or A), root motion and loop
-   structure (library walks often end on the first pose plus one stride).
-3. Build the rig with source-compatible bone names (for example Mixamo names without the
-   `mixamorig:` prefix) at the character's joints.
-4. Retarget each bone's world-space rotation relative to its rest pose, so differing rest poses
-   cancel out. Scale root motion by the leg-length or hip-height ratio: that scale is what stops
-   planted feet from sliding. Solve feet with two-bone IK (soft limit, no knee pop) toward the
-   scaled source ankle, and add a ground pass that keeps soles on the floor while planted.
-5. For bulky or equipped characters, add an outward arm offset (larger on the back-swing) and
-   damp long clavicles, so arms clear the torso and belt kit. Let hip-mounted props swing with the
-   thigh through socket bones.
-6. Skin with blend zones at shoulders, elbows, wrists, fingers, hips, knees, ankles and neck.
-   Keep hair and beards rigid to the head.
-7. Render the rigged model with the same spec (armatures render in rest pose by default) and run
-   `diff_renders.py before/ after/`. It must report the views identical within tolerance.
-8. Iterate with `check_motion.py` and frame renders from front, side, 3/4, back and close-ups at
-   the hips, shoulders and feet. Targets that worked: ground within about 3 mm, planted-foot slide
-   of a few mm per frame, no interpenetration beyond the rest baseline, zero rotation difference
-   at the loop seam.
-9. Export with `export_gltf_clip.py`, then run `verify_gltf.py`, and `godot_verify.py` when the
-   target is Godot.
-10. Have the `visual-reviewer` agent review contact sheets of the motion before handing over.
-    Include a contact sheet of the source clip at the same frames when you can render it, plus
-    the user's requirements. If the reviewer cannot run or cannot view images, say so in the
-    evidence.
+Apply Stop Conditions immediately during every step; return the blocked work and evidence gaps.
+
+1. Capture baseline views with the character's spec (or a spec that frames the asset), using
+   reproducible render settings. Identify authoritative asset, source clip, output and allowed edits.
+2. Inspect source fps, range, rest pose, root motion and loop structure. Select and record root
+   motion deliberately: preserve source distance, scale proportionally, or make in-place.
+   Do not change the requested displacement merely to hide foot slide.
+3. Build the rig on the character's joints and retarget rest-relative rotations. Account for
+   source offsets and scale. Use foot constraints/IK only as needed; compare source and target
+   at aligned phase/time, including a non-looping end when relevant.
+4. Skin deforming regions with appropriate blend zones; bind rigid attachments to their intended
+   bones/sockets. Correct observed collisions with the smallest local adjustment. Outward arm
+   offsets, clavicle damping and prop swing are optional measured corrections, never defaults;
+   preserve source performance and verify each correction against it.
+5. Repeat the baseline rest-pose renders with identical settings and run `diff_renders.py`.
+   A difference outside the agreed tolerance fails appearance preservation.
+6. Run `check_motion.py` on named feet, pairs and frame range. Record coverage and statuses.
+   Choose task-specific ground, planted-slide, overlap and loop tolerances; do not apply walking
+   or looping criteria to a jump or non-looping clip. Strict mode needs at least one threshold
+   and fails unmet thresholds or missing requested coverage. Run with `--python-exit-code 1`.
+7. Inspect affected frame contact sheets at the intended size, including representative contacts,
+   transitions and extremes. Missing views cannot prove motion continuity; report sampling limits.
+8. For requested exports, isolate intended actions and export. Use `verify_gltf.py` with
+   `--expect-clips Walk,Run --exact-clips` (substitute the contract's exact names) and the required
+   `--require-mesh`, `--require-skin`, `--require-rig` flags. For a static export the expected clip
+   set is empty. Run target-engine checks when required by the contract.
+9. Return motion evidence and unresolved defects after this stage. The companion workflow
+   decides review and any further reserved repair; it does not require fresh modeling.
+
+## Stop Conditions
+
+Missing authoritative assets/source, conflicting displacement requirements, or a required
+appearance-changing edit outside scope blocks the affected work. Mark missing tool/check
+coverage `not_tested`; never claim delivery acceptance with a missing required check or review.
 
 ## Known Pitfalls
 
@@ -89,8 +105,11 @@ rest-pose check, and `contact_sheet.py` to tile frame renders.
 - Overlap tests between adjacent regions of one mesh report shared edges. Pair regions that
   should never touch.
 
-## Evidence To Report
+## Output Contract
 
-Source facts, the rest-pose identity check, `check_motion.py` results, contact sheets from
-several angles, the export verification output, the review findings with their resolution, and
-any motion that could only be judged in the engine.
+`Skill: blender-mocap-retarget - output below`
+
+Report source facts and root-motion mode; editable asset and persisted script; rest-pose diff;
+motion-check statuses, thresholds and sampled frames/objects; source/target contact sheets;
+requested export/engine verification; unresolved defects and missing evidence. Distinguish
+technical pass from visual judgment and engine checks that have not run.

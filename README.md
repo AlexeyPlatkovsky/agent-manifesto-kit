@@ -23,6 +23,31 @@ Or run directly with `npx`:
 npx agent-manifesto-kit list
 ```
 
+## Update
+
+Update the global CLI and its bundled catalog to the latest published npm version:
+
+```bash
+agentkit update
+agentkit --version
+```
+
+The command runs `npm install --global agent-manifesto-kit@latest`, using your active npm
+configuration and installation prefix. It takes no arguments, streams npm output and returns
+nonzero if npm cannot start, fails or is interrupted. npm must be on `PATH`, with network
+access and permission to write its global installation directory.
+
+`update` always targets the global npm installation, including when invoked from a source
+checkout or through `npx`. To use the latest version without a global installation, run
+`npx agent-manifesto-kit@latest <command>`. Versions without `update` can use the npm install
+command above. See [npm install](https://docs.npmjs.com/cli/v11/commands/npm-install/).
+
+Refresh previously synced project capabilities separately, from each project:
+
+```bash
+agentkit sync
+```
+
 ## Quick Start
 
 List available capabilities:
@@ -57,11 +82,25 @@ Keep skills and agents synced into both Claude and Codex locations of a project:
 agentkit sync blender-3d brainstorm --provider claude,codex
 ```
 
+The [Blender bundle](collection/bundles/blender-3d/README.md) includes Quick, Standard and
+Production workflows, compact create/fix handoffs and per-phase usage records. Start with
+`blender-asset`; animation and export checks are optional additions to the selected profile.
+
+Get retro suggestions after significant sessions (optional Stop-hook nudge for both tools):
+
+```bash
+agentkit sync session-retro --provider claude,codex
+python3 .claude/skills/session-retro/scripts/install_hooks.py
+```
+
 Adopt a single skill for Codex:
 
 ```bash
 agentkit adopt brainstorm --provider codex
 ```
+
+`--provider=codex` is equivalent. Bare `provider=codex`, missing option values and unknown
+adoption options are rejected before any files are copied.
 
 Adopt into a specific project directory:
 
@@ -89,6 +128,7 @@ such as templates, under `.claude/<bundle-name>/`.
 ## Commands
 
 ```bash
+agentkit update
 agentkit list [skills|agents|bundles]
 agentkit lint [name]
 agentkit adopt <name> [--provider claude|codex|agnostic] [--dest <dir>] [--force] [--cli <cli>]
@@ -100,6 +140,7 @@ Command summary:
 
 | Command | Description |
 | --- | --- |
+| `agentkit update` | Install the latest published CLI and catalog globally through npm |
 | `agentkit list [skills|agents|bundles]` | Show the full catalog or one selected view; bundle views include item summaries |
 | `agentkit lint [name]` | Check all capabilities, or one named capability, for provider-specific tokens |
 | `agentkit adopt <name>` | Copy a capability or bundle into your project |
