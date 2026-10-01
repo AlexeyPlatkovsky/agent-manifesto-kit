@@ -45,7 +45,11 @@ test("Blender profiles sync to both providers and preserve a locally adapted wor
 test("Blender nested workflow and executable helpers ship in the npm package", () => {
   const dir = mkdtempSync(join(tmpdir(), "akt-blender-pack-"));
   try {
-    cpSync(join(ROOT, "package.json"), join(dir, "package.json"));
+    const manifest = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
+    // Test package contents, not repository lifecycle hooks: npm 10 runs prepare
+    // during pack even with --ignore-scripts, and this fixture has no Git metadata.
+    delete manifest.scripts;
+    writeFileSync(join(dir, "package.json"), JSON.stringify(manifest));
     mkdirSync(join(dir, "collection"));
     cpSync(join(ROOT, "collection/.npmignore"), join(dir, "collection/.npmignore"));
     cpSync(join(ROOT, BUNDLE), join(dir, BUNDLE), { recursive: true });

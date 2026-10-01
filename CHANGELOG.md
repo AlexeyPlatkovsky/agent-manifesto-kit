@@ -29,6 +29,8 @@ Maintain this file as part of product or release-affecting work. Release automat
 
 ### Fixed
 
+- Package-content tests omit lifecycle scripts from their temporary manifests so npm 10
+  cannot run Git hook setup outside a repository during `npm pack --dry-run`.
 - Loop-seam checks sample fractional action endpoints precisely instead of rounding both to
   the same whole frame and potentially hiding a rotation discontinuity.
 

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,7 +11,11 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 test("npm package ships the retro bundle without Python bytecode", () => {
   const dir = mkdtempSync(join(tmpdir(), "akt-package-"));
   try {
-    cpSync(join(ROOT, "package.json"), join(dir, "package.json"));
+    const manifest = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
+    // Test package contents, not repository lifecycle hooks: npm 10 runs prepare
+    // during pack even with --ignore-scripts, and this fixture has no Git metadata.
+    delete manifest.scripts;
+    writeFileSync(join(dir, "package.json"), JSON.stringify(manifest));
     cpSync(join(ROOT, ".gitignore"), join(dir, ".gitignore"));
     const bundle = "collection/bundles/session-retro";
     mkdirSync(join(dir, "collection"));

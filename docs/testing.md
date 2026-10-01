@@ -39,6 +39,9 @@ verification scenarios and evidence in the relevant Taskpilot feature item.
   preview, installation/removal, unrelated-hook preservation and invalid threshold flags.
 - Adoption option parsing covers space/equals provider forms and rejects malformed arguments
   before writing. Package preview checks that Python bytecode is excluded from `collection/`.
+  Temporary packaging fixtures retain the real manifest's package-selection fields but omit
+  lifecycle scripts: npm 10.8.2 runs `prepare` during pack despite `--ignore-scripts`, and these
+  fixtures intentionally have no Git repository for the hook-configuration command.
 - Filtered list views cover the default catalog, exact lowercase selectors, bundle item
   summaries, empty results, invalid selectors, extra arguments, and unknown flags.
 
@@ -58,6 +61,12 @@ tests use `python3`; Blender fixture tests use `BLENDER` or an executable on `PA
 `BLENDER=/path/to/blender npm test` to include actual headless motion/export fixtures; without
 Blender those tests are reported as skipped. A release validation claiming Blender coverage
 must record its version and run those fixtures. The 1.5.0 local validation uses Blender 5.2.1 LTS.
+
+Record Node/npm versions and Blender availability with test totals. For the 1.5.0 suite,
+Blender availability produces 99 passing tests; without Blender, its parent test is skipped
+and the 11 nested cases are not registered, producing 87 passes and one skip (88 total).
+The original CI failure used Node 20.20.2/npm 10.8.2; the initial local pass used
+Node 24.18.0/npm 11.16.0. A pass on one toolchain does not establish a pass on the other.
 
 Instruction evaluation and scenario acceptance review test the five changed instruction
 artifacts separately from script execution. Neither these tests nor the audit establish a
