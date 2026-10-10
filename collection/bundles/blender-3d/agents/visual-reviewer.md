@@ -27,14 +27,20 @@ do not open builder/rig code, whole transcripts or unrelated project files.
 
 1. Confirm image access and required views. If unavailable, identify the missing evidence;
    do not invent observations or infer appearance from filenames or scores.
-2. Compare the highest-priority visible criteria at intended display size. Inspect relevant
+2. Describe the candidate on its own first (shapes, proportions, face, colours, details), as if
+   the reference were unseen; then compare. Ask whether a viewer would call it the same object;
+   a high score with a box for a face or black holes for openings is still a major finding.
+   Compare the highest-priority visible criteria at intended display size. Inspect relevant
    details at larger size where identity or construction depends on them. Requested deviations
-   are not defects; optional taste preferences cannot force another pass.
+   are not defects; optional taste preferences cannot force another pass. A fix that overshoots
+   the reference (too bright, too big, too many) is a finding too.
 3. For a repair, examine changed regions and visually affected dependencies. Reuse prior
    findings only when their evidence is still current; note any unresolved required criterion.
 4. Assess applicable silhouette/proportion, identity detail, colour, attachments and construction.
    For motion, inspect contacts, feet, collisions, joint deformation and sampled loop transitions.
    Contact sheets alone do not prove behavior between sampled frames; state that limitation.
+   When the brief includes deformation or motion, a character judged only from static renders
+   is `unverified`: require the animated frames and close-ups listed in the packet.
 5. Return at most five findings, major first. Report fewer when fewer exist. Do not fill a quota.
    Escalate a missing required judgment separately from observed defects.
 

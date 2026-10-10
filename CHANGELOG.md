@@ -4,6 +4,25 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.6.0 - 2026-10-10
+
+### Changed
+
+- `blender-3d` skills carry practices learned in a consumer game project: a measured spec
+  sized to the task (dimensions, colours per region, feature checklist, tolerances) before
+  every asset, judged in the required views; measurement on the original through a matched
+  camera; a low-poly geometry policy; organic forms from a few parametric sections with
+  component and self-overlap gates instead of mask tracing; builder `--set` overrides instead
+  of source rewrites; provenance, licence-chain (a stop condition) and orientation checks for
+  generated or imported meshes; and freezing shippable results with hash manifests.
+- Retargeting reviews characters animated, including extreme poses and head, neck, shoulder,
+  hip and inner-thigh close-ups, measures rigid-layer drift against a contract tolerance, and
+  adds pitfalls for narrowed checks, bone rolls, shearing transition triangles, garment liners
+  and held-prop reach.
+- The visual reviewer describes the candidate before comparing, reports overshoot, and returns
+  `unverified` when motion is in scope but only static renders were supplied. Live preview
+  rounds shown to the user take the same review gate as a delivery under the chosen profile.
+
 ## 1.5.0 - 2026-10-01
 
 ### Added

@@ -133,6 +133,9 @@ requires an empty clip set. Require only the structure the task actually needs.
 
 The original modeling and retarget tools came from measured reference-character sessions.
 The 1.5.0 workflow separates that demanding use case from simpler tasks, based on a two-week
-Claude/Codex session audit. The audit did not establish that two medium sessions match one
+Claude/Codex session audit. The 1.6.0 guidance (measured specs, low-poly and organic-form
+rules, animated review with layer drift, garment liners, reach checks for held props,
+generated-mesh provenance, freezing accepted results, review of live rounds) comes from a
+consumer game project's character and building work. The audit did not establish that two medium sessions match one
 large session at half the price. Silhouette scores, technical checks and sampled images each
 cover different criteria; none is a universal quality certificate.
