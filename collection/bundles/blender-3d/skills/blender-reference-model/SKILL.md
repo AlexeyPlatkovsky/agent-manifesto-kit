@@ -58,12 +58,18 @@ Heads, bodies, hair and similar organic forms are built from a few smooth parame
 (superellipse rings or hull points whose widths, depths and heights are measured parameters),
 not traced from a reference mask row by row: sheet noise, ears and beards in a mask end up in
 the form. Bridge rings ring to ring into one quad mesh, or hull the sections and union the
-small closed parts (nose, ears) with an exact boolean. Gate every iteration: `mesh_report.py`
-clean, plus one linked component and no self-overlap (a `bmesh` island count and
-`mathutils.bvhtree.BVHTree.overlap` of the mesh with itself, ignoring faces that share
-vertices). Layers (hair, beard, clothing) are shells offset from the surface below, gated by
-zero BVH overlaps with it. Proportions come from landmarks (eyes, nose, mouth, joints) with a
-stated tolerance; an IoU above the contract's expected band suggests the form traces the
+small closed parts (nose, ears) with an exact boolean. Run the checks below through Blender:
+`blender -b model.blend --python-exit-code 1 --python <skill>/scripts/mesh_report.py -- <args>`;
+`<skill>` is this installed skill's directory. Gate every iteration with
+`--organic --collection ORGANIC --json mesh.json`: each scoped mesh must have faces, pass
+the health checks, have one connected component and zero BVH self-overlap pairs, ignoring
+faces that share vertices. Put only the required organic meshes in that collection.
+Layers (hair, beard, clothing) are shells offset from the surface below; check named pairs
+with `--strict --pairs Hair:Head --json layers.json` and require zero overlaps. A missing
+surface yields `null` (`not_tested`) in the pair report and fails the gate.
+BVH checks detect surface intersections, not containment without surface contact; inspect
+layer placement in the required views too. Proportions come from landmarks (eyes, nose,
+mouth, joints) with a stated tolerance; an IoU above the contract's expected band suggests the form traces the
 drawing's noise.
 
 ## Tools
@@ -81,7 +87,7 @@ numpy. Blender's bundled Python has neither, so run them outside Blender.
 | `colors.py` | Sampled colour ratios between the reference and the render |
 | `diff_renders.py` | Pixel diff of two render folders, e.g. before and after rigging; exits non-zero on change |
 | `contact_sheet.py` | Tile renders into one image for review |
-| `mesh_report.py` | Blender: per-object triangles, non-manifold edges, degenerate faces, loose vertices, empty slots |
+| `mesh_report.py` | Blender: mesh health and component counts; `--organic` gates health, connectivity and self-overlap; `--strict --pairs A:B,C:D` gates world-space surface overlaps; `--json` persists evidence |
 
 `refspec.py` documents the spec format. Drafted view names and cameras are guesses: confirm them
 against the sheet's labels before building.

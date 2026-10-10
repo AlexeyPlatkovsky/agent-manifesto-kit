@@ -30,6 +30,13 @@ progress are canonical in Taskpilot project `amk`.
 | `amk-6` | Filtered list command views |
 | `amk-7` | Capability tags and tag filtering |
 | `amk-8` | Unique bundle indexes and deduplication |
+| `amk-37` | Capability ingestion and provider sync |
+| `amk-38` | Public Blender bundle |
+| `amk-46` | Session retro and Stop-hook nudge |
+| `amk-56` | Cost-aware Blender profiles and evidence/usage handoffs |
+| `amk-62` | Explicit CLI self-update |
+| `amk-66` | Blender instruction refinements for the pending 1.6.0 release (F009 continuation) |
+| `amk-69` | Reproducible organic-mesh and surface-overlap validation |
 
 ## Decision Log
 

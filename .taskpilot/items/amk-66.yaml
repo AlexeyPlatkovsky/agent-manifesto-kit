@@ -1,11 +1,12 @@
 schema_version: 1
 id: amk-66
-title: 'Blender bundle: reimport consumer edit and lessons from Last Man'
+title: 'Blender bundle: refine reference modeling and asset review'
 priority: normal
 type: task
 status: done
 created_at: '2026-10-10T16:08:04Z'
-updated_at: '2026-10-10T16:15:25Z'
+updated_at: '2026-10-10T17:43:17Z'
+parent_id: amk-56
 tags:
 - blender
 - bundle

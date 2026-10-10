@@ -10,6 +10,7 @@ const blender = process.env.BLENDER || 'blender';
 const available = spawnSync(blender, ['--version'], { encoding: 'utf8' }).status === 0;
 const scripts = fileURLToPath(new URL('../collection/bundles/blender-3d/skills/blender-mocap-retarget/scripts/', import.meta.url));
 const fixture = fileURLToPath(new URL('./fixtures/blender-checks.py', import.meta.url));
+const meshScript = fileURLToPath(new URL('../collection/bundles/blender-3d/skills/blender-reference-model/scripts/mesh_report.py', import.meta.url));
 
 function run(script, args, blend) {
   const result = spawnSync(blender, ['-b', '--factory-startup', ...(blend ? [blend] : []),
@@ -182,4 +183,100 @@ test('Blender motion and exported glTF requirements', {
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('Blender organic mesh gates persist connectivity and overlap evidence', {
+  skip: available || process.env.BLENDER ? false : `Blender unavailable (${blender}); set BLENDER or add blender to PATH`,
+  timeout: 180000,
+}, async t => {
+  const dir = mkdtempSync(join(tmpdir(), 'amk-mesh-'));
+  try {
+    const generated = run(fileURLToPath(new URL('./fixtures/blender-mesh.py', import.meta.url)), [dir]);
+    assert.equal(generated.status, 0, generated.output);
+    let n = 0;
+    const mesh = (collection, args = []) => {
+      const json = join(dir, `mesh-${++n}.json`);
+      const result = run(meshScript, ['--collection', collection, ...args, '--json', json], join(dir, 'mesh.blend'));
+      return { ...result, report: JSON.parse(readFileSync(json, 'utf8')) };
+    };
+    await t.test('evaluated triangles and shared-vertex faces pass organic checks', () => {
+      const result = mesh('Valid', ['--organic']);
+      assert.equal(result.status, 0, result.output);
+      assert.equal(result.report.organic_checked, true);
+      assert.equal(result.report.objects.find(o => o.object === 'Cube').tris, 12);
+      for (const ob of result.report.objects) {
+        assert.equal(ob.components, 1);
+        assert.equal(ob.self_overlap_pairs, 0);
+      }
+      assert.match(result.output, /parts\s+self/);
+    });
+    await t.test('disconnected islands fail organic checks while legacy strict stays compatible', () => {
+      const result = mesh('Split', ['--organic']);
+      assert.notEqual(result.status, 0);
+      assert.equal(result.report.objects[0].components, 2);
+      assert.equal(result.report.objects[0].self_overlap_pairs, 0);
+      const legacy = mesh('Split', ['--strict']);
+      assert.equal(legacy.status, 0, legacy.output);
+      assert.equal(legacy.report.organic_checked, false);
+      assert.equal(legacy.report.objects[0].self_overlap_pairs, null);
+    });
+    await t.test('crossing faces in one connected component fail organic checks', () => {
+      const result = mesh('Crossing', ['--organic']);
+      assert.notEqual(result.status, 0);
+      assert.equal(result.report.objects[0].components, 1);
+      assert.equal(result.report.objects[0].self_overlap_pairs, 1);
+      assert.equal(mesh('Crossing', ['--strict']).status, 0);
+    });
+    await t.test('surface pairs use world transforms and strict gates their persisted counts', () => {
+      const clear = mesh('Pairs', ['--strict', '--pairs', 'PairA:PairB']);
+      assert.equal(clear.status, 0, clear.output);
+      assert.equal(clear.report.pair_overlaps['PairA x PairB'], 0);
+      const crossing = mesh('Pairs', ['--strict', '--pairs', 'PairA:PairB,PairB:PairC']);
+      assert.notEqual(crossing.status, 0);
+      assert.equal(crossing.report.pair_overlaps['PairB x PairC'], 1);
+      const diagnostic = mesh('Pairs', ['--pairs', 'PairB:PairC']);
+      assert.equal(diagnostic.status, 0);
+      assert.equal(diagnostic.report.pair_overlaps['PairB x PairC'], 1);
+      assert.notEqual(mesh('Pairs', ['--organic', '--pairs', 'PairB:PairC']).status, 0);
+    });
+    await t.test('organic mode retains degenerate, loose and material checks', () => {
+      for (const flag of ['--strict', '--organic']) {
+        const result = mesh('BadHealth', [flag]);
+        assert.notEqual(result.status, 0);
+        assert.equal(result.report.objects[0].degenerate_faces, 1);
+        assert.equal(result.report.objects[0].loose_verts, 1);
+        assert.equal(result.report.objects[0].empty_material_slots, 1);
+      }
+    });
+    await t.test('empty or wholly excluded required scope cannot pass', () => {
+      for (const flag of ['--organic', '--strict']) {
+        const result = mesh('Empty', [flag]);
+        assert.notEqual(result.status, 0);
+        assert.deepEqual(result.report.objects, []);
+      }
+      const excluded = mesh('Split', ['--organic', '--exclude-prefix', 'Split']);
+      assert.notEqual(excluded.status, 0);
+      assert.deepEqual(excluded.report.objects, []);
+      assert.equal(mesh('Empty').status, 0);
+    });
+    await t.test('faceless objects fail required surface checks without reporting zero overlap', () => {
+      const organic = mesh('NoSurface', ['--organic']);
+      assert.notEqual(organic.status, 0);
+      for (const ob of organic.report.objects) assert.equal(ob.self_overlap_pairs, null);
+      const pair = mesh('NoSurface', ['--strict', '--pairs', 'Wire:NoVerts']);
+      assert.notEqual(pair.status, 0);
+      assert.equal(pair.report.pair_overlaps['Wire x NoVerts'], null);
+      assert.match(pair.output, /not_tested/);
+      assert.equal(mesh('NoSurface', ['--strict']).status, 0);
+    });
+    await t.test('missing collections and malformed, missing, self or out-of-scope pairs fail', () => {
+      for (const args of [['--collection', 'Missing'],
+        ...['PairA', 'PairA:PairB:PairC', 'PairA:Missing', 'PairA:PairA', 'PairA:Cube', 'PairA:PairB,']
+          .map(value => ['--collection', 'Pairs', '--pairs', value]),
+        ['--collection', 'Pairs', '--exclude-prefix', 'PairB', '--pairs', 'PairA:PairB']]) {
+        const result = run(meshScript, args, join(dir, 'mesh.blend'));
+        assert.notEqual(result.status, 0, result.output);
+      }
+    });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
