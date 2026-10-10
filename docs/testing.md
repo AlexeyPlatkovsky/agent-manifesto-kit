@@ -60,15 +60,25 @@ usage, exact export requirements, provider sync and nested workflow packaging. P
 tests use `python3`; Blender fixture tests use `BLENDER` or an executable on `PATH`. Run
 `BLENDER=/path/to/blender npm test` to include actual headless motion/export fixtures; without
 Blender those tests are reported as skipped. A release validation claiming Blender coverage
-must record its version and run those fixtures. The 1.5.0 local validation uses Blender 5.2.1 LTS.
+must record its version and run those fixtures. Local fixture validation uses Blender 5.2.1 LTS.
 
-Record Node/npm versions and Blender availability with test totals. For the 1.5.0 suite,
+The pending 1.6.0 release adds real mesh fixtures for `mesh_report.py`: evaluated topology,
+connected components, adjacent-face exclusion, self-overlap, transformed surface pairs,
+empty/excluded scopes and invalid object names. `--organic` enforces mesh health, one
+component and zero self-overlaps; legacy `--strict` remains compatible, with surface-pair
+gates enabled only by explicit `--pairs`. JSON persists the counts and marks unrun
+self-overlap checks with `null`. Zero-face organic meshes fail; requested pairs lacking a
+surface yield `null` (`not_tested`) and fail strict gates. BVH surface checks do not prove
+absence of containment.
+Instruction reviews cover the 1.6.0 geometry, provenance, animated-review and freezing rules.
+
+Record Node/npm versions and Blender availability with test totals. Historical 1.5.0 validation:
 Blender availability produces 99 passing tests; without Blender, its parent test is skipped
 and the 11 nested cases are not registered, producing 87 passes and one skip (88 total).
 The original CI failure used Node 20.20.2/npm 10.8.2; the initial local pass used
 Node 24.18.0/npm 11.16.0. A pass on one toolchain does not establish a pass on the other.
 
-Instruction evaluation and scenario acceptance review test the five changed instruction
+Instruction evaluation and scenario acceptance review test changed instruction
 artifacts separately from script execution. Neither these tests nor the audit establish a
 specific percentage saving or quality equivalence between model/effort presets.
 

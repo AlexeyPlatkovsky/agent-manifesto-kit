@@ -31,6 +31,11 @@ origin, dimensions, polygon/material constraints and target engine only when rel
 Identify editable source versus derived outputs. A revision also names the changed region,
 existing failures, allowed changes and previous evidence to reuse.
 
+Every profile, however small the asset, starts from a measured spec sized to the task (for a
+revision, the changed region): relevant dimensions, colours per region, a feature checklist with
+regions, and tolerances. Without a reference, the brief's numbers and recorded defaults are the
+spec. Acceptance compares them in the contract's required views; "looks similar" is not a criterion.
+
 ## Procedure
 
 Apply Stop Conditions immediately during every step; return the blocked work and evidence gaps.
@@ -41,7 +46,11 @@ Apply Stop Conditions immediately during every step; return the blocked work and
 2. Make the smallest persisted Blender Python builder or edit script that produces the requested
    change. Preserve user-authored geometry, materials and names outside that change. Save to
    the agreed output; never overwrite an authoritative hand-edited `.blend` by rebuilding it.
-   Build into a new file and reconcile when script and scene disagree.
+   Build into a new file and reconcile when script and scene disagree. Expose tunable values as
+   command-line overrides (`blender -b --python build.py -- --set NAME=VALUE`); a parameter
+   search passes values that way and never rewrites the builder's source with sed or shell loops.
+   Wait for background builds and renders on the job's own completion signal (harness job
+   tools or its process ID); a process-name polling loop can match itself and never end.
 3. For a new asset, establish scale and primary forms before details. For a narrow repair,
    edit the affected region; do not restart the whole asset or regenerate unchanged views.
 4. Run the contract's relevant technical checks and render the affected views at the intended
@@ -50,6 +59,17 @@ Apply Stop Conditions immediately during every step; return the blocked work and
 5. Save the editable `.blend`, its builder/edit script and requested exports. Return the
    artifact paths, evidence, remaining defects and actual changes for the coordinator's next
    gate. Stop this invocation after one build or repair stage.
+
+## Generated and Imported Meshes
+
+Image-to-3D output, scans and downloaded models enter as inputs, not as finished assets.
+Record provenance per run (source or generator and version, licence, input image, seed,
+settings) next to the asset. Check the licence of every model in the chain, including
+preprocessing such as background removal, whose weights may forbid commercial use. Verify
+up-axis, facing and scale after import (some generators export lying along Y), cull hidden
+inner shells before decimating, and render the back and a posed view before skinning: a
+single-view generator invents the far side. Accepted results are frozen by the workflow's
+completion rules; re-verify a frozen manifest before shipping a rebuild of its files.
 
 ## State and Usage Helpers
 
@@ -65,6 +85,8 @@ They do not launch agents, render, collect billing automatically or enforce a li
   overwrite authoritative work: return the concrete blocker without changing that work.
 - A required check cannot run: record `not_tested` and return the missing capability.
 - The coordinator has not reserved a permitted repair round: do not start another repair.
+- A model or asset in the input chain has an unknown licence, or one that forbids the intended
+  use: do not ingest it; return the licence gap.
 
 ## Output Contract
 

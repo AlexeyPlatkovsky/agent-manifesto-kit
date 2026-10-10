@@ -76,6 +76,12 @@ Apply Stop Conditions immediately during every step; return the blocked work and
    and fails unmet thresholds or missing requested coverage. Run with `--python-exit-code 1`.
 7. Inspect affected frame contact sheets at the intended size, including representative contacts,
    transitions and extremes. Missing views cannot prove motion continuity; report sampling limits.
+   Review a character animated, never only in rest pose: the contract's locomotion clips and
+   extreme-pose clips (for example walk, run, aim, crouch, prone) from front, three-quarter and
+   hip angles, plus head, neck, shoulder, armpit, crotch and inner-thigh close-ups. Measure rigid
+   layers on a deforming surface (face parts, beards, badges) for drift: the per-frame maximum
+   offset of sampled layer points from their anchor points on the surface under them, against
+   the contract's tolerance (0 mm for a layer that shares the surface's weights).
 8. For requested exports, isolate intended actions and export. Use `verify_gltf.py` with
    `--expect-clips Walk,Run --exact-clips` (substitute the contract's exact names) and the required
    `--require-mesh`, `--require-skin`, `--require-rig` flags. For a static export the expected clip
@@ -104,6 +110,25 @@ coverage `not_tested`; never claim delivery acceptance with a missing required c
   the repeated frame, so playback does not stutter.
 - Overlap tests between adjacent regions of one mesh report shared edges. Pair regions that
   should never touch.
+- Before narrowing a failing check (fewer regions, excluded pairs), render the flagged frame
+  and name the cause: real body contact (legs brushing) justifies the exclusion, shared edges
+  are re-paired as above, anything else is a defect. A metric that flags every frame is fixed,
+  or dropped with the coordinator's approval and recorded `not_tested`; never kept and ignored.
+- Clips are rest-relative: a rig whose bone rolls differ from the source rig bends limbs the
+  wrong way. Keep the character's joint positions but copy the source rig's rolls, or retarget
+  the roll difference explicitly.
+- One long triangle spanning two bones (jaw to neck) shears when they rotate apart, and a layer
+  on it dips under the skin. Add a ring at the transition; weight tweaks alone do not clear it.
+- Extreme poses press body parts together: an aiming upper arm opens a garment's armhole onto
+  the torso, and no weight, offset or binding keeps it closed. Line the covered skin with a thin
+  closed sheet of the garment's cloth, skinned with the skin's own weights, and judge it by
+  visible skin pixels (rays into the posed scene) in the worst clips, not by triangle crossings.
+  A ring or liner is added geometry: rest-pose renders must stay within the appearance tolerance.
+- Stylised proportions limit what clips can do. Measure reach (shoulder joint to palm against the
+  distance to each grip point) before promising a two-handed hold from a source clip; short arms
+  cannot reach a shouldered aim. If reach falls short, report the hold as blocked with the
+  measured gap and options (grip point, prop scale, clip edit); never stretch the character.
+  Check a held prop in the static pose too, not only in motion.
 
 ## Output Contract
 

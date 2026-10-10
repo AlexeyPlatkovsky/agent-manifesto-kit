@@ -24,7 +24,8 @@ criteria and required evidence; do not invent a universal quality target.
 
 ## Invariants
 
-- Build through a persisted Python builder run with `blender -b`; no unrecorded manual edits.
+- Build through a persisted Python builder run with `blender -b`, with the command-line
+  overrides of `../blender-asset` Procedure step 2; no unrecorded manual edits.
   Rebuilding must reproduce the model. If the user edits the `.blend` by hand, that file becomes
   authoritative: never rebuild over it; build into a new file and reconcile.
 - Preserve project units, axes and origins. For a new character with no conventions, record
@@ -36,6 +37,40 @@ criteria and required evidence; do not invent a universal quality target.
   inside the outline. Those need magnified side-by-side inspection.
 - Keep machine paths (Blender and engine executables) in the project's own instructions, not in
   builders.
+
+## Low-Poly Geometry Policy
+
+Every triangle must earn its place on the silhouette or on a visible plane, unless the task
+contract sets a different density or shading style.
+
+1. Prefer planar forms and visible facets (flat shading; facets carry the form).
+2. Use: 6-8 sided cylinders; 4-8 segment curves only where the silhouette needs them;
+   manually shaped polygon cages; flat or mostly flat readable planes.
+3. Avoid, unless the contract requires them: subdivision surfaces; dense bevels; high-segment
+   cylinders/spheres; smooth shading as a substitute for form; dense hidden geometry;
+   procedural noise standing in for folds or hair.
+4. Before adding geometry, ask: "Does this improve the silhouette or a visible plane?"
+   If not, do not add it.
+
+## Organic Forms
+
+Heads, bodies, hair and similar organic forms are built from a few smooth parametric sections
+(superellipse rings or hull points whose widths, depths and heights are measured parameters),
+not traced from a reference mask row by row: sheet noise, ears and beards in a mask end up in
+the form. Bridge rings ring to ring into one quad mesh, or hull the sections and union the
+small closed parts (nose, ears) with an exact boolean. Run the checks below through Blender:
+`blender -b model.blend --python-exit-code 1 --python <skill>/scripts/mesh_report.py -- <args>`;
+`<skill>` is this installed skill's directory. Gate every iteration with
+`--organic --collection ORGANIC --json mesh.json`: each scoped mesh must have faces, pass
+the health checks, have one connected component and zero BVH self-overlap pairs, ignoring
+faces that share vertices. Put only the required organic meshes in that collection.
+Layers (hair, beard, clothing) are shells offset from the surface below; check named pairs
+with `--strict --pairs Hair:Head --json layers.json` and require zero overlaps. A missing
+surface yields `null` (`not_tested`) in the pair report and fails the gate.
+BVH checks detect surface intersections, not containment without surface contact; inspect
+layer placement in the required views too. Proportions come from landmarks (eyes, nose,
+mouth, joints) with a stated tolerance; an IoU above the contract's expected band suggests the form traces the
+drawing's noise.
 
 ## Tools
 
@@ -52,7 +87,7 @@ numpy. Blender's bundled Python has neither, so run them outside Blender.
 | `colors.py` | Sampled colour ratios between the reference and the render |
 | `diff_renders.py` | Pixel diff of two render folders, e.g. before and after rigging; exits non-zero on change |
 | `contact_sheet.py` | Tile renders into one image for review |
-| `mesh_report.py` | Blender: per-object triangles, non-manifold edges, degenerate faces, loose vertices, empty slots |
+| `mesh_report.py` | Blender: mesh health and component counts; `--organic` gates health, connectivity and self-overlap; `--strict --pairs A:B,C:D` gates world-space surface overlaps; `--json` persists evidence |
 
 `refspec.py` documents the spec format. Drafted view names and cameras are guesses: confirm them
 against the sheet's labels before building.
@@ -62,17 +97,26 @@ against the sheet's labels before building.
 Apply Stop Conditions immediately during every step; return the blocked work and evidence gaps.
 
 1. Confirm task criteria, reference priorities and requested deviations. Draft and confirm the
-   spec; set `meters_per_px` from the intended dimensions. View names/cameras are guesses until
-   checked against the sheet labels. Record conflicting views instead of averaging silently.
+   spec before building: the workflow contract's measured spec with a scale anchor, one checklist
+   line per visible feature with its reference region, and relations between parts ("rail
+   standoff exceeds the cap overhang"). Set `meters_per_px` from the intended dimensions. Measure
+   on the original image, through a camera matched to it; redrawn elevations are hints. A palette
+   supplied with the reference is authoritative; sampling a lit picture is a fallback. View
+   names/cameras are guesses until checked against the sheet labels. Record conflicting views
+   instead of averaging silently.
 2. Measure silhouettes and primary forms before adding detail. For a revision, preserve accepted
    geometry and start from the authoritative asset; edit only the scoped region.
-3. Render selected views at the reference scale. Use `compare.py` and `edges.py` to identify
-   differences, and report per-view IoU as a diagnostic. Acceptance uses the task's tolerances,
-   identity features and intended display size; no fixed IoU score guarantees completion.
+3. Render selected views at the reference scale, camera and light (a studio-lit reference is
+   judged under a studio rig, not game lighting). Use `compare.py` and `edges.py` to identify
+   differences, and report per-view IoU as a diagnostic; turn `edges.py` rows into section
+   parameters (Organic Forms). Acceptance follows the spec and feature checklist in these views;
+   no fixed IoU score guarantees completion.
 4. Inspect relevant interior details with `zoom.py` (for example a prop latch, face or equipment
    attachment). Inspect colours when colour fidelity is required, respecting requested changes.
 5. Render additional angles only where needed to test required visibility, construction or
-   changed dependencies. Check for floating parts, poke-through and unfinished surfaces.
+   changed dependencies. Check for floating parts, poke-through and unfinished surfaces, with
+   close-ups of every junction between parts. Self-check visible identity (face, openings,
+   junctions), not only the easy metrics.
 6. Run `mesh_report.py` for the agreed object scope and assess the task's topology/material/size
    constraints. Explain intentional open edges. Export and re-import only when export is a
    deliverable; record unrun required checks as `not_tested`.

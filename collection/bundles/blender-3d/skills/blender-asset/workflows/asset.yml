@@ -7,6 +7,7 @@ contract:
   required:
     - brief and authoritative input/output paths
     - profile with reason and measurable acceptance criteria
+    - measured spec sized to the task - dimensions, colours per region and a feature checklist with regions
     - required evidence IDs, views/checks and task-specific tolerances
     - allowed changes, units/axes/origin and deliverables
   optional:
@@ -73,6 +74,8 @@ review:
     - If image viewing or an independent agent is unavailable, record review as not_tested.
     - A required review that cannot run blocks acceptance; deliver partial progress and identify the missing capability.
     - A Quick or Standard reviewer trigger adds a gate without automatically escalating the entire profile.
+    - A live preview link or intermediate round shown to the user is a presentation; it takes the same review gate as a delivery under the chosen profile, run while the user looks.
+    - When the contract includes deformation or motion, the packet includes the motion evidence listed in blender-mocap-retarget step 7.
 repair:
   owner: calling agent
   rules:
@@ -102,4 +105,6 @@ completion:
     - Visual approval cannot replace a technical or engine gate; technical pass cannot replace required visual review.
     - Optional defects and untested optional capabilities are disclosed without forcing extra rounds.
     - Deliver editable source, persisted scripts, requested exports, evidence summary and measured usage coverage.
+    - When the contract marks a result shippable, freeze it - a manifest of SHA-256 hashes of its reproducible exports, ingested inputs and builders, plus a version-control tag where one is used; list files that do not rebuild bit-identical as non-reproducible.
+    - A rebuild that changes a frozen hash needs new acceptance; variants build on the frozen result without changing it.
     - Record outcome as accepted, partial or blocked; never claim savings without comparable accepted-task measurements.

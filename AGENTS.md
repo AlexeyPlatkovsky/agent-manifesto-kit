@@ -167,4 +167,16 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - Before accepting a feature-planning result, verify the actual Taskpilot record shape: separate non-empty `dor` and `dod`, concise `description`, and one real child `task` item for every implementation task. A reviewer must reject task IDs, DoR/DoD headings, or test plans embedded only in Description.
 - Taskpilot item deletion is a confirmation-gated soft delete. Require explicit user confirmation naming the item ID and title before setting status to `deleted`.
 - Treat `package.json` as the release-version source of truth. Release automation publishes that exact version; do not rely on commit-message-derived versioning.
-- For product output, package contents, release workflow, or published metadata changes, update `package.json`, `package-lock.json`, and `CHANGELOG.md` in the same task unless the user explicitly asks to defer release bookkeeping. Use semantic versioning: patch for fixes, minor for new features, and major for breaking changes. If the version impact is ambiguous, defer the version choice as an ambiguity case; do not guess.
+- For product output, package contents, release workflow, or published metadata changes, keep
+  `package.json`, `package-lock.json`, and `CHANGELOG.md` aligned in the same task unless the
+  user explicitly defers release bookkeeping. Alignment does not require a new version bump.
+- Version the release, not each task, commit, or review round. Select semantic versioning
+  against the latest released version for the combined release scope: patch for fixes,
+  minor for new features, and major for breaking changes.
+- Once a PR targets an unreleased version, code-review fixes, cleanup, validation repairs,
+  and documentation follow-ups keep that version and amend its existing changelog section.
+  Do not run version-bumping commands for those follow-ups unless the user explicitly
+  requests a different version or a separate release. For example, review fixes in a PR
+  already targeting `1.6.0` stay at `1.6.0`, rather than becoming `1.6.1` or `1.7.0`.
+- A fix to an already published release needs a new release version. If the release status,
+  combined scope, or required version impact is ambiguous, defer that decision; do not guess.

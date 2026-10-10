@@ -6,6 +6,10 @@ The kit follows semantic versioning. `package.json` declares the release version
 release workflow publishes that exact version. The repository is in ongoing post-1.0 feature
 development; release history is recorded in `CHANGELOG.md`.
 
+A release groups its changes under one version. Review corrections and follow-ups in an
+unreleased PR are recorded in that version's existing changelog section. The root contract
+defines version selection and the boundary between pending and already published releases.
+
 ## Phases
 
 ### 1.1.x — Released adoption baseline
@@ -25,7 +29,10 @@ development; release history is recorded in `CHANGELOG.md`.
   filtering), `amk-8` (unique bundle indexes and deduplication), `amk-37` (capability ingestion
   and provider sync), `amk-38` (public `blender-3d` bundle), and `amk-46` (session retro with a
   Stop-hook nudge), plus `amk-56` (cost-aware Blender profiles and evidence/usage handoffs, 1.5.0)
-  and `amk-62` (explicit CLI self-update through npm).
+  and `amk-62` (explicit CLI self-update through npm). The pending 1.6.0 continuation,
+  `amk-66`, refines existing Blender reference geometry, measured specifications, mesh
+  provenance, animated review and frozen deliveries; `amk-69` repairs its reproducible
+  organic-mesh validation gate.
 - **Milestone / exit criteria:** A feature has accepted requirements, implementation tasks,
   scenarios, passing validation, and synchronized documentation.
 
