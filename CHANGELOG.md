@@ -13,25 +13,29 @@ Maintain this file as part of product or release-affecting work. Release automat
   Includes Python helpers/tests, JSON and HTML templates, and a Claude Code exporter that
   works from CLI-installed copies. Both Claude and Codex installations read Codex JSONL;
   native Claude transcript parsing is not included.
+- Added the standalone `astro-preview` skill for local browser previews of project images,
+  audio, models and animation. It covers a consumer-configured checkout, idempotent project
+  roots, stable links/CLI open, linked animation inspection, HTML/Vite profiles, audio A/B RMS,
+  pixel differences, real browser verification and explicit runtime/write boundaries.
 
 ## 1.6.0 - 2026-10-10
 
 ### Added
 
-- Added the standalone `astro-preview` skill for local browser previews of project images,
-  audio, models and animation. It covers a consumer-configured checkout, idempotent project
-  roots, stable links/CLI open, linked animation inspection, HTML/Vite profiles, audio A/B RMS,
-  pixel differences, real browser verification and explicit runtime/write boundaries.
+- Added a low-poly geometry policy, parametric organic-form guidance, generated/imported
+  mesh provenance and licence checks, and hash manifests for frozen deliveries.
+- `mesh_report.py --organic` persists component and self-overlap counts and gates mesh
+  health, single-component geometry and zero self-overlap. Explicit `--strict --pairs A:B,C:D`
+  checks world-space surface intersections. Legacy `--strict` remains compatible.
 
 ### Changed
 
 - `blender-3d` skills carry practices learned in a consumer game project: a measured spec
   sized to the task (dimensions, colours per region, feature checklist, tolerances) before
   every asset, judged in the required views; measurement on the original through a matched
-  camera; a low-poly geometry policy; organic forms from a few parametric sections with
-  component and self-overlap gates instead of mask tracing; builder `--set` overrides instead
-  of source rewrites; provenance, licence-chain (a stop condition) and orientation checks for
-  generated or imported meshes; and freezing shippable results with hash manifests.
+  camera; organic forms use component and self-overlap gates instead of mask tracing;
+  builders use `--set` overrides instead of source rewrites; generated or imported meshes
+  receive orientation checks.
 - Retargeting reviews characters animated, including extreme poses and head, neck, shoulder,
   hip and inner-thigh close-ups, measures rigid-layer drift against a contract tolerance, and
   adds pitfalls for narrowed checks, bone rolls, shearing transition triangles, garment liners
