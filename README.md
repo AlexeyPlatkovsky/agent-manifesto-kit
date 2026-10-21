@@ -119,6 +119,18 @@ Claude transcripts. Unlike the single-session `session-retro` digest above, it i
 reviews project history and publishes a cumulative report with a date/time selector.
 The bundled Claude exporter also supports an explicitly chosen project or global install.
 
+Generate humanoid clips locally with NVIDIA Kimodo, starting and ending in a rig's own poses:
+
+```bash
+agentkit sync kimodo-motion --provider claude,codex
+```
+
+The [Kimodo Motion skill](collection/skills/kimodo-motion/SKILL.md) ships a patch that adds key-pose
+constraints (upstream Kimodo's constraints JSON) to the native kimodo.cpp build, Python helpers for
+generation, key-pose error gates, frame sheets and residual easing, and Blender scripts that turn a
+Mixamo-named rig's pose into a key pose and bake takes back onto the rig. kimodo.cpp, its models and
+Blender are installed separately; `KIMODO_ROOT` and `BLENDER` point at them.
+
 Adopt a single skill for Codex:
 
 ```bash

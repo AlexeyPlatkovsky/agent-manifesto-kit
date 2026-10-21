@@ -4,10 +4,16 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
-## Unreleased
+## 1.7.0 - 2026-10-21
 
 ### Added
 
+- Added the standalone `kimodo-motion` skill: local NVIDIA Kimodo text-to-motion through kimodo.cpp
+  with a shipped key-pose patch (`kmd-generate --constraints` reading upstream's `fullbody`,
+  `end-effector` and hand/foot constraints), start/end key poses held over several frames with hand
+  and foot orientation, key-pose error gates, offset easing of the model's residual, frame sheets
+  with per-frame junction strips, and Blender scripts for rig pose -> key pose and rig retargeting
+  with a direction gate. Includes model-free tests and a Blender round trip.
 - Added the standalone `self-reflection` skill with incremental Codex session review,
   persistent checkpoints, evidence-backed recommendations and an offline HTML history.
   Includes Python helpers/tests, JSON and HTML templates, and a Claude Code exporter that
