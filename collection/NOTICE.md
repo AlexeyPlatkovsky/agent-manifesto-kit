@@ -34,3 +34,11 @@ This collection contains skills and agents derived in part from third-party open
 - **Source:** `meta-tags-optimizer` skill by Aaron He Zhu — https://github.com/aaron-he-zhu/seo-geo-claude-skills/tree/main/build/meta-tags-optimizer
 - **License:** Apache License 2.0
 - **Nature of derivation:** Concept, length budgets, and tag-set coverage (title / meta description / Open Graph / Twitter Card / supporting tags) adapted from the upstream skill. Upstream coupling to `memory/content/`, `memory/hot-cache.md`, `memory/open-loops.md`, the CORE-EEAT alignment check, the cross-skill "next step" routing to `schema-markup-generator`, and the multi-language preset list are not carried over. Procedure, safety constraints, and output contract are rewritten for this collection's single-file skill format.
+
+## kimodo-motion
+
+- **Sources:**
+  - kimodo.cpp by the LocalAI team — https://github.com/localai-org/kimodo.cpp (commit `ed8a931`): the key-pose patch modifies its sources; the SOMA30 joint names, parents and offsets in `scripts/kimodo_motion.py` are copied from its `scripts/export_glb.py`.
+  - Kimodo by NVIDIA — https://github.com/nv-tlabs/kimodo: the constraints JSON format and the full-body/end-effector conditioning the patch follows; the skeleton definitions kimodo.cpp copied.
+- **License:** Apache License 2.0 (kimodo.cpp and NVIDIA Kimodo code). Model weights are not included; they carry the NVIDIA Open Model License and the Meta Llama 3 Community License.
+- **Nature of derivation:** The patch adds key-pose constraint input to kimodo.cpp's native generator. Generation helpers, gates, residual easing, sheets and the Blender scripts are original to this collection.

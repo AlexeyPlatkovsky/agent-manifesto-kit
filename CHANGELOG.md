@@ -4,6 +4,26 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.7.0 - 2026-10-21
+
+### Added
+
+- Added the standalone `kimodo-motion` skill: local NVIDIA Kimodo text-to-motion through kimodo.cpp
+  with a shipped key-pose patch (`kmd-generate --constraints` reading upstream's `fullbody`,
+  `end-effector` and hand/foot constraints), start/end key poses held over several frames with hand
+  and foot orientation, key-pose error gates, offset easing of the model's residual, frame sheets
+  with per-frame junction strips, and Blender scripts for rig pose -> key pose and rig retargeting
+  with a direction gate. Includes model-free tests and a Blender round trip.
+- Added the standalone `self-reflection` skill with incremental Codex session review,
+  persistent checkpoints, evidence-backed recommendations and an offline HTML history.
+  Includes Python helpers/tests, JSON and HTML templates, and a Claude Code exporter that
+  works from CLI-installed copies. Both Claude and Codex installations read Codex JSONL;
+  native Claude transcript parsing is not included.
+- Added the standalone `astro-preview` skill for local browser previews of project images,
+  audio, models and animation. It covers a consumer-configured checkout, idempotent project
+  roots, stable links/CLI open, linked animation inspection, HTML/Vite profiles, audio A/B RMS,
+  pixel differences, real browser verification and explicit runtime/write boundaries.
+
 ## 1.6.0 - 2026-10-10
 
 ### Added

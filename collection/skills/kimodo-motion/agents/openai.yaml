@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kimodo Motion"
+  short_description: "Text-to-motion clips with Kimodo, start/end key poses, retarget"
+  default_prompt: "Use $kimodo-motion to generate a clip from a prompt that starts and ends in my rig's poses, check it and retarget it."

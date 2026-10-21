@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Self Reflection</title>
+<style>
+:root{color-scheme:light;--ink:#152c35;--muted:#536770;--line:#d6dfdf;--accent:#136757;--paper:#fff;--wash:#f3f5f2}*{box-sizing:border-box}body{margin:0;background:var(--wash);color:var(--ink);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1200px;margin:auto;padding:38px 32px 60px}header{display:flex;align-items:end;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line);padding-bottom:25px}.eyebrow{font-size:11px;font-weight:750;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}h1{font:500 40px/1.15 Georgia,serif;margin:9px 0}h2{font-size:20px;letter-spacing:-.02em;margin:0 0 14px}h3{font-size:15px;margin:20px 0 8px}p{margin:8px 0}.muted{color:var(--muted);font-size:13px}.picker{min-width:230px}label{display:block;font-size:12px;font-weight:650;margin-bottom:7px}select{width:100%;font:600 16px system-ui;color:var(--ink);background:white;border:1px solid #93aaa8;border-radius:8px;padding:12px 36px 12px 12px}select:focus-visible,summary:focus-visible{outline:3px solid #267cba;outline-offset:3px}.intro{margin:26px 0;background:#e5eeea;border-left:4px solid var(--accent);padding:22px 26px;border-radius:0 10px 10px 0}.intro p{font-size:17px;max-width:960px;white-space:pre-wrap}.section{margin-top:28px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--paper)}table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}th{background:#edf1ef;color:#40555e;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:13px 16px;vertical-align:top}td{padding:15px 16px;border-top:1px solid #e2e8e6;vertical-align:top;white-space:pre-line;overflow-wrap:anywhere}tbody tr:hover{background:#fafcfb}.metrics td:nth-child(n+2),.metrics th:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}.metrics th:first-child{width:48%}.observations{min-width:850px}.observations th:nth-child(1){width:8%}.observations th:nth-child(2){width:30%}.observations th:nth-child(3){width:23%}.observations th:nth-child(4){width:25%}.pill{display:inline-block;border-radius:5px;padding:3px 7px;background:#edf1ef;font-size:11px;font-weight:750;white-space:nowrap}.p1{background:#fbe4e0;color:#943c2d}.p2{background:#fff0cf;color:#78530b}.keep{background:#dcefe5;color:#205e43}#metrics-section>summary{font-size:20px;margin-bottom:12px}.change{display:block;margin-top:8px}.cell-title{font-weight:650;display:block;margin-bottom:6px}.evidence{font:11px/1.55 ui-monospace,monospace;color:var(--muted);display:block;margin-top:9px}details{margin:18px 0}summary{cursor:pointer;font-weight:650;padding:8px 0}ul{padding-left:21px}.empty{padding:22px;color:var(--muted)}footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;font-size:12px;color:var(--muted)}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:24px;border:1px solid var(--line);border-radius:10px;font:14px/1.6 system-ui}.report-id{font:11px ui-monospace,monospace}#coverage td{font-size:12px}@media(max-width:640px){main{padding:24px 16px}header{align-items:stretch;flex-direction:column;gap:18px}h1{font-size:34px}.picker{width:100%}.intro{padding:18px}.intro p{font-size:15px}th,td{padding:11px 12px}footer{flex-direction:column;gap:6px}.metrics th:first-child{width:42%}}@media print{body{background:white}main{padding:0}select{border:0}details{display:block}.table-wrap{overflow:visible}.observations{min-width:0}td,th{padding:8px;font-size:10px}header{break-after:avoid}.section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<header><div><div class="eyebrow">Практика · обратная связь · улучшения</div><h1>Self Reflection</h1><div id="project" class="muted"></div></div><div class="picker"><label for="report-select">Отчёт · дата и время</label><select id="report-select" aria-describedby="report-meta"></select><p id="report-meta" class="muted"></p></div></header>
+<div id="content" aria-live="polite">
+<section class="intro"><div class="eyebrow">Краткий вывод</div><p id="summary"></p><div id="report-id" class="report-id"></div></section>
+<div id="structured">
+<section class="section"><h2>Что изменить</h2><div id="recommendations" class="table-wrap"></div></section>
+<section id="followup-section" class="section"><h2>Что дали прежние рекомендации</h2><div id="followups" class="table-wrap"></div></section>
+<section class="section"><h2>Наблюдения</h2><div id="findings" class="table-wrap"></div></section>
+<section id="episode-section" class="section"><h2>Эпизоды и продолжение</h2><div id="episodes" class="table-wrap"></div></section>
+<details id="metrics-section" class="section"><summary>Работа в цифрах</summary><div id="metrics" class="table-wrap metrics"></div><p id="metric-note" class="muted"></p><details><summary>Какие инструменты использовались</summary><div id="tools" class="table-wrap"></div></details></details>
+<section class="section"><h2>Границы отчёта</h2><ul id="notes"></ul><details><summary>Просмотренные участки сессий</summary><div id="coverage" class="table-wrap"></div></details></section>
+</div><pre id="legacy" hidden></pre>
+</div>
+<footer><span>Данные локальны · предложения не применяются автоматически</span><span>JSON → HTML · Self Reflection / v2</span></footer>
+</main>
+<script type="application/json" id="reports"><!--REPORT_DATA--></script>
+<script>
+'use strict';
+const reports=JSON.parse(document.getElementById('reports').textContent);
+const $=id=>document.getElementById(id);
+const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
+const number=value=>value===null||value===undefined?'Нет данных':new Intl.NumberFormat('ru-RU').format(value);
+function dateLabel(report){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:report.timezone,day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(report.created_at)).map(p=>[p.type,p.value]));return `${parts.day}-${parts.month}-${parts.year} ${parts.hour}.${parts.minute}`;}
+function table(target,headers,rows,cls){const host=$(target);host.replaceChildren();if(!rows.length){host.append(el('p','Нет записей для этого отчёта.','empty'));return;}const t=el('table',undefined,cls),head=el('thead'),tr=el('tr');for(const title of headers){const th=el('th',title);th.scope='col';tr.append(th);}head.append(tr);t.append(head);const body=el('tbody');for(const row of rows){const tr=el('tr');for(const value of row){const td=el('td');td.append(value instanceof Node?value:document.createTextNode(String(value)));tr.append(td);}body.append(tr);}t.append(body);host.append(t);}
+function badge(priority){return el('span',priority==='keep'?'Сохранить':priority,'pill '+priority.toLowerCase());}
+function show(index){const r=reports[index];$('project').textContent=r.project.split(/[\\/]/).filter(Boolean).pop();$('report-meta').textContent=`${Number(index)+1} из ${reports.length} · ${r.timezone}`;$('report-id').textContent=`Отчёт ${r.id.slice(0,12)}`;$('structured').hidden=Boolean(r.legacy);$('legacy').hidden=!r.legacy;
+if(r.legacy){$('summary').textContent='Предыдущий отчёт в формате Markdown. Метрики для него не рассчитаны.';$('legacy').textContent=r.legacy;return;}
+$('summary').textContent=r.summary;
+const groups=[r.metrics.main,r.metrics.subagents];
+const rows=[['Сессий в выборке',...groups.map(g=>number(g.sessions))],['Вызовов инструментов',...groups.map(g=>number(g.tool_calls))],['Разных инструментов',...groups.map(g=>g.sessions?number(Object.keys(g.tools).length):'Нет данных')]];
+for(const [key,title] of [['input_tokens','Входные токены'],['cached_input_tokens','Из них прочитано из кеша'],['cache_write_input_tokens','Запись в кеш · как в логе'],['output_tokens','Выходные токены'],['reasoning_output_tokens','Из них reasoning · как в логе'],['total_tokens','Всего токенов · как в логе']])rows.push([title,...groups.map(g=>number(g.tokens?.[key]))]);
+rows.push(['Записей расхода по ответам',...groups.map(g=>number(g.usage_records))]);
+table('metrics',['Метрика','Основной агент','Сабагенты'],rows);
+$('metric-note').textContent=`Учтено ${number(r.coverage.records)} записей логов. Запусков сабагентов: ${number(r.metrics.subagent_starts)}. Вызовы считаются на верхнем уровне: внутренние команды exec не разворачиваются. Токены — только доступные usage-записи уникальных ответов; накопительные счётчики и скопированная история исключены. Кеш и reasoning не прибавляются повторно к итогу. Пропущено неполных usage-записей: ${groups.reduce((n,g)=>n+g.ignored_usage_records,0)}. Это расход анализируемой работы, не цена создания отчёта и не денежная оценка.`;
+const names=[...new Set(groups.flatMap(g=>Object.keys(g.tools)))].sort();table('tools',['Инструмент','Основной агент','Сабагенты'],names.map(name=>[name,...groups.map(g=>g.sessions?number(g.tools[name]||0):'Нет данных')]));
+table('findings',['Приоритет','Наблюдение','Эффект','Основание','Уверенность'],r.findings.map(f=>{const observation=el('div');observation.append(el('span',f.area,'cell-title'),el('span',f.observation));return [badge(f.priority),observation,f.effect,f.evidence.join('\n'),({high:'Высокая',medium:'Средняя',low:'Низкая'})[f.confidence]];}),'observations');
+table('recommendations',['Приоритет','Конкретное изменение','Как проверить пользу'],r.recommendations.map(rec=>{const change=el('div');change.append(el('span',rec.action,'cell-title'));if(rec.target)change.append(el('span',rec.target,'evidence'));if(rec.proposed_change)change.append(el('span',rec.proposed_change,'change'));if(rec.id)change.append(el('span',rec.id,'evidence'));return [badge(rec.priority),change,rec.validation];}));
+$('followup-section').hidden=r.version!==2;$('episode-section').hidden=r.version!==2;
+if(r.version===2){
+const previous=new Map(r.continuity.pending_recommendations.map(rec=>[rec.id,rec]));
+const status={proposed:'Предложено',accepted:'Принято',implemented:'Внедрено',dismissed:'Отклонено'};
+const effect={not_checked:'Не проверено',insufficient_data:'Недостаточно данных',improved:'Стало лучше',unchanged:'Без улучшения',worsened:'Стало хуже'};
+table('followups',['Рекомендация','Состояние / эффект','Результат проверки','Задача'],r.followups.map(check=>{const rec=previous.get(check.recommendation_id),name=el('div');name.append(el('span',rec?.action||check.recommendation_id,'cell-title'),el('span',check.recommendation_id,'evidence'));const note=el('div');note.append(el('span',check.note),el('span',check.evidence.join('\n'),'evidence'));return [name,`${status[check.status]}\n${effect[check.effect]}`,note,check.task_ref||'Не привязана'];}));
+table('episodes',['Эпизод','Состояние и результат','Что проверить дальше'],r.episodes.map(episode=>{const title=el('div');title.append(el('span',episode.title,'cell-title'),el('span',episode.id,'evidence'));const outcome=el('div');outcome.append(el('span',episode.status==='open'?'Открыт':'Завершён','cell-title'),el('span',episode.outcome),el('span',episode.evidence.join('\n'),'evidence'));return [title,outcome,episode.next_review||'Проверка завершена'];}));
+}
+$('notes').replaceChildren(...[...r.coverage_notes,...r.coverage.warnings].map(n=>el('li',n)));
+table('coverage',['Сессия','Байты [от, до)','Записей'],r.coverage.ranges.map(range=>[range.session,`${range.start}–${range.end}`,number(range.events)]));
+}
+if(reports.length){reports.forEach((r,i)=>{const option=el('option',dateLabel(r));option.value=String(i);option.title=`${r.created_at} · ${r.id}`;$('report-select').append(option);});$('report-select').addEventListener('change',e=>show(e.target.value));show(0);}else{$('report-select').disabled=true;$('summary').textContent='Пока нет завершённых отчётов.';$('structured').hidden=true;}
+</script>
+</body>
+</html>

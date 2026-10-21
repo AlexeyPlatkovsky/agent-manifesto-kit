@@ -86,12 +86,50 @@ The [Blender bundle](collection/bundles/blender-3d/README.md) includes Quick, St
 Production workflows, compact create/fix handoffs and per-phase usage records. Start with
 `blender-asset`; animation and export checks are optional additions to the selected profile.
 
+Use the local Astro Preview application for project asset previews:
+
+```bash
+agentkit sync astro-preview --provider claude,codex
+```
+
+The [Astro Preview skill](collection/skills/astro-preview/SKILL.md) covers stable preview links,
+linked model animations, image differences, audio A/B and local HTML/Vite profiles.
+Supply the application's checkout once through
+`ASTRO_PREVIEW_DIR` or project context. The skill reuses its local server and catalog;
+Agentkit installs the instructions, while the application is installed separately.
+
 Get retro suggestions after significant sessions (optional Stop-hook nudge for both tools):
 
 ```bash
 agentkit sync session-retro --provider claude,codex
 python3 .claude/skills/session-retro/scripts/install_hooks.py
 ```
+
+Review new portions of Codex session history with persistent checkpoints and an offline HTML report history:
+
+```bash
+agentkit sync self-reflection --provider claude,codex
+```
+
+The [Self Reflection skill](collection/skills/self-reflection/SKILL.md) includes Python helpers,
+tests and report templates. It reviews instructions and delegation, carries open episodes and
+recommendations between runs, and keeps logs and review state local. Requires Python 3.10+
+on macOS/Linux. Both providers can run it; the input format remains Codex JSONL, not native
+Claude transcripts. Unlike the single-session `session-retro` digest above, it incrementally
+reviews project history and publishes a cumulative report with a date/time selector.
+The bundled Claude exporter also supports an explicitly chosen project or global install.
+
+Generate humanoid clips locally with NVIDIA Kimodo, starting and ending in a rig's own poses:
+
+```bash
+agentkit sync kimodo-motion --provider claude,codex
+```
+
+The [Kimodo Motion skill](collection/skills/kimodo-motion/SKILL.md) ships a patch that adds key-pose
+constraints (upstream Kimodo's constraints JSON) to the native kimodo.cpp build, Python helpers for
+generation, key-pose error gates, frame sheets and residual easing, and Blender scripts that turn a
+Mixamo-named rig's pose into a key pose and bake takes back onto the rig. kimodo.cpp, its models and
+Blender are installed separately; `KIMODO_ROOT` and `BLENDER` point at them.
 
 Adopt a single skill for Codex:
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Self Reflection"
+  short_description: "Review new AI session history and workflow friction"
+  default_prompt: "Use $self-reflection to review unreviewed portions of this project's AI sessions and show an evidence-backed improvements table."
