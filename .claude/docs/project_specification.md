@@ -123,7 +123,9 @@ Known triggers include:
   feature description as a substitute for child items.
 - Before adding a new rule or structure, check whether the implementation code, existing product docs, or `.manifesto/` already owns that concern.
 - When modifying a deliverable asset, consider whether README guidance, adoption examples, release notes, catalog scanning behavior, or provider transforms also need updates.
-- Release-affecting changes are expected to keep package metadata and changelog entries aligned before closure unless the user explicitly defers release bookkeeping.
+- Release-affecting changes keep package metadata and changelog entries aligned before
+  closure unless the user explicitly defers release bookkeeping. `AGENTS.md` owns version
+  selection for the combined release scope and reuse of the pending version during review.
 - When external practices are useful, treat them as candidate guidance until accepted into local project conventions or docs.
 - Keep implementation changes small enough to review against the relevant capability boundary.
 

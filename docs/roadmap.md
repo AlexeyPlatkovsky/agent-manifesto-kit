@@ -6,6 +6,10 @@ The kit follows semantic versioning. `package.json` declares the release version
 release workflow publishes that exact version. The repository is in ongoing post-1.0 feature
 development; release history is recorded in `CHANGELOG.md`.
 
+A release groups its changes under one version. Review corrections and follow-ups in an
+unreleased PR are recorded in that version's existing changelog section. The root contract
+defines version selection and the boundary between pending and already published releases.
+
 ## Phases
 
 ### 1.1.x — Released adoption baseline

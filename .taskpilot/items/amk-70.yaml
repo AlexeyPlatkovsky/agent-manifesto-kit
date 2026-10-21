@@ -1,0 +1,19 @@
+schema_version: 1
+id: amk-70
+title: Extend Astro Preview skill for verified preview workflows
+priority: normal
+type: task
+status: done
+created_at: '2026-10-10T18:03:37Z'
+updated_at: '2026-10-10T18:18:25Z'
+description: 'Extend the existing portable astro-preview skill with the four user-approved app workflows: stable links/CLI open, linked animation inspection, HTML/Vite profiles, audio A/B RMS and pixel difference. No new capabilities or installer targets.'
+dor:
+- User approved all four app workflows and continuing the current branch.
+- Existing skill, CLI/UI contracts and local authoring authorities inspected.
+dod:
+- Instruction structural and isolated acceptance review accept the revision.
+- Kit tests, catalog/package inclusion and Codex/Claude adoption pass.
+- Docs and local installed copies match verified behavior.
+links:
+  relates_to:
+  - amk-67
