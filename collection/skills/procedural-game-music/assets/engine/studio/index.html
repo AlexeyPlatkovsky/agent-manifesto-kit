@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music studio</title>
+<style>
+  :root {
+    --bg: #e4e7ea; --panel: #f6f7f8; --panel2: #eceef1; --line: #d2d6dc; --text: #1e2329; --muted: #6a727d;
+    --accent: #2e9e55; --accent-ink: #fff; --lava: #e5602a; --warn: #b4441c; --H: 56px; --R: 44px; --strip: 300px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.35 system-ui, "Segoe UI", sans-serif; }
+  header { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center;
+           padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  h1 { font-size: 15px; margin: 0 6px 0 0; letter-spacing: .02em; }
+  h1 b { display: inline-block; width: 12px; height: 12px; background: var(--accent); margin-right: 6px; vertical-align: -1px; }
+  button, select, input[type=number] { font: inherit; color: var(--text); background: #fff; border: 1px solid var(--line);
+           border-radius: 3px; padding: 5px 9px; }
+  button { cursor: pointer; }
+  input[type=range], input[type=checkbox] { accent-color: var(--accent); }
+  button:hover { border-color: #9aa3ad; }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button:disabled { opacity: .5; cursor: default; }
+  .time { font-variant-numeric: tabular-nums; min-width: 230px; color: var(--muted); }
+  .time b { color: var(--text); font-weight: 600; }
+  .grow { flex: 1; }
+  #status { color: var(--muted); max-width: 420px; }
+  #status.err { color: var(--warn); }
+  label.inline { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+  main { padding: 12px 14px 40px; }
+  .board { display: grid; grid-template-columns: var(--strip) 1fr; background: var(--panel); border: 1px solid var(--line); }
+  .strips { border-right: 1px solid var(--line); }
+  .corner { height: var(--R); border-bottom: 1px solid var(--line); padding: 6px 10px; color: var(--muted);
+            display: flex; align-items: center; justify-content: space-between; }
+  .strip { height: var(--H); border-bottom: 1px solid var(--line); padding: 5px 8px 4px; display: grid; gap: 3px; }
+  .strip:nth-child(even) { background: var(--panel2); }
+  .strip.off { opacity: .55; }
+  .r1, .r2 { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 9px; height: 9px; flex: none; }
+  .nm { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nm i { font-style: normal; color: var(--lava); margin-left: 4px; }
+  .ms { padding: 0 6px; height: 20px; font-size: 11px; font-weight: 700; }
+  .ms.on.m { background: var(--lava); color: #fff; border-color: var(--lava); }
+  .ms.on.s { background: #e8c341; border-color: #c9a52a; }
+  .meter { width: 54px; height: 6px; background: #d9dde2; position: relative; }
+  .meter i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
+  .r2 { display: grid; grid-template-columns: auto minmax(40px, 1fr) 32px auto 44px auto 44px; gap: 4px; }
+  .r2 input[type=range] { height: 16px; width: 100%; min-width: 0; margin: 0; }
+  .r2 output { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 11px; text-align: right; }
+  .r2 span { color: var(--muted); font-size: 11px; }
+  .lanes { overflow-x: auto; position: relative; }
+  #tl { display: block; }
+  #ph { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--lava); pointer-events: none; left: 0; }
+  .cards { display: grid; grid-template-columns: minmax(320px, 1.2fr) minmax(280px, 1fr); gap: 12px; margin-top: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); padding: 10px 12px; }
+  .card h2 { font-size: 13px; margin: 0 0 8px; display: flex; justify-content: space-between; align-items: baseline; }
+  .card h2 small { font-weight: 400; color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 3px 4px; border-bottom: 1px solid var(--panel2); }
+  td.idx { color: var(--muted); width: 26px; font-variant-numeric: tabular-nums; }
+  td select { width: 130px; }
+  td input[type=number] { width: 64px; }
+  td button { padding: 2px 7px; }
+  .swatch { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; }
+  #spec { width: 100%; height: 120px; display: block; background: #fff; border: 1px solid var(--line); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin-top: 8px; color: var(--muted); }
+  .kv b { color: var(--text); font-weight: 500; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .empty { padding: 40px; text-align: center; color: var(--muted); }
+  pre#log { white-space: pre-wrap; max-height: 180px; overflow: auto; background: #fff; border: 1px solid var(--line);
+            padding: 6px; font-size: 11px; display: none; }
+  @media (max-width: 900px) { :root { --strip: 250px; } .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1><b></b>Studio</h1>
+  <select id="track" aria-label="Track"></select>
+  <button id="play" title="Space">▶ Play</button>
+  <button id="stop" title="To start (Home)">⏹</button>
+  <span class="time" id="time">—</span>
+  <label class="inline">Zoom <input type="range" id="zoom" min="4" max="80" value="14"></label>
+  <label class="inline"><input type="checkbox" id="follow" checked> follow</label>
+  <span class="grow"></span>
+  <span id="status">Loading…</span>
+  <button id="reset" title="Delete this track's manual edits and re-render">Reset edits</button>
+  <button id="save" class="primary" title="Write the edits and re-render the WAV and stems">Save &amp; re-render</button>
+</header>
+
+<main>
+  <div class="board" id="board">
+    <div class="strips" id="strips"><div class="corner"><span>Tracks</span><span id="nstems"></span></div></div>
+    <div class="lanes" id="lanes"><canvas id="tl"></canvas><div id="ph"></div></div>
+  </div>
+
+  <div class="cards">
+    <section class="card">
+      <h2>Structure <small id="formtotal"></small></h2>
+      <table><tbody id="form"></tbody></table>
+      <div style="margin-top:8px; display:flex; gap:8px; align-items:center">
+        <button id="addsec">+ section</button>
+        <span class="note" id="formnote">Structure changes apply after a re-render.</span>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Master <small id="meta"></small></h2>
+      <canvas id="spec" width="600" height="120"></canvas>
+      <div style="margin-top:8px; display:flex; gap:10px; align-items:center">
+        <label class="inline">Monitor volume <input type="range" id="mvol" min="-24" max="6" step="0.5" value="0"></label>
+        <output id="mvolv">0 dB</output>
+      </div>
+      <div class="kv" id="kv"></div>
+      <p class="note">Playback here is an approximation: no chorus or ping-pong, simplified limiter.
+        The exact version is the WAV in <code>tracks/</code> after a re-render.</p>
+      <pre id="log"></pre>
+    </section>
+  </div>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const H = 56, R = 44;
+let ctx = null, chain = null, S = null, track = null, stems = [], byName = {};
+let playing = false, startAt = 0, offset = 0, pps = 14;
+let edit0 = {}, form = [], formDirty = false;
+const dirty = new Set();
+
+const hue = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+const color = (s, l = 45) => `hsl(${hue(s)} 55% ${l}%)`;
+const fmt = t => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`;
+const db2g = d => d <= -40 ? 0 : 10 ** (d / 20);
+const g2db = g => g <= 0 ? -40 : Math.max(-40, 20 * Math.log10(g));
+
+function status(msg, err = false) { const el = $('#status'); el.textContent = msg; el.classList.toggle('err', err); }
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok && !('ok' in j)) throw new Error(j.error || r.statusText);
+  return j;
+}
+
+// ---------- audio ----------
+function ensureCtx() {
+  if (ctx) return;
+  ctx = new AudioContext();
+  const bus = ctx.createGain();
+  const shelf = ctx.createBiquadFilter(); shelf.type = 'highshelf'; shelf.frequency.value = 1500; shelf.gain.value = -7;
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -16; comp.ratio.value = 4; comp.knee.value = 8; comp.attack.value = 0.005; comp.release.value = 0.15;
+  const out = ctx.createGain();
+  const an = ctx.createAnalyser(); an.fftSize = 2048; an.smoothingTimeConstant = 0.8;
+  bus.connect(shelf); shelf.connect(comp); comp.connect(out); out.connect(an); an.connect(ctx.destination);
+  const revIn = ctx.createGain(), conv = ctx.createConvolver(), damp = ctx.createBiquadFilter();
+  damp.type = 'lowpass';
+  revIn.connect(conv); conv.connect(damp); damp.connect(bus);
+  chain = { bus, out, an, revIn, conv, damp };
+}
+
+function setReverb(decay, dampHz) {
+  const n = Math.floor(ctx.sampleRate * decay), ir = ctx.createBuffer(2, n, ctx.sampleRate);
+  for (let c = 0; c < 2; c++) {
+    const d = ir.getChannelData(c);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-6.9 * i / n);
+  }
+  chain.conv.buffer = ir;
+  chain.damp.frequency.value = dampHz;
+}
+
+function makeNodes(st) {
+  const g = ctx.createGain(), p = ctx.createStereoPanner(), send = ctx.createGain(), meter = ctx.createAnalyser();
+  meter.fftSize = 256;
+  g.connect(p); p.connect(chain.bus); g.connect(send); send.connect(chain.revIn); g.connect(meter);
+  const nodes = { g, p, send, meter, buf: new Float32Array(256) };
+  if (st.info.dl) {
+    const [beats, fb, amt] = st.info.dl;
+    const d = ctx.createDelay(4), f = ctx.createGain(), lp = ctx.createBiquadFilter(), w = ctx.createGain();
+    d.delayTime.value = beats * 60 / S.bpm; f.gain.value = fb; lp.type = 'lowpass'; lp.frequency.value = 3500; w.gain.value = amt;
+    g.connect(d); d.connect(lp); lp.connect(f); f.connect(d); lp.connect(w); w.connect(chain.bus);
+  }
+  return nodes;
+}
+
+function applyMix(st) {
+  const anySolo = stems.some(s => s.solo);
+  const on = !st.mute && (!anySolo || st.solo);
+  const t = ctx.currentTime;
+  st.nodes.g.gain.setTargetAtTime(on ? st.g * st.info.scale : 0, t, 0.015);
+  st.nodes.p.pan.setTargetAtTime(st.wide ? 0 : st.pan, t, 0.015);
+  st.nodes.send.gain.setTargetAtTime(st.rv, t, 0.015);
+  st.el.classList.toggle('off', !on);
+}
+
+function pos() { return playing ? ctx.currentTime - startAt : offset; }
+
+function play() {
+  if (!S || playing) return;
+  ctx.resume();
+  if (offset >= S.length - 0.05) offset = 0;
+  for (const st of stems) {
+    const src = ctx.createBufferSource(); src.buffer = st.buf; src.connect(st.nodes.g);
+    src.start(0, Math.min(offset, st.buf.duration)); st.src = src;
+  }
+  startAt = ctx.currentTime - offset; playing = true;
+  $('#play').textContent = '⏸ Pause';
+  requestAnimationFrame(tick);
+}
+
+function pause() {
+  if (!playing) return;
+  offset = pos(); playing = false;
+  for (const st of stems) { try { st.src.stop(); } catch (e) {} st.src = null; }
+  $('#play').textContent = '▶ Play';
+  drawHead();
+}
+
+function seek(t) {
+  const was = playing; pause();
+  offset = Math.max(0, Math.min(t, S ? S.length : 0));
+  drawHead(true);
+  if (was) play();
+}
+
+function tick() {
+  if (!playing) return;
+  if (pos() >= S.length) { pause(); offset = S.length; drawHead(); return; }
+  drawHead(); drawMeters(); drawSpectrum();
+  requestAnimationFrame(tick);
+}
+
+// ---------- loading ----------
+async function init() {
+  const { tracks } = await api('/api/tracks');
+  $('#track').innerHTML = tracks.map(t =>
+    `<option value="${t.name}">${String(t.index).padStart(2, '0')} ${t.name}${t.edited ? ' ✎' : ''}${t.session ? '' : ' (no stems)'}</option>`).join('');
+  const saved = localStorageGet('track');
+  const first = tracks.find(t => t.name === saved) || tracks.find(t => t.session) || tracks[0];
+  $('#track').value = first.name;
+  await load(first.name);
+}
+
+function localStorageGet(k) { try { return localStorage.getItem('studio.' + k); } catch (e) { return null; } }
+function localStorageSet(k, v) { try { localStorage.setItem('studio.' + k, v); } catch (e) {} }
+
+async function load(name, keepPos = false) {
+  pause();
+  const t0 = keepPos ? offset : 0;
+  track = name; localStorageSet('track', name);
+  dirty.clear(); formDirty = false;
+  for (const st of stems) { st.nodes.g.disconnect(); }
+  stems = []; byName = {};
+  document.querySelectorAll('.strip').forEach(e => e.remove());
+  const res = await fetch(`/studio_data/${name}/session.json?v=${Date.now()}`);
+  if (!res.ok) {
+    S = null; drawTimeline(); renderForm();
+    status('No stems for this track yet. Press "Save & re-render".');
+    $('#meta').textContent = ''; $('#kv').innerHTML = '';
+    return;
+  }
+  S = await res.json();
+  edit0 = await api('/api/edit?track=' + encodeURIComponent(name));
+  ensureCtx(); setReverb(S.rev[0], S.rev[1]);
+  chain.bus.gain.value = S.master_gain * 1.2;
+  const names = Object.keys(S.stems);
+  let done = 0;
+  status(`Loading stems 0/${names.length}…`);
+  const loaded = await Promise.all(names.map(async n => {
+    const info = S.stems[n];
+    const ab = await (await fetch(`/studio_data/${name}/${info.file}?v=${Date.now()}`)).arrayBuffer();
+    const buf = await ctx.decodeAudioData(ab);
+    status(`Loading stems ${++done}/${names.length}…`);
+    return { n, info, buf };
+  }));
+  for (const { n, info, buf } of loaded) {
+    const e = (edit0.stems || {})[n] || {};
+    const st = { name: n, info, buf, g: e.mute ? (e.g ?? 1) : info.g, pan: info.pan, rv: info.rv, mute: !!e.mute,
+                 solo: false, wide: info.wide, notes: S.notes[n] || [], peaks: peaks(buf) };
+    st.nodes = makeNodes(st);
+    stems.push(st); byName[n] = st;
+  }
+  stems.sort((a, b) => order(a.name) - order(b.name) || a.name.localeCompare(b.name));
+  const box = $('#strips');
+  for (const st of stems) { st.el = strip(st); box.appendChild(st.el); applyMix(st); }
+  $('#nstems').textContent = stems.length;
+  form = S.form.map(([sec, n]) => ({ sec, n }));
+  renderForm(); drawTimeline(); meta();
+  offset = Math.min(t0, S.length); drawHead(true);
+  status(Object.keys(edit0).length ? 'Loaded (has manual edits)' : 'Loaded');
+}
+
+const ORDER = ['kick', 'dkick', 'snare', 'hat', 'ride', 'crash', 'tom', 'perc', 'taiko', 'timp', 'boom', 'bass', 'gL', 'gR'];
+function order(n) { const i = ORDER.indexOf(n); return i < 0 ? 100 : i; }
+
+function peaks(buf) {
+  const d = buf.getChannelData(0), per = Math.floor(buf.sampleRate / 50), out = new Float32Array(Math.ceil(d.length / per));
+  for (let i = 0; i < out.length; i++) {
+    let m = 0;
+    for (let j = i * per, e = Math.min(d.length, j + per); j < e; j += 4) { const v = Math.abs(d[j]); if (v > m) m = v; }
+    out[i] = m;
+  }
+  return out;
+}
+
+// ---------- mixer strips ----------
+function strip(st) {
+  const el = document.createElement('div');
+  el.className = 'strip';
+  el.innerHTML = `
+    <div class="r1"><span class="dot" style="background:${color(st.name)}"></span>
+      <span class="nm" title="${st.name}">${st.name}<i hidden>●</i></span>
+      <button class="ms m" title="Mute">M</button><button class="ms s" title="Solo">S</button>
+      <div class="meter" aria-hidden="true"><i></i></div></div>
+    <div class="r2"><span title="Volume, dB (double-click: original)">vol</span>
+      <input type="range" class="vol" min="-40" max="12" step="0.5" aria-label="Volume ${st.name}">
+      <output class="db"></output>
+      <span title="Pan">pan</span><input type="range" class="pan" min="-1" max="1" step="0.05" aria-label="Pan ${st.name}" ${st.wide ? 'disabled title="stereo chorus"' : ''}>
+      <span title="Reverb send">rev</span><input type="range" class="rv" min="0" max="1" step="0.01" aria-label="Reverb ${st.name}"></div>`;
+  const vol = el.querySelector('.vol'), pan = el.querySelector('.pan'), rv = el.querySelector('.rv'), out = el.querySelector('.db');
+  const sync = () => {
+    vol.value = g2db(st.g); out.textContent = st.g <= 0 ? '−∞' : `${g2db(st.g).toFixed(1)}`;
+    pan.value = st.pan; rv.value = Math.min(1, st.rv);
+    el.querySelector('.m').classList.toggle('on', st.mute); el.querySelector('.s').classList.toggle('on', st.solo);
+    el.querySelector('.nm i').hidden = !dirty.has(st.name);
+  };
+  const changed = () => { dirty.add(st.name); sync(); applyMix(st); };
+  vol.oninput = () => { st.g = db2g(+vol.value); changed(); };
+  vol.ondblclick = () => { st.g = st.info.g || 1; changed(); };
+  pan.oninput = () => { st.pan = +pan.value; changed(); };
+  rv.oninput = () => { st.rv = +rv.value; changed(); };
+  el.querySelector('.m').onclick = () => { st.mute = !st.mute; changed(); drawTimeline(); };
+  el.querySelector('.s').onclick = () => { st.solo = !st.solo; sync(); stems.forEach(applyMix); drawTimeline(); };
+  st.sync = sync; sync();
+  return el;
+}
+
+function drawMeters() {
+  for (const st of stems) {
+    st.nodes.meter.getFloatTimeDomainData(st.nodes.buf);
+    let m = 0; for (const v of st.nodes.buf) m = Math.max(m, Math.abs(v));
+    const w = Math.max(0, Math.min(1, (20 * Math.log10(m + 1e-6) + 48) / 48));
+    st.el.querySelector('.meter i').style.width = `${w * 100}%`;
+  }
+}
+
+// ---------- timeline ----------
+function drawTimeline() {
+  const cv = $('#tl'), dpr = window.devicePixelRatio || 1;
+  const len = S ? S.length : 60, W = Math.min(32000 / dpr, Math.ceil(len * pps) + 24), Ht = R + Math.max(1, stems.length) * H;
+  cv.style.width = W + 'px'; cv.style.height = Ht + 'px'; cv.width = W * dpr; cv.height = Ht * dpr;
+  const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.fillStyle = '#f6f7f8'; c.fillRect(0, 0, W, Ht);
+  if (!S) { c.fillStyle = '#6a727d'; c.font = '13px system-ui'; c.fillText('No data: render the track', 16, 28); return; }
+  const bs = S.bar_sec;
+  // sections
+  for (const [sec, n, start] of S.form) {
+    const x = start * bs * pps, w = n * bs * pps;
+    c.fillStyle = color(sec, 82); c.fillRect(x, 0, w, R - 1);
+    c.fillStyle = color(sec, 30); c.fillRect(x, 0, 2, Ht);
+    c.font = '600 12px system-ui'; c.fillText(sec, x + 6, 16);
+    c.font = '11px system-ui'; c.fillStyle = '#4b535d'; c.fillText(`${n} bars · ${fmt(start * bs)}`, x + 6, 32);
+  }
+  // bar grid
+  c.fillStyle = 'rgba(0,0,0,.06)';
+  for (let b = 0, x; (x = b * bs * pps) < W; b++) c.fillRect(x, R, 1, Ht - R);
+  c.fillStyle = '#d2d6dc'; c.fillRect(0, R - 1, W, 1);
+  // lanes
+  const anySolo = stems.some(s => s.solo);
+  stems.forEach((st, i) => {
+    const y = R + i * H, on = !st.mute && (!anySolo || st.solo);
+    if (i % 2) { c.fillStyle = 'rgba(0,0,0,.025)'; c.fillRect(0, y, W, H); }
+    c.globalAlpha = on ? 1 : 0.3;
+    c.fillStyle = color(st.name, 80);           // envelope
+    const step = 50 / pps;
+    for (let x = 0; x < W; x++) {
+      const v = st.peaks[Math.floor(x * step)] || 0;
+      const h = v * (H - 8); if (h > 0.5) c.fillRect(x, y + (H - h) / 2, 1, h);
+    }
+    const ns = st.notes, pitched = ns.filter(e => e[1] >= 0);
+    c.fillStyle = color(st.name, 32);
+    if (pitched.length) {
+      let lo = 127, hi = 0; for (const e of pitched) { lo = Math.min(lo, e[1]); hi = Math.max(hi, e[1]); }
+      const span = Math.max(1, hi - lo), nh = Math.max(2, Math.min(5, (H - 10) / (span + 1)));
+      for (const [t, m, d] of pitched) c.fillRect(t * pps, y + 5 + (1 - (m - lo) / span) * (H - 10 - nh), Math.max(1.5, d * pps), nh);
+    }
+    for (const [t, m, d, v] of ns) if (m < 0) { const h = 6 + v * (H - 20); c.fillRect(t * pps, y + (H - h) / 2, 1.5, h); }
+    c.globalAlpha = 1;
+    c.fillStyle = '#d2d6dc'; c.fillRect(0, y + H - 1, W, 1);
+  });
+}
+
+function drawHead(scroll = false) {
+  const t = pos(), x = t * pps;
+  $('#ph').style.transform = `translateX(${x}px)`;
+  const lanes = $('#lanes');
+  if (scroll || (playing && $('#follow').checked && (x < lanes.scrollLeft || x > lanes.scrollLeft + lanes.clientWidth - 40)))
+    lanes.scrollLeft = Math.max(0, x - 80);
+  if (!S) { $('#time').textContent = '—'; return; }
+  const bar = Math.floor(t / S.bar_sec), sec = S.form.find(([s, n, st]) => bar >= st && bar < st + n);
+  $('#time').innerHTML = `<b>${fmt(t)}</b> / ${fmt(S.length)} · bar ${bar + 1} · ${sec ? sec[0] : 'end'}`;
+}
+
+$('#lanes').addEventListener('click', e => {
+  if (!S) return;
+  const r = $('#tl').getBoundingClientRect();
+  seek((e.clientX - r.left) / pps);
+});
+
+// ---------- master ----------
+function drawSpectrum() {
+  const cv = $('#spec'), c = cv.getContext('2d'), an = chain.an, d = new Uint8Array(an.frequencyBinCount);
+  an.getByteFrequencyData(d);
+  c.fillStyle = '#fff'; c.fillRect(0, 0, cv.width, cv.height);
+  const bands = 64, ny = ctx.sampleRate / 2;
+  for (let b = 0; b < bands; b++) {
+    const f0 = 30 * (ny / 30) ** (b / bands), f1 = 30 * (ny / 30) ** ((b + 1) / bands);
+    let m = 0; for (let i = Math.floor(f0 / ny * d.length); i <= Math.min(d.length - 1, f1 / ny * d.length); i++) m = Math.max(m, d[i]);
+    const h = m / 255 * cv.height, w = cv.width / bands;
+    c.fillStyle = b < 8 ? '#1f7a41' : b < 40 ? '#2e9e55' : '#7cc495';
+    c.fillRect(b * w + 1, cv.height - h, w - 2, h);
+  }
+}
+
+function meta() {
+  $('#meta').textContent = `${S.bpm} BPM · ${S.bpb}/4`;
+  const bars = S.form.reduce((a, f) => a + f[1], 0);
+  $('#kv').innerHTML = `<span>Length</span><b>${fmt(S.length)} · ${bars} bars</b>
+    <span>Reverb</span><b>${S.rev[0]} s, ${S.rev[1]} Hz</b>
+    <span>Stems</span><b>${stems.length} (${Object.values(S.notes).reduce((a, n) => a + n.length, 0)} notes/hits)</b>`;
+}
+
+$('#mvol').oninput = e => { const v = +e.target.value; $('#mvolv').textContent = `${v} dB`; if (chain) chain.out.gain.value = 10 ** (v / 20); };
+
+// ---------- form editor ----------
+function renderForm() {
+  const tb = $('#form');
+  if (!S) { tb.innerHTML = ''; $('#formtotal').textContent = ''; return; }
+  const secs = S.sections;
+  let bar = 0;
+  tb.innerHTML = form.map((f, i) => {
+    const row = `<tr><td class="idx">${i + 1}</td>
+      <td><span class="swatch" style="background:${color(f.sec)}"></span>
+        <select data-i="${i}" class="fsec">${secs.map(s => `<option ${s === f.sec ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+      <td><input type="number" min="1" max="64" value="${f.n}" data-i="${i}" class="fn" aria-label="Bars"> bars</td>
+      <td class="idx">${fmt(bar * S.bar_sec)}</td>
+      <td style="text-align:right">
+        <button data-a="go" data-i="${i}" title="Go to">▶</button>
+        <button data-a="up" data-i="${i}" title="Up">↑</button>
+        <button data-a="down" data-i="${i}" title="Down">↓</button>
+        <button data-a="dup" data-i="${i}" title="Duplicate">⧉</button>
+        <button data-a="del" data-i="${i}" title="Delete">✕</button></td></tr>`;
+    bar += f.n; return row;
+  }).join('');
+  $('#formtotal').textContent = `${bar} bars · ${fmt(bar * S.bar_sec)}${formDirty ? ' · edited' : ''}`;
+  $('#formnote').style.color = formDirty ? 'var(--lava)' : '';
+}
+
+$('#form').addEventListener('change', e => {
+  const i = +e.target.dataset.i;
+  if (e.target.classList.contains('fsec')) form[i].sec = e.target.value;
+  if (e.target.classList.contains('fn')) form[i].n = Math.max(1, Math.min(64, Math.round(+e.target.value || 1)));
+  formDirty = true; renderForm();
+});
+$('#form').addEventListener('click', e => {
+  const a = e.target.dataset.a, i = +e.target.dataset.i;
+  if (!a) return;
+  if (a === 'go') { const start = form.slice(0, i).reduce((s, f) => s + f.n, 0); seek(start * S.bar_sec); return; }
+  if (a === 'up' && i > 0) [form[i - 1], form[i]] = [form[i], form[i - 1]];
+  else if (a === 'down' && i < form.length - 1) [form[i + 1], form[i]] = [form[i], form[i + 1]];
+  else if (a === 'dup') form.splice(i + 1, 0, { ...form[i] });
+  else if (a === 'del' && form.length > 1) form.splice(i, 1);
+  else return;
+  formDirty = true; renderForm();
+});
+$('#addsec').onclick = () => { if (!S) return; form.push({ sec: S.sections[0], n: 8 }); formDirty = true; renderForm(); };
+
+// ---------- save / render ----------
+async function render(reset) {
+  if (reset && !confirm('Delete all manual edits of this track and re-render the original?')) return;
+  const e = { stems: { ...(edit0.stems || {}) } };
+  if (edit0.form) e.form = edit0.form;
+  for (const n of dirty) {
+    const st = byName[n];
+    e.stems[n] = { g: +st.g.toFixed(4), pan: +st.pan.toFixed(3), rv: +st.rv.toFixed(3), ...(st.mute ? { mute: true } : {}) };
+  }
+  if (formDirty) e.form = form.map(f => [f.sec, f.n]);
+  pause();
+  for (const b of ['#save', '#reset', '#track']) $(b).disabled = true;
+  status('Rendering… usually 20–60 s');
+  $('#log').style.display = 'none';
+  try {
+    const r = await api('/api/render', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ track, edit: reset ? null : e, reset: !!reset }) });
+    if (!r.ok) { status('Render failed: edits were not applied', true); $('#log').textContent = r.log; $('#log').style.display = 'block'; return; }
+    await load(track, true);
+    status(reset ? 'Edits reset, track re-rendered' : 'Saved and re-rendered');
+    const opt = $('#track').selectedOptions[0];
+    opt.textContent = opt.textContent.replace(/ ✎| \(no stems\)/g, '') + (reset ? '' : ' ✎');
+  } catch (err) { status('Error: ' + err.message, true); }
+  finally { for (const b of ['#save', '#reset', '#track']) $(b).disabled = false; }
+}
+$('#save').onclick = () => render(false);
+$('#reset').onclick = () => render(true);
+
+// ---------- wiring ----------
+$('#play').onclick = () => playing ? pause() : play();
+$('#stop').onclick = () => seek(0);
+$('#zoom').oninput = e => { pps = +e.target.value; localStorageSet('zoom', pps); drawTimeline(); drawHead(true); };
+$('#track').onchange = e => {
+  if ((dirty.size || formDirty) && !confirm('There are unsaved edits. Switch tracks without saving?')) { e.target.value = track; return; }
+  load(e.target.value);
+};
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, select, textarea')) return;
+  if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
+  if (e.code === 'Home') seek(0);
+});
+window.addEventListener('beforeunload', e => { if (dirty.size || formDirty) { e.preventDefault(); e.returnValue = ''; } });
+
+pps = +(localStorageGet('zoom') || 14); $('#zoom').value = pps;
+init().catch(err => status('Failed to load: ' + err.message, true));
+</script>
+</body>
+</html>

@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.8.0 - 2026-10-25
+
+### Added
+
+- Added the standalone `procedural-game-music` skill: original game music written as code and rendered
+  offline - a numpy synth engine plus a sampled band from the GeneralUser GS soundfont through
+  tinysoundfont (drum kits, double-tracked guitars, keys, strings, brass, world instruments), sectioned
+  full-length tracks that share one key and tempo grid, per-stem mixing and a local studio page
+  (timeline with piano roll, mixer, form editor, exact re-render of saved edits). Ships an engine
+  template and music brief (`init_project.py`), environment check/setup with a consent-gated,
+  verified soundfont download, stem-level and loudness checks, and model-free tests; the sampled
+  render test runs when `GAME_MUSIC_SF2` points at the soundfont.
+
 ## 1.7.0 - 2026-10-21
 
 ### Added

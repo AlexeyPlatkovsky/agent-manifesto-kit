@@ -131,6 +131,20 @@ generation, key-pose error gates, frame sheets and residual easing, and Blender 
 Mixamo-named rig's pose into a key pose and bake takes back onto the rig. kimodo.cpp, its models and
 Blender are installed separately; `KIMODO_ROOT` and `BLENDER` point at them.
 
+Write and render original game music as code, with a sampled band and a local studio editor:
+
+```bash
+agentkit sync procedural-game-music --provider claude,codex
+python .claude/skills/procedural-game-music/scripts/check_env.py --smoke
+```
+
+The [Procedural Game Music skill](collection/skills/procedural-game-music/SKILL.md) copies an engine
+template into the project (`scripts/init_project.py`): a numpy synth, a sampled band on the GeneralUser GS
+soundfont via tinysoundfont, sectioned full-length tracks on a shared key and tempo grid, and a localhost
+studio page for mixing, restructuring and re-rendering. It also checks and installs the Python toolchain,
+downloads the 32 MB soundfont only after the user agrees, and reports stem levels and loudness. Requires
+Python 3.10+; ffmpeg is optional (OGG studio previews).
+
 Adopt a single skill for Codex:
 
 ```bash

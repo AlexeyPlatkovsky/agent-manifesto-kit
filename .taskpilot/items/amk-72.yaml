@@ -1,0 +1,21 @@
+schema_version: 1
+id: amk-72
+title: Add procedural-game-music skill
+priority: normal
+type: task
+status: done
+created_at: '2026-10-25T14:16:05Z'
+updated_at: '2026-10-25T14:32:26Z'
+tags:
+- music
+- skill
+description: 'Done (1.8.0): standalone procedural-game-music skill - numpy synth + GeneralUser GS soundfont band via tinysoundfont, engine template + music brief (init_project.py), env check/setup with consent-gated pinned soundfont download, stem-level/loudness checks, localhost studio (path allow-list after normalisation, JSON-only same-origin render POST), unknown track names fail. instruction-evaluator: Accept with minor edits after one revision (minors fixed); artifact-acceptance-tester: Accept, its studio/CLI hardening suggestions applied. Skill tests 9/9 with the soundfont; npm test 67 pass / 7 fail, same 7 Windows-environment failures as clean main (python3/npm spawn); lint clean. Local agentkit CLI had no extra skills/agents; user-level non-kit skills declined by the user.'
+dor:
+- User approved creating this task and a new branch; commit and push requested.
+- Source skill, engine and studio from the consumer project inspected; kit authorities loaded.
+dod:
+- collection/skills/procedural-game-music is project-agnostic and installs runnable copies for Claude and Codex.
+- Model-free Python tests and the kit test suite pass; agentkit lint is clean.
+- instruction-evaluator and artifact-acceptance-tester accept the skill.
+- package.json, package-lock.json, CHANGELOG.md and README.md describe 1.8.0.
+created_by: claude

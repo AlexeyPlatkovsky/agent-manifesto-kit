@@ -1,0 +1,4 @@
+interface:
+  display_name: "Procedural Game Music"
+  short_description: "Game music as code: synth + soundfont band, full tracks, studio"
+  default_prompt: "Use $procedural-game-music to compose and render a new track for my game from music_brief.md and check its mix."
