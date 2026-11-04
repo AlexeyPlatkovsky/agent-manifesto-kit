@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.8.0 - 2026-11-04
+
+### Added
+
+- Added the standalone `roadmap` skill: one self-contained Gantt page per project, built from the
+  TaskPilot items, the git history of those files and of commits naming item ids, and an optional plan
+  file (phases, estimates, milestones). `scripts/roadmap.py` provides `init`, `build`, `check` and
+  `path` (standard library only, deterministic output); every project uses the same `en`/`ru`
+  template, stamped into the page as `<meta name="roadmap-template">` with the data as JSON, so a
+  consumer can read it and `check --template-from` detects template drift. Includes a post-commit
+  hook, the format reference and model-free tests.
+
 ## 1.7.0 - 2026-10-21
 
 ### Added

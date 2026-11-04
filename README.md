@@ -131,6 +131,17 @@ generation, key-pose error gates, frame sheets and residual easing, and Blender 
 Mixamo-named rig's pose into a key pose and bake takes back onto the rig. kimodo.cpp, its models and
 Blender are installed separately; `KIMODO_ROOT` and `BLENDER` point at them.
 
+Give any project a roadmap page from its TaskPilot items and git history:
+
+```bash
+agentkit sync roadmap --provider claude,codex
+```
+
+The [Roadmap skill](collection/skills/roadmap/SKILL.md) installs `scripts/roadmap.py` (`init`, `build`,
+`check`, `path`), one shared template (English and Russian), a post-commit hook and the format
+reference. The generated page is self-contained and carries its template id and data, so tools such as
+Astro Preview can list it, and `check --template-from` reports a project whose template drifted.
+
 Adopt a single skill for Codex:
 
 ```bash
