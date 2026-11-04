@@ -1,0 +1,4 @@
+interface:
+  display_name: "Roadmap"
+  short_description: "One shared Gantt roadmap page per project from TaskPilot items and git history"
+  default_prompt: "Use $roadmap to give this project a roadmap, rebuild it after item changes and check that it is consistent."

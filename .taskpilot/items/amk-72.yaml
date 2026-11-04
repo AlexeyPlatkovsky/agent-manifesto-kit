@@ -1,0 +1,17 @@
+schema_version: 1
+id: amk-72
+title: Add the roadmap skill
+priority: normal
+type: feature
+status: in_progress
+created_at: '2026-11-04T09:12:26Z'
+updated_at: '2026-11-04T09:12:26Z'
+description: 'Goal: ship the portable roadmap skill (TaskPilot items + git history -> one shared Gantt page; roadmap.py init/build/check/path, en/ru template, hook, format doc, unit tests) as a standalone collection skill, version 1.8.0. Scope: collection/skills/roadmap, README, NOTICE, CHANGELOG, package version, a package test. Non-goals: Astro Preview''s Roadmaps tab (lives in astro-preview).'
+dor:
+- The skill exists and passes its own tests in astro-preview (.claude/skills/roadmap) and in a real second project (Last Man Iso).
+- The latest released version is 1.7.0 (npm and tag); a minor bump targets 1.8.0.
+dod:
+- collection/skills/roadmap holds SKILL.md, scripts, assets, references and agents/openai.yaml; agentkit lint passes.
+- agentkit list shows roadmap; sync installs complete runnable copies for both providers (test/roadmap.test.js).
+- package.json, package-lock.json and CHANGELOG.md say 1.8.0; README documents the skill (original work, so no NOTICE entry).
+- npm test passes; instruction-evaluator accepts the skill.

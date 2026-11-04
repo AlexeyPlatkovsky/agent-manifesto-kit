@@ -1,0 +1,9 @@
+schema_version: 1
+id: amk-73
+title: Ingest the roadmap skill, bump 1.8.0, document and test
+priority: normal
+type: task
+status: in_progress
+created_at: '2026-11-04T09:12:30Z'
+updated_at: '2026-11-04T09:12:30Z'
+parent_id: amk-72
