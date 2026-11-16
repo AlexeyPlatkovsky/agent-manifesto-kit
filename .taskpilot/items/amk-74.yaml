@@ -1,0 +1,18 @@
+schema_version: 1
+id: amk-74
+title: Add the art-direction-pass skill
+priority: normal
+type: feature
+status: in_progress
+created_at: '2026-11-16T15:46:51Z'
+updated_at: '2026-11-16T15:46:51Z'
+description: 'Goal: ship the portable art-direction-pass skill (concept-art-driven art direction pass for an existing game: captures, direction docs, gap report, blind A/B iterations, codify) as a standalone collection skill, version 1.8.1, and rename version parts to release.major.minor. Scope: collection/skills/art-direction-pass, a package test, README, CHANGELOG, package version, AGENTS.md versioning rule, docs/roadmap.md, bump-version.mjs naming. Non-goals: engine integrations beyond the Godot 4 template and Three.js notes; repairing the version-branch script''s branch prefixes.'
+dor:
+- The source skill exists at ~/.claude/skills/art-direction-pass (the user's own work, so no NOTICE entry).
+- The latest released version is 1.8.0 (npm and tag v1.8.0); under release.major.minor a new skill bumps the last digit, targeting 1.8.1.
+dod:
+- collection/skills/art-direction-pass holds SKILL.md, agents/openai.yaml, assets (presets.json, visual_capture.gd) and scripts (compare.py, metrics.py, test_tools.py); agentkit lint passes.
+- agentkit list shows art-direction-pass; sync installs complete copies for both providers and the npm payload carries them without bytecode (test/art-direction-pass.test.js).
+- AGENTS.md, docs/roadmap.md and bump-version.mjs name version parts release.major.minor, with the npm command mapping.
+- package.json, package-lock.json and CHANGELOG.md say 1.8.1; README documents the skill.
+- npm test passes; instruction-evaluator and artifact-acceptance-tester findings at Blocking/Major level are resolved.
