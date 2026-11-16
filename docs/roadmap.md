@@ -2,8 +2,10 @@
 
 ## Release Stance
 
-The kit follows semantic versioning. `package.json` declares the release version and the
-release workflow publishes that exact version. The repository is in ongoing post-1.0 feature
+The kit uses SemVer-shaped `X.Y.Z` versions with its own part names and bump policy,
+`release.major.minor`, defined in the root contract (from 1.8.1 a new skill bumps the last
+digit). `package.json` declares the release version and the release workflow publishes that
+exact version. The repository is in ongoing post-1.0 feature
 development; release history is recorded in `CHANGELOG.md`.
 
 A release groups its changes under one version. Review corrections and follow-ups in an

@@ -4,6 +4,26 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.8.1 - 2026-11-16
+
+### Added
+
+- Added the standalone `art-direction-pass` skill: an iterative art direction pass that brings an
+  existing game's visuals closer to its concept art (deterministic preset captures, per-category
+  direction documents, a gap report, one-group-at-a-time iterations kept or reverted on a blind A/B
+  reviewer's verdict) and codifies the result as a graphics profile, material presets and asset
+  checklists. Ships a Godot 4 capture autoload and preset template, `compare.py` (comparison sheets,
+  per-preset blind pairs whose mapping is never written inside the reviewer's folder) and
+  `metrics.py` (luminance, saturation, palette), with model-free tests that skip without Pillow and
+  numpy. The capture autoload records GPU and CPU render time per preset with vsync off.
+
+### Changed
+
+- Version parts are now named `release.major.minor`, effective from 1.8.1: `minor` (last digit) for
+  fixes and backward-compatible collection content such as new skills, `major` for new or changed
+  consumer-facing CLI commands and adoption workflows, `release` for breaking changes; the highest
+  bump in a release wins.
+
 ## 1.8.0 - 2026-11-04
 
 ### Added

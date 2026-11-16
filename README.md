@@ -142,6 +142,18 @@ The [Roadmap skill](collection/skills/roadmap/SKILL.md) installs `scripts/roadma
 reference. The generated page is self-contained and carries its template id and data, so tools such as
 Astro Preview can list it, and `check --template-from` reports a project whose template drifted.
 
+Run an art direction pass on a game, bringing its look closer to the concept art:
+
+```bash
+agentkit sync art-direction-pass --provider claude,codex
+```
+
+The [Art Direction Pass skill](collection/skills/art-direction-pass/SKILL.md) audits the game against its
+concepts, iterates on lighting, atmosphere and materials with deterministic captures and a blind A/B
+reviewer, and codifies the result as per-category art guidelines, a graphics profile and material
+presets. It ships a Godot 4 capture autoload, a camera preset template and Python tools for comparison
+sheets, blind pairs and image metrics (Pillow and numpy).
+
 Adopt a single skill for Codex:
 
 ```bash
