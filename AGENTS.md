@@ -170,9 +170,15 @@ Use `artifact-acceptance-tester` after creating or materially changing skills, a
 - For product output, package contents, release workflow, or published metadata changes, keep
   `package.json`, `package-lock.json`, and `CHANGELOG.md` aligned in the same task unless the
   user explicitly defers release bookkeeping. Alignment does not require a new version bump.
-- Version the release, not each task, commit, or review round. Select semantic versioning
-  against the latest released version for the combined release scope: patch for fixes,
-  minor for new features, and major for breaking changes.
+- Version the release, not each task, commit, or review round. The project names the three
+  version parts `release.major.minor` (not SemVer's `major.minor.patch`). Select the bump
+  against the latest released version for the combined release scope: `minor` (last digit)
+  for fixes and backward-compatible collection content such as new or updated skills, agents,
+  and bundles; `major` (middle digit) for new or changed consumer-facing CLI commands and
+  adoption workflows; `release` (first digit) for breaking changes, including a breaking
+  change to any collection asset. The highest bump in the combined scope wins. npm commands
+  keep SemVer names: project `minor` is `npm version patch`, `major` is `npm version minor`,
+  and `release` is `npm version major`.
 - Once a PR targets an unreleased version, code-review fixes, cleanup, validation repairs,
   and documentation follow-ups keep that version and amend its existing changelog section.
   Do not run version-bumping commands for those follow-ups unless the user explicitly

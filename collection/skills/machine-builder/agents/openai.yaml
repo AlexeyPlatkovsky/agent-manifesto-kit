@@ -1,0 +1,4 @@
+interface:
+  display_name: "Machine Builder"
+  short_description: "Spec-driven, validated game-ready 3D models of mechs and vehicles in Blender"
+  default_prompt: "Use $machine-builder to design and build this machine as a validated, rigged Blender model from a spec, with LODs, materials and an export contract."

@@ -9,10 +9,11 @@ const branch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: packageRoot, e
 const pkgPath = new URL('../../package.json', import.meta.url);
 const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
 
+// Version parts are named release.major.minor (see AGENTS.md), not major.minor.patch.
 let bumpType;
-if (branch.startsWith('bugfix/')) bumpType = 'patch';
-else if (branch.startsWith('feature/')) bumpType = 'minor';
-else if (branch.startsWith('release/')) bumpType = 'major';
+if (branch.startsWith('bugfix/')) bumpType = 'minor';
+else if (branch.startsWith('feature/')) bumpType = 'major';
+else if (branch.startsWith('release/')) bumpType = 'release';
 else process.exit(0);
 
 const suffix = branch.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
@@ -56,13 +57,13 @@ try {
 const localVersion = parseVersion(pkg.version);
 if (localVersion) baselines.push(localVersion);
 
-const [major, minor, patch] = baselines.sort(compareVersion).at(-1) ?? [0, 0, 0];
-let next = [major, minor, patch];
+const [release, major, minor] = baselines.sort(compareVersion).at(-1) ?? [0, 0, 0];
+let next = [release, major, minor];
 
 switch (bumpType) {
-  case 'patch': next = [major, minor, patch + 1]; break;
-  case 'minor': next = [major, minor + 1, 0];    break;
-  case 'major': next = [major + 1, 0, 0];         break;
+  case 'minor':   next = [release, major, minor + 1]; break;
+  case 'major':   next = [release, major + 1, 0];     break;
+  case 'release': next = [release + 1, 0, 0];         break;
 }
 
 const newVersion = `${next.join('.')}-${suffix}.0`;

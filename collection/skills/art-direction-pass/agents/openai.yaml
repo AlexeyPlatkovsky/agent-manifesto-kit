@@ -1,0 +1,4 @@
+interface:
+  display_name: "Art Direction Pass"
+  short_description: "Bring a game's visuals closer to its concept art and codify the look"
+  default_prompt: "Use $art-direction-pass to audit this game against its concept art, iterate on the look with blind reviews and codify the result as art guidelines and presets."

@@ -1,0 +1,9 @@
+{
+  "scene": "res://levels/test_level.tscn",
+  "seed": 1337,
+  "settle_frames": 90,
+  "presets": [
+    {"name": "gameplay_wide", "pos": [0, 30, 25], "target": [0, 0, 0], "fov": 45},
+    {"name": "architecture_close", "pos": [8, 6, 10], "target": [5, 2, 2], "fov": 40}
+  ]
+}
