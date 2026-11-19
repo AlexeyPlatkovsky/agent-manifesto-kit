@@ -227,7 +227,7 @@ Write `docs/art/iterations/final.md`: before/after sheets for every preset, top 
 
 ## Templates
 
-Copy `assets/` templates into `tools/visual/` and adapt them to the project. Run `scripts/` tools from the installed skill directory.
+Copy `assets/` templates into `tools/visual/` and adapt them to the project. Invoke the `scripts/` tools by path from the project root, so relative outputs land in the project.
 
 - `assets/presets.json` — scene, seed, settle frames and camera presets (`name`, `pos`, `target`, `fov`; `ortho: true` with `size` for orthographic cameras).
 - `assets/visual_capture.gd` — Godot 4 autoload `VisualCapture`. Run:

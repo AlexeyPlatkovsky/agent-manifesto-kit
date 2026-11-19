@@ -1,0 +1,4 @@
+interface:
+  display_name: "Concept Scene Builder"
+  short_description: "Rebuild a concept's game environment from a data-driven asset kit and layout"
+  default_prompt: "Use $concept-scene-builder to rebuild this concept image as a game environment scene from a reusable asset kit and a layout file."
