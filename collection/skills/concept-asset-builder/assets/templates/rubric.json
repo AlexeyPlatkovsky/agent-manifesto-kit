@@ -1,0 +1,50 @@
+{
+ "_note": "Reviewer scores every criterion 0-10; tools/codex_review.sh computes the weighted total. Weights sum to 1. Keep the generic criteria; replace the parts_* criteria with the object's own key parts (what to check in each).",
+ "criteria": [
+  {
+   "id": "shape",
+   "weight": 0.15,
+   "what": "silhouette, proportions, rounded edges (no sharp edges), parts sit correctly (no intersections/floating)"
+  },
+  {
+   "id": "paint",
+   "weight": 0.1,
+   "what": "base colours and values like the concept, material zones, seams"
+  },
+  {
+   "id": "parts_main",
+   "weight": 0.12,
+   "what": "<the object's main feature, e.g. glowing window / slot box / door>"
+  },
+  {
+   "id": "parts_secondary",
+   "weight": 0.13,
+   "what": "<other key parts: shapes, depth, crisp openings, materials>"
+  },
+  {
+   "id": "chips",
+   "weight": 0.15,
+   "what": "chip amount/size distribution per zone and side (description table), ragged flakes with rim, no blobs/peas/stamps, large flakes on every side"
+  },
+  {
+   "id": "edge_wear",
+   "weight": 0.1,
+   "what": "edges and protruding parts worn first: broken primer strips, metal core"
+  },
+  {
+   "id": "drips",
+   "weight": 0.15,
+   "what": "rust drip clusters only from real sources, wide stain + strands, bell lengths 3-10 cm, irregular"
+  },
+  {
+   "id": "grime",
+   "weight": 0.05,
+   "what": "grime/mould only where water and dirt collect (bottom), nowhere else"
+  },
+  {
+   "id": "style",
+   "weight": 0.05,
+   "what": "consistency with the scene style rules (scene_style.md): would it sit next to the approved objects of the scene"
+  }
+ ]
+}

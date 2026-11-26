@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.8.2 - 2026-11-26
+
+### Added
+
+- Added the standalone `concept-asset-builder` skill: builds one game object from its concept sheet to
+  concept fidelity in Blender and/or Three.js, in the shared style of its scene. A spec measured from the
+  concept's pixels (`measure_silhouette.py`), a numeric wear description per zone, part and side backed by
+  calibrated, scale-normalised wear measurements (`wear_stats.py`), builder agents in a frozen shared studio,
+  and an independent reviewer of another model (`codex_review.sh`, Codex CLI, with a subagent fallback)
+  that scores a weighted rubric, sees its previous review and the builder's decisions log. An owner
+  checkpoint on the scene's pilot object feeds a scene style file used by every later object. Ships
+  `init_workspace.sh`, Blender/Three.js/Godot studio templates, baked GLB export with per-part baking,
+  texture generation (`gen_texture.sh`), templates (builder brief, rubric, zones, wear description, scene
+  style), the shared wear language, field lessons from real runs and example wear implementations, with
+  model-free tests that skip without Pillow, numpy or scipy.
+
+### Changed
+
+- `concept-scene-builder` gains the object conveyor: a `build: asset` kit type built with
+  `concept-asset-builder`, recursive decomposition of large objects into parts with an `assembly` block,
+  a pilot object approved by the owner whose remarks become the scene style file, the remaining objects
+  in parallel, and assembly plus the look pass only after the objects pass their reviews.
+
 ## 1.8.1 - 2026-11-16
 
 ### Added

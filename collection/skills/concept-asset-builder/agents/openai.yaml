@@ -1,0 +1,4 @@
+interface:
+  display_name: "Concept Asset Builder"
+  short_description: "Build one game object to concept fidelity with measured spec, wear description and an independent review loop"
+  default_prompt: "Use $concept-asset-builder to build this object from its concept sheet in Blender and/or Three.js, as close to the concept as possible and in the scene's style."

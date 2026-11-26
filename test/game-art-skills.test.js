@@ -11,7 +11,13 @@ const SKILLS = {
   "concept-scene-builder": ["references/field-lessons.md", "scripts/grid_overlay.py", "scripts/crop.py",
     "scripts/blend.py", "scripts/test_tools.py", "agents/openai.yaml"],
   "machine-builder": ["assets/spec.example.yaml", "scripts/validate.py", "agents/openai.yaml"],
+  "concept-asset-builder": ["references/wear-language.md", "references/field-lessons.md",
+    "references/examples/postbox_blender.py", "assets/templates/agent_brief.md", "assets/templates/rubric.json",
+    "assets/templates/zones.json", "scripts/init_workspace.sh", "scripts/wear_stats.py", "scripts/codex_review.sh",
+    "scripts/measure_silhouette.py", "scripts/blender/studio.py", "scripts/threejs/studio.js", "scripts/godot/capture.gd",
+    "scripts/test_tools.py", "agents/openai.yaml"],
 };
+const PY_TESTED = new Set(["concept-scene-builder", "concept-asset-builder"]);
 const run = (args) => execFileSync(process.execPath, [join(ROOT, "dist/cli.js"), ...args], { encoding: "utf8" });
 const python = (args) => execFileSync("python3", ["-B", ...args], {
   encoding: "utf8", env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" }, stdio: "pipe",
@@ -35,7 +41,7 @@ for (const [name, resources] of Object.entries(SKILLS)) {
             ? source.replaceAll(".claude/skills/", ".agents/skills/") : source;
           assert.equal(readFileSync(join(installed, resource), "utf8"), expected, resource);
         }
-        if (name === "concept-scene-builder") python(["-m", "unittest", "discover", "-s", join(installed, "scripts")]);
+        if (PY_TESTED.has(name)) python(["-m", "unittest", "discover", "-s", join(installed, "scripts")]);
         else python(["-c", "import ast,sys; ast.parse(open(sys.argv[1]).read())", join(installed, "scripts/validate.py")]);
       }
     } finally { rmSync(dir, { recursive: true, force: true }); }

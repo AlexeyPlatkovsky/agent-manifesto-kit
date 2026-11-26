@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Object — three.js</title>
+  <style>html,body{margin:0;height:100%;overflow:hidden;background:#EDE5E1}canvas{display:block}</style>
+</head>
+<body>
+<script type="module">
+  // Frozen entry point: the studio (camera, light, tone mapping, background) is shared by all objects of the scene.
+  // The builder implements threejs/model.js: export async function buildModel(spec) -> THREE.Object3D
+  import { loadSpec, createStudio, label } from './studio.js';
+  import { buildModel } from './model.js';
+  const spec = await loadSpec();
+  const studio = createStudio(spec);
+  const obj = await buildModel(spec);
+  studio.scene.add(obj);
+  studio.frame(obj);
+  label(`${spec.name} · three.js`, studio.view);
+  studio.start();
+</script>
+</body>
+</html>
