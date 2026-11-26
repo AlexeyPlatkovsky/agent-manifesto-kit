@@ -1,6 +1,6 @@
 ---
 name: concept-scene-builder
-description: Build a game environment scene (terrain, water, roads, vegetation, rocks, buildings, lighting; no units or vehicles) that matches a concept image or screenshot as closely as possible in style and layout, from a reusable asset kit and data-driven layout. Any genre, grid or free-form. Godot or Three.js + Blender. Use when a game needs its environment rebuilt from a concept image or screenshot.
+description: Build a game environment scene (terrain, water, roads, vegetation, rocks, buildings, props, lighting; no units or vehicles) that matches a concept image or screenshot as closely as possible in style and layout, from a reusable asset kit and data-driven layout. Decomposes the scene into objects and builds the hero/mid objects through an object conveyor (a pilot object approved by the owner, a scene style file, then the rest in parallel via concept-asset-builder), then assembles the scene and runs the look pass. Any genre, grid or free-form. Godot or Three.js + Blender. Use when a game needs its environment rebuilt from a concept image or screenshot.
 ---
 
 # Concept Scene Builder
@@ -18,6 +18,7 @@ Units, mechs, characters and vehicles visible in the concept are NOT built. Igno
 - Python 3 with Pillow and numpy: `python3 -m pip install Pillow numpy`; verify with `python3 -c "import PIL, numpy"`.
 - Godot 4 or Three.js (Node, Playwright for captures), and Blender 4.2 or later for kit assets. Find Blender as `blender` on PATH, the `BLENDER` environment variable or the standard install location (macOS: `/Applications/Blender.app/Contents/MacOS/Blender`) and verify with `--version`; only when none works, build everything in-engine at lower fidelity.
 - A real display/GPU for captures (`--headless` Godot does not render).
+- Optional: the `concept-asset-builder` skill for the object conveyor (5.0): one object to concept fidelity with an independent review loop and a scene style file. Without it, `asset` entries are built as Blender assets.
 - Optional: the `art-direction-pass` skill. It shares the `docs/art/` format, provides `compare.py`, the capture harness and the look pass (Phase 6). Without it, use the fallbacks named in each phase.
 - The skill's resources, installed with it under `.claude/skills/concept-scene-builder/` (other tools use their own skills directory): `scripts/grid_overlay.py`, `scripts/crop.py`, `scripts/blend.py`, `references/field-lessons.md`. Invoke the scripts by path from the project root, so relative outputs land in the project.
 
@@ -104,7 +105,8 @@ Every signature trait must be implemented and verified before the scene counts a
 }
 ```
 
-- `build`: `engine` (tiles or terrain meshes, ground surfaces, grass/scatter, water, road and river surfaces, simple cliffs), `blender` (trees, rocks, buildings, ruins, bridges, complex props), `shader` (surface-only effects).
+- `build`: `engine` (tiles or terrain meshes, ground surfaces, grass/scatter, water, road and river surfaces, simple cliffs), `blender` (trees, rocks, buildings, ruins, bridges, complex props), `shader` (surface-only effects), `asset` (an object the viewer looks at closely — street furniture, machines, signs, shop fronts, hero props: built through the object conveyor, 5.0, with the `concept-asset-builder` skill).
+- Large objects (a shop, a station, a house with a porch) are decomposed: a parent entry with `"parts": ["shop_building", "shop_awning", "shop_shelves", "shop_counter", ...]` and an `assembly` block (part ids with positions/rotations in the parent's metres). Every part is its own kit entry (usually `asset`) and gets its own sheet; decompose recursively until each part is one object a sheet can describe in 5 views.
 - `dimensions`: relative to the tile for grid concepts, in metres for free-form concepts.
 - `category`: terrain / architecture / props / vegetation / vfx — same categories as `art-direction-pass`.
 - Derive the list from the kit sheet AND the scene concept: anything visible in the scene must exist in the kit.
@@ -208,6 +210,15 @@ If the user is present: show signature traits, the kit list, the overlay image, 
 
 ## 5. Phase 4 — Build the kit
 
+### 5.0 Object conveyor (`build: asset`)
+
+Objects the viewer looks at closely are built one by one to concept fidelity with the `concept-asset-builder` skill, in one shared style. The conveyor gets early owner feedback on ONE object and then runs the rest without the owner. Without that skill, build `asset` entries as Blender assets (5.3) and keep the pilot and style-file steps.
+1. **Sheets.** Each `asset` entry needs an asset sheet (5 views + detail on a plain background). Cut it from the kit sheet if there is one; otherwise generate it from the scene crop in the layout and rendering style of an approved sheet (concept-asset-builder 1.2). Keep all sheets of a scene visually consistent (same background, light, weathering language).
+2. **Pilot.** Pick one object of medium complexity with a high screen share and the scene's typical materials (not the simplest, not the hardest). Build it with concept-asset-builder in pilot mode. Show it to the owner (concept | result per view, close-ups); record every remark that generalises into `docs/art/style/<scene>_style.md` (numbered rules with reasons). Iterate until the owner accepts the pilot. Do not start other assets before this: every remark on the pilot would otherwise be repeated on every object. Unattended: build the pilot, record the open questions in `kit.md`, and continue with the style file the pilot's reviews produced.
+3. **Conveyor.** Run the remaining `asset` entries through concept-asset-builder in parallel (one builder agent or session per object and engine, each on its own files), each with: its sheet, the scene style file, the pilot's code as the style library, the shared frozen studio. Each object goes through its own review rounds. Show the owner results in batches with a line-up next to the pilot at true relative scale; new general remarks go into the style file for the next objects (re-run earlier objects only if the owner asks).
+4. **Composite objects.** Build the parts of a decomposed object through the conveyor, then assemble them from the `assembly` block, and check the whole (contact, gaps, scale between parts, defect pass 5.4) before it enters the scene.
+5. Finished assets export as GLB (concept-asset-builder Phase 7: bake per part, join after) into the kit with their kit id; the scene builder places them like any other kit asset.
+
 Before the first iteration of an asset, read its section in `references/field-lessons.md` (rules and recipes from
 real runs: grass, roads, water, trees, buildings, light, performance, porting between engines).
 
@@ -227,7 +238,7 @@ For each asset, up to `max_asset_iterations`:
 5. Run the defect pass (5.4) on the result. Fix what it finds before anything else; never report an iteration that has not passed it.
 6. Log in `docs/art/kit.md`: status (draft / matched / accepted with gaps), remaining differences, which defect checks ran.
 
-For assets with high screen share, also run a fresh blind reviewer (a subagent, or a separate session when the tool has none; reference, close crops, the defect checklist and the render only) before marking them matched; guard its verdict with metrics measured on the same crops (luminance quantiles, hue/value of the region, share of each feature such as dust or cracks, element counts). If the user reviews the renders themselves and asks for no subagents, skip the reviewer, never the defect pass.
+For assets with high screen share, also run a fresh blind reviewer (a subagent, or a separate session when the tool has none; reference, close crops, the defect checklist and the render only) before marking them matched; guard its verdict with metrics measured on the same crops (luminance quantiles, hue/value of the region, share of each feature such as dust or cracks, element counts). `asset` entries get their review loop from concept-asset-builder (5.0) instead. If the user reviews the renders themselves and asks for no subagents, skip the reviewer, never the defect pass.
 
 ### 5.2 Engine-procedural assets
 
@@ -263,6 +274,8 @@ The wide `concept_view` hides defects: an element of a few pixels there can be a
 In the report, say what was checked and what was found; list anything left unfixed instead of calling the asset done.
 
 ## 6. Phase 5 — Assemble the golden scene
+
+Assemble only after the pilot is accepted and the conveyor objects have passed their reviews; the final light/shadow/post pass (Phase 6) happens on the assembled scene, never per object.
 
 1. Build the concept layout with the scene builder.
 2. Capture `concept_view`; make a side-by-side sheet and a 50% blend with the concept.

@@ -1,0 +1,10 @@
+schema_version: 1
+id: amk-77
+title: Ingest concept-asset-builder, add the conveyor to concept-scene-builder, bump 1.8.2, document and test
+priority: normal
+type: task
+status: done
+created_at: '2026-11-26T16:50:02Z'
+updated_at: '2026-11-26T16:57:03Z'
+parent_id: amk-76
+description: 'F: amk-76. Port the skill from ~/.claude/skills/concept-asset-builder to the collection format (Prerequisites, Git, Stop conditions, agents/openai.yaml, model-free script tests), apply the conveyor section to the collection''s concept-scene-builder, add test coverage, README, CHANGELOG 1.8.2, package version.'

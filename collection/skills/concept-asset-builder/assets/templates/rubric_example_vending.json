@@ -1,0 +1,14 @@
+{
+ "_note": "Reviewer scores every criterion 0-10; the script computes the weighted total. Weights sum to 1.",
+ "criteria": [
+  {"id": "shape",        "weight": 0.15, "what": "silhouette, proportions, rounded edges (no sharp edges), parts sit correctly (no intersections/floating)"},
+  {"id": "paint",        "weight": 0.10, "what": "two paint colours (pale front door, darker sides/back), value and saturation like the concept, door seam"},
+  {"id": "window",       "weight": 0.12, "what": "glowing display: cool white glow, two shelves, 6 bottles each with caps and colours, light raised frame with worn edge"},
+  {"id": "front_parts",  "weight": 0.13, "what": "info panel, button/coin panel, pickup flap, small vent: shapes, depth, crisp openings, materials"},
+  {"id": "chips",        "weight": 0.15, "what": "chip amount/size distribution per zone and side (description table), ragged flakes with rim, no blobs/peas/stamps, large flakes on back and sides"},
+  {"id": "edge_wear",    "weight": 0.10, "what": "worn edges first: roof rounding, vertical edges, frames, button housings; broken primer strips, metal core"},
+  {"id": "drips",        "weight": 0.15, "what": "rust drip clusters only from real sources (panel, buttons, flap, vents, frame bottom), wide stain + strands, bell lengths 3-10 cm, irregular"},
+  {"id": "grime",        "weight": 0.05, "what": "olive grime/mould only in the bottom 5-10 cm and on the feet; nowhere else"},
+  {"id": "style",        "weight": 0.05, "what": "consistency with the scene style rules (scene_style.md): would it sit next to the post box from the same scene"}
+ ]
+}

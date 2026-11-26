@@ -1,0 +1,10 @@
+{
+ "_note": "Template: replace height_m, the bands (metres from the ground, every view) and front_rects (x from the silhouette centre, front view only) with the object's own zones; calibrate chip/rust/grime by overlaying the masks on the crops. See zones_example_vending.json for a filled example.",
+ "height_m": 1.0,
+ "bands": {"bottom": [0.0, 0.1], "lower": [0.1, 0.4], "middle": [0.4, 0.75], "upper": [0.75, 1.0]},
+ "front_rects": {},
+ "chip": {"dL": 10, "min_L": 55, "max_C": 38, "window_m": 0.08},
+ "rust": {"mode": "dark"},
+ "grime": {"hue": [86, 130], "min_C": 10, "max_L": 62},
+ "exclude_emissive": false
+}

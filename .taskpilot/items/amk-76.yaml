@@ -1,0 +1,18 @@
+schema_version: 1
+id: amk-76
+title: Add the concept-asset-builder skill and the object conveyor
+priority: normal
+type: feature
+status: in_progress
+created_at: '2026-11-26T16:50:01Z'
+updated_at: '2026-11-26T16:50:01Z'
+description: 'Goal: ship concept-asset-builder (one object from a concept/asset sheet to high fidelity: measured spec, wear description, builder agents + context-free cross-model reviewer with a weighted rubric, owner checkpoint feeding a scene style file, engine transfer) as a standalone collection skill, and add the object conveyor (pilot object, scene style file, parallel objects, recursive decomposition) to concept-scene-builder. Version 1.8.2. Scope: collection/skills/concept-asset-builder, collection/skills/concept-scene-builder, a package test, README, CHANGELOG, package version. Non-goals: a CLI command; running a whole scene through the conveyor.'
+dor:
+- The source skill exists at ~/.claude/skills/concept-asset-builder (the user's own work, built in a session with real runs on a post box and a vending machine; no NOTICE entry).
+- The latest released version is 1.8.1; a new skill and an updated skill bump the last digit, targeting 1.8.2.
+dod:
+- collection/skills/concept-asset-builder holds SKILL.md, agents/openai.yaml, references (wear-language.md, field-lessons.md, examples/), assets/templates and scripts (incl. init_workspace.sh and test_tools.py); agentkit lint passes.
+- collection/skills/concept-scene-builder documents the object conveyor (build type asset, decomposition into parts with an assembly block, pilot + scene style file, parallel objects) and points to concept-asset-builder.
+- agentkit list shows concept-asset-builder; sync installs complete copies for both providers, the script tests pass in the installed copies and the npm payload carries the resources without bytecode (test/game-art-skills.test.js).
+- package.json, package-lock.json and CHANGELOG.md say 1.8.2; README documents the skill and the conveyor.
+- npm test passes.

@@ -168,6 +168,24 @@ parts on an armature from a spec and ships a Blender `validate.py` for collision
 budgets and sockets. Both share the `docs/art/` format with Art Direction Pass; Blender and the game
 engine are installed separately.
 
+Build one object to concept fidelity, and run a scene as an object conveyor:
+
+```bash
+agentkit sync concept-asset-builder concept-scene-builder --provider claude,codex
+```
+
+The [Concept Asset Builder skill](collection/skills/concept-asset-builder/SKILL.md) takes one object
+from its concept sheet to a Blender and/or Three.js asset: a spec measured from the concept's pixels, a
+numeric wear description per part and side, builder agents with a frozen shared studio, and an
+independent reviewer of another model (Codex CLI, with a subagent fallback) scoring a weighted rubric
+with memory of its previous round. The owner's remarks on the scene's pilot object go into a scene style
+file that travels with every later object; baked GLB export and Godot capture carry the asset to other
+engines. Concept Scene Builder uses it for `asset` entries: decompose the scene (large objects into parts),
+build and approve a pilot, then run the remaining objects in parallel before assembly and the look pass.
+It ships a workspace initialiser, silhouette and wear measurement tools (Pillow, numpy, scipy), the
+review and texture-generation scripts, Blender, Three.js and Godot studio templates, and example wear
+implementations.
+
 Adopt a single skill for Codex:
 
 ```bash
