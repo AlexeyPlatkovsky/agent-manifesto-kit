@@ -1,0 +1,18 @@
+schema_version: 1
+id: amk-78
+title: Improve concept-asset-builder after the building run
+priority: normal
+type: feature
+status: in_progress
+created_at: '2026-11-27T15:44:43Z'
+updated_at: '2026-11-27T16:50:35Z'
+description: 'Goal: fold the lessons of the first building built with concept-asset-builder (a two-storey shop) into the skill, version 1.8.3. Scope: wear_stats dark mode with a percentile wall reference and per-view exclusions, overlay_masks.py, extra renders in reviews, camera fit on both axes (Blender and Three.js), measure_silhouette in object coordinates per view, hard owner constraints in the spec, a sheet check for stamped patterns, a large/composite object section, measurement caveats; tests, CHANGELOG, package version. Non-goals: scene assembly; new engines.'
+dor:
+- concept-asset-builder 1.8.2 is released (tag v1.8.2); the shop run (exp4_shop, reviewer 6.99 -> 7.92) exposed the gaps listed in the description; items 1-5 already exist in the user's installed copy.
+- Under release.major.minor, an updated collection skill bumps the last digit, to 1.8.3.
+dod:
+- wear_stats.py supports chip mode dark (percentile wall reference in a wide window) and exclude_rects per view; overlay_masks.py ships; codex_review.sh attaches out/<pipeline>/extra_*.png.
+- Blender render_views.py and threejs/studio.js fit the object on both image axes.
+- measure_silhouette.py reports positions in object coordinates for front/back/left/right (back mirrors x, sides report z).
+- SKILL.md documents hard constraints in the spec, the generated-sheet check for stamped patterns, large/composite objects (extras, plans, performance, expectations) and the measurement saturation caveat; field-lessons record the building run.
+- test_tools.py covers dark mode, exclusions, overlay and view-aware measurement; package.json, package-lock.json and CHANGELOG.md say 1.8.3; npm test passes.

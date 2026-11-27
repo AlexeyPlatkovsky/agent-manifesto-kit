@@ -4,7 +4,11 @@ Usage: python3 tools/measure_silhouette.py <view> --height <m> [--rows 24] [--da
   <view>: front|back|left|right|3q (reference/crops/<view>.png)
 Prints: silhouette bbox, metres per pixel, the width profile (row by row, metres from the ground),
 and the largest dark / bright components (openings, panels, glowing windows, buttons) in metres:
-height range from the ground and x range from the silhouette centre. Read them, then LOOK at the crop
+height range from the ground and the horizontal range in OBJECT coordinates (spec convention: front +Z, +X to the
+object's right as seen from the front): front -> x as in the image; back -> x mirrored (the image's left is +x);
+left view (camera at -X, front on the image's right) -> z = image offset; right view -> z mirrored; 3q -> image
+offset only (not an object axis). Writing back/side positions in image coordinates was a real bug (a mirrored
+back façade). Read them, then LOOK at the crop
 and decide what each component is. Watch out: a contact shadow under the object belongs to the silhouette
 (subtract it from heights), and the top surface seen from the camera adds a little to the height.
 """
@@ -24,12 +28,21 @@ img = M.load(M.ROOT / f"reference/crops/{a.view}.png")
 m = M.mask_of(img)
 y0, y1, x0, x1 = M.bbox(m)
 mpp = a.height / (y1 - y0); cx = (x0 + x1) / 2
+AXIS, SIGN = {"front": ("x", 1), "back": ("x", -1), "left": ("z", 1), "right": ("z", -1)}.get(a.view, ("image x", 1))
+
+
+def span(p0, p1):
+    """image pixel range -> sorted object-axis range in metres"""
+    u0, u1 = SIGN * (p0 - cx) * mpp, SIGN * (p1 - cx) * mpp
+    return min(u0, u1), max(u0, u1)
 print(f"bbox y {y0}-{y1} x {x0}-{x1}; {mpp * 1000:.2f} mm/px; width {(x1 - x0) * mpp:.3f} m; aspect {(x1 - x0) / (y1 - y0):.3f}")
-print("width profile (height from ground m: width m, x-range from centre):")
+print(f"view {a.view}: horizontal positions are {AXIS} in object coordinates" + ("" if AXIS != "image x" else " (3/4 view: image offset, not an object axis)"))
+print("width profile (height from ground m: width m, range):")
 for y in np.linspace(y0, y1 - 1, a.rows).astype(int):
     r = np.where(m[y])[0]
     if len(r):
-        print(f"  {(y1 - y) * mpp:6.3f}: {(r.max() - r.min()) * mpp:.3f}  [{(r.min() - cx) * mpp:+.3f}, {(r.max() - cx) * mpp:+.3f}]")
+        lo, hi = span(r.min(), r.max())
+        print(f"  {(y1 - y) * mpp:6.3f}: {(r.max() - r.min()) * mpp:.3f}  {AXIS} [{lo:+.3f}, {hi:+.3f}]")
 L = img.mean(2)
 for name, mask in (("dark", (L < a.dark) & m), ("bright", (img[..., 1] > a.bright) & (img[..., 2] > a.bright) & m)):
     lab, n = ndi.label(ndi.binary_closing(mask, iterations=2))
@@ -37,4 +50,5 @@ for name, mask in (("dark", (L < a.dark) & m), ("bright", (img[..., 1] > a.brigh
                    key=lambda s: -(s[0].stop - s[0].start) * (s[1].stop - s[1].start))[:8]
     print(f"{name} components (largest first):")
     for s in comps:
-        print(f"  y {(y1 - s[0].stop) * mpp:.3f}-{(y1 - s[0].start) * mpp:.3f} m   x {(s[1].start - cx) * mpp:+.3f}..{(s[1].stop - cx) * mpp:+.3f} m")
+        lo, hi = span(s[1].start, s[1].stop)
+        print(f"  y {(y1 - s[0].stop) * mpp:.3f}-{(y1 - s[0].start) * mpp:.3f} m   {AXIS} {lo:+.3f}..{hi:+.3f} m")

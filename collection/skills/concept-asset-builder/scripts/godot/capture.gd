@@ -106,9 +106,12 @@ func _run() -> void:
 		for i in 6:
 			_place(az, el, d, target)
 			var ys: Array = []
+			var xs: Array = []
 			for p in corners:
-				ys.append(cam.unproject_position(p).y)
-			var ext: float = (ys.max() - ys.min()) / size.y
+				var q := cam.unproject_position(p)
+				ys.append(q.y); xs.append(q.x)
+			# fit BOTH axes: a wide object would otherwise leave the frame sideways
+			var ext: float = maxf((ys.max() - ys.min()) / size.y, (xs.max() - xs.min()) / size.x)
 			d *= ext / fill
 		_place(az, el, d, target)
 		for i in 4:

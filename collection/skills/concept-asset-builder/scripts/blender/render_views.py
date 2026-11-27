@@ -52,8 +52,10 @@ def fit(az_deg):
     d = 5.0
     for _ in range(6):
         place(az_deg, d)
-        ys = [world_to_camera_view(scene, cam, c).y for c in corners]
-        ext = max(ys) - min(ys)
+        pts = [world_to_camera_view(scene, cam, c) for c in corners]
+        ys = [q.y for q in pts]; xs = [q.x for q in pts]
+        # fit BOTH axes: a wide object (a building in 3/4) would otherwise leave the frame sideways
+        ext = max(max(ys) - min(ys), max(xs) - min(xs))
         d *= ext / fill
     place(az_deg, d)
     # centre vertically

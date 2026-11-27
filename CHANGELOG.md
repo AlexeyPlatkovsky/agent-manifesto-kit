@@ -4,6 +4,25 @@ All notable changes to this project are documented in this file.
 
 Maintain this file as part of product or release-affecting work. Release automation publishes the version declared in `package.json`.
 
+## 1.8.3 - 2026-11-27
+
+### Changed
+
+- `concept-asset-builder` learns from its first building (a two-storey shop, reviewer 6.99 → 7.92):
+  - `wear_stats.py` measures wear that is darker than the surface (chip `mode: "dark"`, peeling plaster over
+    a darker layer) against a high-percentile wall reference in a wide window, and drops per-view
+    `exclude_rects` (shop glazing, signs) from every measurement.
+  - New `overlay_masks.py` draws the chip, rust and grime masks over the concept or a render in one command.
+  - `codex_review.sh` attaches the builder's extra renders (`out/<pipeline>/extra_*.png`: interior cutaways,
+    sections, close-ups) so parts the five views cannot show are reviewed too.
+  - The Blender, Three.js and Godot studios fit the object on both image axes, so wide objects stay in frame.
+  - `measure_silhouette.py` reports positions in object coordinates per view (the back mirrors x, the
+    sides report z).
+  - SKILL.md adds a `constraints` block for the owner's hard numbers, a check of generated sheets for
+    stamped wear patterns, a section on large and composite objects (plans, extras, instancing, expected
+    time and scores) and the saturation caveat of coverage measurements; field lessons and the builder
+    brief template follow.
+
 ## 1.8.2 - 2026-11-26
 
 ### Added
