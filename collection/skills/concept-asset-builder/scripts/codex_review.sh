@@ -30,6 +30,8 @@ for v, fr, n in (("front", (0.0, 0.0, 1.0, 0.5), "detail_front_top"), ("front", 
     s = Image.new("RGB", (a.width + b.width + 16, max(a.height, b.height)), "black"); s.paste(a, (0, 0)); s.paste(b, (a.width + 16, 0))
     s.save(f"{base}_{n}.png")
 PY
+# builder's extra renders (e.g. interior cutaways, close-ups) have no concept counterpart: attach them as they are
+for f in "$ROOT/out/$PIPE"/extra_*.png; do [ -f "$f" ] && cp "$f" "$IMG/${TAG}_$(basename "$f")"; done
 STATS_C=$(python3 "$ROOT/tools/wear_stats.py" 2>/dev/null | sed -n '/^\[/,$p')
 STATS_R=$(python3 "$ROOT/tools/wear_stats.py" "$ROOT/out/$PIPE" 2>/dev/null | sed -n '/^\[/,$p')
 PREV_TXT="(none: first round)"; [ -f "$ROOT/reviews/${PIPE}_r${PREV}.md" ] && PREV_TXT=$(cat "$ROOT/reviews/${PIPE}_r${PREV}.md")
@@ -40,7 +42,8 @@ command codex exec -m "$MODEL" -c model_reasoning_effort=high --skip-git-repo-ch
   -C "$ROOT" "${IMGS[@]}" -o "$ROOT/reviews/${TAG}.md" > "$ROOT/reviews/${TAG}.log" 2>&1 <<PROMPT
 You are an independent art reviewer. Your only context is this message and the attached images.
 Images *_<view>.png: LEFT the reference concept, RIGHT a 3D render of the same object (views 3q, front, back, left, right).
-*_detail_*.png: 2x close-ups, LEFT concept, RIGHT render. Lighting and camera are fixed by the studio and NOT under review.
+*_detail_*.png: 2x close-ups, LEFT concept, RIGHT render. *_extra_*.png (if any): the builder's extra renders
+(interior cutaways, close-ups) with no concept counterpart; judge them against the description. Lighting and camera are fixed by the studio and NOT under review.
 
 OBJECT AND WEAR DESCRIPTION (source of truth, Russian):
 $(cat "$ROOT/brief/wear_description.md")

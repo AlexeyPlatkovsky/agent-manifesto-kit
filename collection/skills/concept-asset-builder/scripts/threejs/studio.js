@@ -135,12 +135,14 @@ export function createStudio(spec, container = document.body, opts = {}) {
       camera.position.copy(target).addScaledVector(dir, dist);
       camera.lookAt(target);
       camera.updateMatrixWorld();
-      let ymin = Infinity, ymax = -Infinity;
+      let ymin = Infinity, ymax = -Infinity, xmin = Infinity, xmax = -Infinity;
       for (const c of corners) {
         const p = c.clone().project(camera);
         ymin = Math.min(ymin, p.y); ymax = Math.max(ymax, p.y);
+        xmin = Math.min(xmin, p.x); xmax = Math.max(xmax, p.x);
       }
-      dist *= (ymax - ymin) / (2 * fill);
+      // fit BOTH axes: a wide object (a building in 3/4) would otherwise leave the frame sideways
+      dist *= Math.max(ymax - ymin, xmax - xmin) / (2 * fill);
       // recentre vertically: shift target along camera up by the NDC offset
       const mid = (ymax + ymin) / 2;
       const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * dist;

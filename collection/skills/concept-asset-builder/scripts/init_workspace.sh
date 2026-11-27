@@ -6,7 +6,7 @@ SK="$(cd "$(dirname "$0")" && pwd)"
 W="$1"; C="$2"; STYLE="${3:-}"
 mkdir -p "$W"/{reference/crops,spec,brief,tools,blender,threejs,out,reviews,reports,textures}
 cp "$C" "$W/reference/concept.png"
-cp "$SK"/{metrics.py,sheet.py,wear_stats.py,codex_review.sh,gen_texture.sh,capture.mjs,crop.py,measure_silhouette.py,compare_to.py,composite_godot.py} "$W/tools/"
+cp "$SK"/{metrics.py,sheet.py,wear_stats.py,overlay_masks.py,codex_review.sh,gen_texture.sh,capture.mjs,crop.py,measure_silhouette.py,compare_to.py,composite_godot.py} "$W/tools/"
 chmod +x "$W/tools/"*.sh
 cp "$SK/blender/"{studio.py,render_views.py,bake_export.py} "$W/blender/"
 cp "$SK/threejs/"{studio.js,index.html,model.js} "$W/threejs/"

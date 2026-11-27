@@ -13,7 +13,7 @@ const SKILLS = {
   "machine-builder": ["assets/spec.example.yaml", "scripts/validate.py", "agents/openai.yaml"],
   "concept-asset-builder": ["references/wear-language.md", "references/field-lessons.md",
     "references/examples/postbox_blender.py", "assets/templates/agent_brief.md", "assets/templates/rubric.json",
-    "assets/templates/zones.json", "scripts/init_workspace.sh", "scripts/wear_stats.py", "scripts/codex_review.sh",
+    "assets/templates/zones.json", "scripts/init_workspace.sh", "scripts/wear_stats.py", "scripts/overlay_masks.py", "scripts/codex_review.sh",
     "scripts/measure_silhouette.py", "scripts/blender/studio.py", "scripts/threejs/studio.js", "scripts/godot/capture.gd",
     "scripts/test_tools.py", "agents/openai.yaml"],
 };

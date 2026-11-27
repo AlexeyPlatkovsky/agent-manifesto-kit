@@ -50,6 +50,9 @@ class ToolsTest(unittest.TestCase):
             for x in range(x0 + 40, x0 + 52):
                 for y in range(100, 116):
                     px[x, y] = (226, 205, 176)
+            for x in range(x0 + 20, x0 + 35):  # a dark opening left of the centre, for view-aware measurement
+                for y in range(60, 80):
+                    px[x, y] = (40, 40, 40)
             self.boxes[v] = [x0, 20, x0 + 100, 260]
         self.concept = self.dir / "sheet.png"
         sheet.save(self.concept)
@@ -101,6 +104,47 @@ class ToolsTest(unittest.TestCase):
         res = json.loads((self.ws / "out/wear_stats_concept.json").read_text())
         self.assertGreater(res["front"]["all"]["chip_pct"], 0.5)
         self.assertEqual(res["front"]["all"]["chips"]["count"], 1)
+
+    def test_measure_silhouette_uses_object_coordinates_per_view(self):
+        def first_dark(view):
+            out = run(sys.executable, "-B", "tools/measure_silhouette.py", view, "--height", "2.0", cwd=self.ws).stdout
+            line = out.split("dark components")[1].splitlines()[1]
+            axis, rng = line.split("m")[1].split()[0], line.split()[-2]
+            return axis, float(rng.split("..")[0]), float(rng.split("..")[1])
+        # the opening sits left of the image centre: front -> -x, back -> +x (mirrored), left -> -z, right -> +z
+        ax, lo, hi = first_dark("front"); self.assertEqual(ax, "x"); self.assertLess(hi, 0)
+        ax, lo, hi = first_dark("back"); self.assertEqual(ax, "x"); self.assertGreater(lo, 0)
+        ax, lo, hi = first_dark("left"); self.assertEqual(ax, "z"); self.assertLess(hi, 0)
+        ax, lo, hi = first_dark("right"); self.assertEqual(ax, "z"); self.assertGreater(lo, 0)
+
+    @unittest.skipUnless(HAVE_SCIPY, "scipy is required")
+    def test_dark_mode_finds_peeling_and_exclusions_remove_it(self):
+        wall = Image.new("RGB", (100, 240), BG)
+        wp = wall.load()
+        for x in range(10, 90):
+            for y in range(40, 240):
+                wp[x, y] = (232, 200, 158)  # light stucco
+        for x in range(25, 55):
+            for y in range(90, 140):
+                wp[x, y] = (196, 146, 100)  # darker exposed plaster
+        wall.save(self.ws / "reference/crops/front.png")
+        zones = json.loads((self.ws / "reference/zones.json").read_text())
+        zones.update({"height_m": 2.0, "bands": {"all": [0.0, 2.0]},
+                      "chip": {"mode": "dark", "dL": 8, "min_L": 50, "min_C": 15, "max_C": 60, "window_m": 0.8, "ref_pct": 80}})
+        (self.ws / "reference/zones.json").write_text(json.dumps(zones))
+        run(sys.executable, "-B", "tools/wear_stats.py", cwd=self.ws)
+        peel = json.loads((self.ws / "out/wear_stats_concept.json").read_text())["front"]["all"]["chip_pct"]
+        self.assertGreater(peel, 5.0)  # the patch is ~9% of the wall
+        zones["exclude_rects"] = {"front": [[-1.0, 1.0, 0.0, 2.0]]}
+        (self.ws / "reference/zones.json").write_text(json.dumps(zones))
+        run(sys.executable, "-B", "tools/wear_stats.py", cwd=self.ws)
+        self.assertNotIn("all", json.loads((self.ws / "out/wear_stats_concept.json").read_text())["front"])
+
+    @unittest.skipUnless(HAVE_SCIPY, "scipy is required")
+    def test_overlay_masks_writes_an_image(self):
+        run(sys.executable, "-B", "tools/overlay_masks.py", "out/overlay.png", "reference/crops", "front,back", cwd=self.ws)
+        im = Image.open(self.ws / "out/overlay.png")
+        self.assertGreater(im.width, im.height)
 
     def test_sheet_builds_concept_render_pairs(self):
         (self.ws / "out/blender").mkdir(parents=True)

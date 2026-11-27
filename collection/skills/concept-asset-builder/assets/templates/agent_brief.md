@@ -16,7 +16,8 @@ pipeline; never touch its files or anything outside the workspace.
 
 ## Inputs (read only)
 - `reference/concept.png`, `reference/crops/{3q,front,back,left,right,detail}.png` — look at them at 2x.
-- `spec/object.json` — measured geometry, palette, cameras. It is a draft: if you find a clear error, do not edit it;
+- `spec/object.json` — measured geometry, palette, cameras. Its `constraints` block holds the owner's hard numbers:
+  they always win over the sheet. The measured rest is a draft: if you find a clear error, do not edit the spec;
   log the deviation in `reviews/<PIPELINE>_decisions.md` and apply it in your code.
 - `brief/wear_description.md` — numeric target per zone, part and side (source of truth for the surface).
 - `brief/scene_style.md` — scene style rules (mandatory). `brief/rubric.json` — how the reviewer scores you.
@@ -43,7 +44,9 @@ Blender (x, -z, y)); finish with `studio.setup(SPEC); studio.save(ROOT, "object"
 ## Process
 1. Study the concept, spec, description, style. Write your plan into the report: parts, materials, how you do wear.
 2. Geometry (all edges rounded, nothing intersects or floats) → materials → wear → render 5 views → self-check
-   (sheets, 2x close-ups of every part, measurements, IoU/ΔE).
+   (sheets, 2x close-ups of every part, `tools/overlay_masks.py` on your renders, measurements, IoU/ΔE).
+   Render what the 5 views cannot show (interior cutaways, sections, close-ups) to `out/<PIPELINE>/extra_*.png`;
+   the reviewer receives them.
 3. Keep `reviews/<PIPELINE>_decisions.md` up to date (the reviewer reads it).
 4. Review rounds 1..<N> with fixes after each; stop early at a weighted score ≥ <TARGET>. After the last round only
    obvious small fixes.

@@ -7,9 +7,11 @@ Config: reference/zones.json
   front_rects: {name: [x0, x1, y0, y1]}  metres, x from the silhouette centre; front view only
   chip: {dL, min_L, max_C, window_m}     chip = lighter than the local paint by dL, L > min_L, chroma < max_C
         or {mode: "hue", paint_hue: [h0, h1], neutral_C, min_L, max_C}   for light paint: chip = not the paint hue
+        or {mode: "dark", dL, min_L, min_C, max_C, window_m}   peeling over a darker layer (plaster): darker than the wall
   rust: {mode: "dark"|"hue", hue: [h0, h1], min_C, dL}  hue mode: orange-brown hue range (for non-red paint)
   grime: {hue: [h0, h1], min_C, max_L}   olive grime
   exclude_emissive: true                 drop the glowing window (and what is inside it) from all measurements
+  exclude_rects: {view: [[x0, x1, y0, y1], ...]}   metres; areas that are not surface (glazing, signs) per view
 All images are resampled so the silhouette is 527 px tall; windows are in metres; vertical components longer
 than 0.2 m are dropped from rust (edges/grooves, not drips).
 """
@@ -35,6 +37,15 @@ def normalise(img):
     return np.asarray(im).astype(np.float32)
 
 
+def up(a, shape):
+    """bilinear upsample of a downscaled reference back to full size (block upsampling shifted the chip counts)"""
+    z = ndi.zoom(a, (shape[0] / a.shape[0], shape[1] / a.shape[1]), order=1)
+    out = np.empty(shape, z.dtype); h, w = min(shape[0], z.shape[0]), min(shape[1], z.shape[1])
+    out[:h, :w] = z[:h, :w]; out[h:, :] = out[h - 1:h, :] if h < shape[0] else out[h:, :]
+    out[:, w:] = out[:, w - 1:w] if w < shape[1] else out[:, w:]
+    return out
+
+
 def masks(img, mpp, sil):
     lab = M.srgb_to_lab(img); L, a, b = lab[..., 0], lab[..., 1], lab[..., 2]
     C = np.hypot(a, b); hue = np.degrees(np.arctan2(b, a)) % 360
@@ -42,8 +53,25 @@ def masks(img, mpp, sil):
     Lloc = ndi.median_filter(L, size=win)
     ch = Z.get("chip", {}); dL, minL, maxC = ch.get("dL", 10), ch.get("min_L", 55), ch.get("max_C", 38)
     # chips can be larger than the rust window: compare with a wider (8 cm) paint neighbourhood
-    Lchip = ndi.median_filter(L, size=max(7, int(round(ch.get("window_m", 0.08) / mpp)) | 1))
+    if ch.get("mode") == "dark":
+        Lchip = Lloc  # the dark mode builds its own percentile reference below
+    else:
+        # chips can be larger than the rust window: compare with a wider paint neighbourhood (at 1/k scale if wide)
+        wpx = ch.get("window_m", 0.08) / mpp
+        kk = max(1, int(np.ceil(wpx / 60)))  # full resolution up to a 60 px window (keeps calibrated numbers)
+        Lchip = ndi.median_filter(L[::kk, ::kk], size=max(3, int(round(wpx / kk)) | 1))
+        Lchip = up(Lchip, L.shape) if kk > 1 else Lchip
     chip = (L > np.minimum(Lloc, Lchip) + dL) & (L > minL) & (C < maxC)
+    if ch.get("mode") == "dark":
+        # peeling plaster / paint over a DARKER layer: compare with the intact wall = a high percentile of L in a wide
+        # window (when peeling covers a third of the wall the median itself is dragged down); computed at 1/4 scale
+        # downscale so the window stays <= ~25 px: percentile filters cost O(window^2) per pixel
+        win_px = ch.get("window_m", 1.0) / mpp
+        k = max(4, int(np.ceil(win_px / 25)))
+        win = max(3, int(round(win_px / k)) | 1)
+        ref = ndi.percentile_filter(L[::k, ::k], ch.get("ref_pct", 80), size=win)
+        ref = up(ref, L.shape)
+        chip = (L < ref - dL) & (L > minL) & (C > ch.get("min_C", 0)) & (C < maxC)
     if ch.get("mode") == "hue":
         # light paint: chips are not much lighter, they differ by hue (warm/neutral primer vs the paint hue)
         ph0, ph1 = ch["paint_hue"]
@@ -70,6 +98,11 @@ def masks(img, mpp, sil):
             if win_m.any():
                 ys, xs = np.where(win_m); win_m[ys.min():ys.max() + 1, xs.min():xs.max() + 1] = True
             keep &= ~win_m
+    for xa, xb, ya, yb in Z.get("exclude_rects", {}).get(VIEW, []):
+        # per-view rectangles (metres, x from the silhouette centre) that are not surface: glazing, signs
+        ys, xs = np.where(sil)
+        y1, cx = ys.max() + 1, (xs.min() + xs.max() + 1) / 2
+        keep[max(0, int(y1 - yb / mpp)):int(y1 - ya / mpp), max(0, int(cx + xa / mpp)):int(cx + xb / mpp)] = False
     lab_, n = ndi.label(rust)
     for i, sl in enumerate(ndi.find_objects(lab_), 1):
         if sl is not None and (sl[0].stop - sl[0].start) * mpp > 0.20:
@@ -106,6 +139,7 @@ for v in M.VIEWS:
         continue
     img = normalise(M.load(p)); sil = M.mask_of(img); y0, y1, x0, x1 = M.bbox(sil); mpp = H / (y1 - y0)
     sil = ndi.binary_erosion(sil, iterations=3)
+    VIEW = v
     chip, rust, grime, keep = masks(img, mpp, sil)
     rv = {}
     for z, (a, b) in Z["bands"].items():
